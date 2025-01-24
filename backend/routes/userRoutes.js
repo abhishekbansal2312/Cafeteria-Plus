@@ -8,9 +8,9 @@ const {
 } = require("../controllers/userController");
 const { verifyToken } = require("../middleware/authMiddleware");
 
-router.get("/", getUsers);
-router.delete("/delete/:id", deleteUser);
-router.get("/:id", verifyToken, getUserById);
-router.put("/update/:id", updateUser);
+router.get("/", verifyToken, getUsers);
+router.get("/profile", verifyToken, getUserById);
+router.put("/profile", verifyToken, updateUser);
+router.delete("/:id", verifyToken, deleteUser);
 
 module.exports = router;

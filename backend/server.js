@@ -10,8 +10,8 @@ app.use(morgan("dev"));
 
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
-const dishRoutes = require("./routes/dishRoutes");
-const counterRoutes = require("./routes/counterRoutes");
+// const dishRoutes = require("./routes/dishRoutes");
+// const counterRoutes = require("./routes/counterRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
