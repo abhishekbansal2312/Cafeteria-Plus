@@ -1,68 +1,98 @@
 const jwt = require("jsonwebtoken");
 
-const verifyToken = (req, res, next) => {
+const authenticateToken = (req, res) => {
   const header = req.header("Authorization");
   if (!header || !header.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Access denied. No token provided." });
+    return {
+      error: { status: 401, message: "Access denied. No token provided." },
+    };
   }
 
   const token = header.split(" ")[1];
-  console.log(token);
+
   try {
     const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.user = verified;
-
-    next();
+    return { user: verified };
   } catch (error) {
     console.error("JWT Error:", error.message);
 
     if (error.name === "TokenExpiredError") {
-      return res
-        .status(401)
-        .json({ message: "Token expired. Please log in again." });
+      return {
+        error: { status: 401, message: "Token expired. Please log in again." },
+      };
     } else if (error.name === "JsonWebTokenError") {
-      return res.status(400).json({ message: "Invalid token." });
+      return { error: { status: 400, message: "Invalid token." } };
     } else {
-      return res.status(400).json({ message: "Authentication failed." });
+      return { error: { status: 400, message: "Authentication failed." } };
     }
   }
+};
+
+const verifyToken = (req, res, next) => {
+  const result = authenticateToken(req, res);
+
+  if (result.error) {
+    return res
+      .status(result.error.status)
+      .json({ message: result.error.message });
+  }
+
+  req.user = result.user;
+  next();
 };
 
 const verifyTokenAndAdmin = (req, res, next) => {
-  const header = req.header("Authorization");
-  if (!header || !header.startsWith("Bearer ")) {
+  const result = authenticateToken(req, res);
+
+  if (result.error) {
     return res
-      .status(401)
-      .json({ message: "Access denied. No token provided." });
+      .status(result.error.status)
+      .json({ message: result.error.message });
   }
 
-  const token = header.split(" ")[1];
-  console.log(token);
-  try {
-    const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.user = verified;
-    console.log(verified);
+  req.user = result.user;
 
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ message: "Admin access only." });
-    }
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Admin access only." });
+  }
 
-    next();
-  } catch (error) {
-    console.error("JWT Error:", error.message);
+  next();
+};
 
-    if (error.name === "TokenExpiredError") {
-      return res
-        .status(401)
-        .json({ message: "Token expired. Please log in again." });
-    } else if (error.name === "JsonWebTokenError") {
-      return res.status(400).json({ message: "Invalid token." });
-    } else {
-      return res.status(400).json({ message: "Authentication failed." });
-    }
+const verifyTokenAndMerchant = (req, res, next) => {
+  const result = authenticateToken(req, res);
+
+  if (result.error) {
+    return res
+      .status(result.error.status)
+      .json({ message: result.error.message });
+  }
+
+  req.user = result.user;
+
+  if (req.user.role !== "merchant") {
+    return res.status(403).json({ message: "Merchant access only." });
+  }
+
+  next();
+};
+
+const verifyTokenForAdminAndMerchant = (req, res) => {
+  const result = authenticateToken(req, res);
+  if (result.error) {
+    return res
+      .status(result.error.status)
+      .json({ message: result.error.message });
+  }
+  req.user = result.user;
+  if (req.user.role !== "admin" && req.user.role !== "merchant") {
+    return res.status(403).json({ message: "Admin or merchant access only." });
   }
 };
 
-module.exports = { verifyToken, verifyTokenAndAdmin };
+module.exports = {
+  verifyToken,
+  verifyTokenAndAdmin,
+  verifyTokenAndMerchant,
+  verifyTokenForAdminAndMerchant,
+};

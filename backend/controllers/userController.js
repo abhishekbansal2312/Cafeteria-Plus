@@ -76,9 +76,20 @@ const updateUser = async (req, res) => {
   }
 };
 
+const getMerchants = async (req, res) => {
+  try {
+    const merchants = await User.find({ role: "merchant" }).select("-password");
+    res.status(200).json(merchants);
+  } catch (error) {
+    console.error("Error fetching merchants:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getUsers,
   deleteUser,
   getUserById,
   updateUser,
+  getMerchants,
 };
