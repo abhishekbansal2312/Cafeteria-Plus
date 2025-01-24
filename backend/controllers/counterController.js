@@ -119,6 +119,27 @@ const toggleCounterStatus = async (req, res) => {
   }
 };
 
+const getAllMerchantCounters = async (req, res) => {
+  try {
+    const merchantId = req.user.id;
+
+    const counters = await Counter.find({ merchants: { $in: [merchantId] } });
+
+    if (counters.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No counters found for this merchant." });
+    }
+
+    return res.status(200).json(counters); // Send counters data back in response
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Error retrieving counter", error: error.message });
+  }
+};
+
 module.exports = {
   createCounter,
   getAllCounters,
@@ -126,4 +147,5 @@ module.exports = {
   updateCounter,
   deleteCounter,
   toggleCounterStatus,
+  getAllMerchantCounters,
 };

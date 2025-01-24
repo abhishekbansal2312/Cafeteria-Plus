@@ -11,9 +11,9 @@ const {
   verifyTokenAndAdmin,
   verifyTokenForAdminAndMerchant,
 } = require("../middleware/authMiddleware");
-// counter id
+
 router.post("/:counterId", verifyTokenForAdminAndMerchant, createDish);
-// dish id
+
 router.get("/", getAllDishes);
 router.get("/:id", getDishById);
 router.put("/:id", verifyTokenForAdminAndMerchant, updateDish);
