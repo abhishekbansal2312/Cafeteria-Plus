@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const CATEGORIES = [
   "breakfast",
   "lunch",
@@ -12,33 +13,37 @@ const CATEGORIES = [
 const DishSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please provide a name"],
+    required: [true, "Dish name is required"],
+    trim: true,
   },
   description: {
     type: String,
-    required: [true, "Please provide a description"],
+    required: [true, "Dish description is required"],
+    trim: true,
   },
   price: {
     type: Number,
-    required: [true, "Please provide a price"],
+    required: [true, "Dish price is required"],
     min: [1, "Price cannot be less than 1"],
   },
   image: {
     type: String,
-    required: [true, "Please provide an image"],
+    trim: true,
   },
   category: {
     type: String,
     enum: CATEGORIES,
-    required: [true, "Please provide a category"],
+    required: [true, "Dish category is required"],
   },
   counter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Counter",
+    required: [true, "Counter ID is required"],
   },
   availability: {
     type: Boolean,
-    default: 1,
+    default: true,
   },
 });
+
 module.exports = mongoose.model("Dish", DishSchema);

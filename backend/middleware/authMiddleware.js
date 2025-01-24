@@ -77,7 +77,7 @@ const verifyTokenAndMerchant = (req, res, next) => {
   next();
 };
 
-const verifyTokenForAdminAndMerchant = (req, res) => {
+const verifyTokenForAdminAndMerchant = (req, res, next) => {
   const result = authenticateToken(req, res);
   if (result.error) {
     return res
@@ -85,9 +85,13 @@ const verifyTokenForAdminAndMerchant = (req, res) => {
       .json({ message: result.error.message });
   }
   req.user = result.user;
+
+  // Allow access if the role is admin or merchant
   if (req.user.role !== "admin" && req.user.role !== "merchant") {
     return res.status(403).json({ message: "Admin or merchant access only." });
   }
+
+  next(); // Proceed to next middleware if the user is either admin or merchant
 };
 
 module.exports = {

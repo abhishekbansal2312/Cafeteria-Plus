@@ -73,7 +73,7 @@ const createNewUserWithRole = async (req, res) => {
       role,
     });
     res.status(201).json({
-      message: "User created successfully",
+      message: `${role} created successfully`,
       user: {
         name: newUser.name,
         email: newUser.email,
