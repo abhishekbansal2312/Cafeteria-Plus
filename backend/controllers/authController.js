@@ -1,17 +1,21 @@
-const { genSalt, hash } = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { genSalt, hash, compare } = require("bcryptjs");
 const User = require("../models/userModel");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/generateToken");
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    const userExists = await User.findOne({ email: email });
+    const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     const salt = await genSalt(12);
-
     const hashedPassword = await hash(password, salt);
 
     const newUser = await User.create({
@@ -20,6 +24,9 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    const accessToken = generateAccessToken(newUser);
+    const refreshToken = generateRefreshToken(newUser);
+
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -27,6 +34,8 @@ const registerUser = async (req, res) => {
         email: newUser.email,
         id: newUser._id,
       },
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     console.error(error);
@@ -36,18 +45,54 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   try {
-    const userExists = await User.findOne({ email: email });
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
     }
-    // const validatePassword =
-  } catch (error) {}
+
+    const validatePassword = await compare(password, user.password);
+    if (!validatePassword) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    res.status(200).json({
+      message: "User logged in successfully",
+      user: {
+        name: user.name,
+        email: user.email,
+        id: user._id,
+      },
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
-const logoutUser = async (req, res) => {};
+
+const refreshToken = (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+  jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: "Forbidden" });
+
+    const newAccessToken = generateAccessToken(user);
+    res.status(200).json({ accessToken: newAccessToken });
+  });
+};
+
+const logoutUser = (req, res) => {
+  res.status(200).json({ message: "User logged out successfully" });
+};
 
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
+  refreshToken,
 };

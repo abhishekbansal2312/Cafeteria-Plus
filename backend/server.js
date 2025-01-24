@@ -1,10 +1,12 @@
 const express = require("express");
+const morgan = require("morgan");
 const dotenv = require("dotenv");
 dotenv.config();
 require("./config/db");
 const app = express();
 
 app.use(express.json());
+app.use(morgan("dev"));
 
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
