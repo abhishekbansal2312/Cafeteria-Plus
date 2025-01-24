@@ -12,9 +12,12 @@ const CounterSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Dish",
-      required: true,
     },
   ],
+  counter_name: {
+    type: String,
+    required: [true, "Please provide a name"],
+  },
 });
 
 module.exports = mongoose.model("Counter", CounterSchema);

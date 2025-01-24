@@ -6,7 +6,6 @@ const CartSchema = new mongoose.Schema({
     ref: "Dish",
     required: true,
   },
-
   quantity: {
     type: Number,
     default: 1,
