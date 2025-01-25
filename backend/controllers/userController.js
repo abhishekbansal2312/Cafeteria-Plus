@@ -3,14 +3,16 @@ const mongoose = require("mongoose");
 
 const getUsers = async (req, res) => {
   try {
-    console.log("hello");
-
     const users = await User.find().select("-password");
 
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "No users found" });
     }
-    res.status(200).json(users);
+
+    res.status(200).json({
+      status: "success",
+      data: users,
+    });
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -18,7 +20,7 @@ const getUsers = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const id = req.user.id;
+  const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid user ID" });

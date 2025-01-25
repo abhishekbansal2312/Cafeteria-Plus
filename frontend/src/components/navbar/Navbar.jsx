@@ -2,10 +2,13 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import React from "react";
 import Cart from "./Cart";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const user = useSelector((state) => state.userDetail.user);
+  console.log(user, "navbar");
 
   const isActive = (path) => location.pathname === path;
 
@@ -29,6 +32,15 @@ const Navbar = () => {
           }`}
         >
           <li>
+            {user ? (
+              <>Welcome, {user.name}</>
+            ) : (
+              <button>
+                <Link to="/login">Login</Link>
+              </button>
+            )}
+          </li>
+          <li>
             <Link
               to="/"
               className={` ${
@@ -40,21 +52,25 @@ const Navbar = () => {
               Home
             </Link>
           </li>
+          {user && user.role == "admin" ? (
+            <li>
+              <Link
+                to="/users"
+                className={` ${
+                  isActive("/users")
+                    ? "text-orange-500 border-b-2 border-orange-500"
+                    : ""
+                }`}
+              >
+                Users
+              </Link>
+            </li>
+          ) : (
+            <></>
+          )}
           <li>
             <Link
-              to="/about"
-              className={` ${
-                isActive("/about")
-                  ? "text-orange-500 border-b-2 border-orange-500"
-                  : ""
-              }`}
-            >
-              Users
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/services"
+              to="/counters"
               className={` ${
                 isActive("/services")
                   ? "text-orange-500 border-b-2 border-orange-500"
@@ -66,7 +82,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              to="/contact"
+              to="/cart"
               className={` ${
                 isActive("/contact")
                   ? "text-orange-500 border-b-2 border-orange-500"

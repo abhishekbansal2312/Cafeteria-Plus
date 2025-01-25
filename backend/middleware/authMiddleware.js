@@ -36,6 +36,7 @@ const verifyToken = (req, res, next) => {
       .status(result.error.status)
       .json({ message: result.error.message });
   }
+  console.log(result, "result");
 
   req.user = result.user;
   next();

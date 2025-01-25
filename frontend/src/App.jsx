@@ -4,8 +4,11 @@ import Navbar from "./components/navbar/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import UsersPage from "./pages/UsersPage";
+import useAuth from "./hooks/useAuth";
 
 export default function App() {
+  useAuth();
   return (
     <div>
       <BrowserRouter>
@@ -14,6 +17,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<SignUpPage />} />
+          <Route path="/users" element={<UsersPage />} />
         </Routes>
       </BrowserRouter>
     </div>

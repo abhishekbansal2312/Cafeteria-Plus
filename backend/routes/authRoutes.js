@@ -8,7 +8,10 @@ const {
   refreshToken,
   createNewUserWithRole,
 } = require("../controllers/authController");
-const { verifyTokenAndAdmin } = require("../middleware/authMiddleware");
+const {
+  verifyTokenAndAdmin,
+  verifyToken,
+} = require("../middleware/authMiddleware");
 
 router.post("/register", registerUser);
 
@@ -19,5 +22,9 @@ router.delete("/logout", logoutUser);
 router.post("/refresh", refreshToken);
 
 router.post("/role", verifyTokenAndAdmin, createNewUserWithRole);
+
+router.get("/me", verifyToken, (req, res) => {
+  res.json({ user: req.user });
+});
 
 module.exports = router;
