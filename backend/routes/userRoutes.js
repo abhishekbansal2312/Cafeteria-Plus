@@ -6,13 +6,18 @@ const {
   getUserById,
   updateUser,
   getMerchants,
+  createUser,
+  updateUserByAdmin,
 } = require("../controllers/userController");
 const {
   verifyToken,
   verifyTokenAndAdmin,
 } = require("../middleware/authMiddleware");
-// user routes
-router.get("/", verifyToken, getUsers);
+// user routes for admin access
+router.get("/", verifyTokenAndAdmin, getUsers);
+router.post("/", verifyTokenAndAdmin, createUser);
+router.put("/:id", verifyTokenAndAdmin, updateUserByAdmin);
+// user routes for customer access
 router.get("/profile", verifyToken, getUserById);
 router.put("/profile", verifyToken, updateUser);
 router.delete("/:id", verifyToken, deleteUser);

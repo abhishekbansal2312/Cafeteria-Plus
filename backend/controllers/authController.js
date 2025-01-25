@@ -51,42 +51,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-const createNewUserWithRole = async (req, res) => {
-  const { name, email, password, role } = req.body;
-
-  if (!["admin", "customer", "merchant"].includes(role)) {
-    return res.status(400).json({ message: "Invalid role" });
-  }
-
-  try {
-    const userExists = await isUserExists(email);
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    const hashedPassword = await hashPassword(password);
-
-    const newUser = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-    });
-    res.status(201).json({
-      message: `${role} created successfully`,
-      user: {
-        name: newUser.name,
-        email: newUser.email,
-        id: newUser._id,
-        role: newUser.role,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -152,5 +116,6 @@ module.exports = {
   loginUser,
   logoutUser,
   refreshToken,
-  createNewUserWithRole,
+  isUserExists,
+  hashPassword,
 };

@@ -25,7 +25,7 @@ export default function UsersList({ users, handleEdit, handleDelete }) {
             <div className="flex mt-2 sm:mt-0 space-x-2">
               <button
                 onClick={() => handleEdit(user)}
-                className="flex items-center px-3 py-1 text-teal-400 border border-teal-400 rounded hover:bg-teal-400 hover:text-white transition duration-200 text-[12px]"
+                className="flex items-center px-3 py-1 text-white bg-teal-400 border border-teal-400 rounded hover:bg-white hover:text-teal-400 transition duration-200 text-[12px]"
               >
                 <FaEdit className="mr-1" />
                 Edit
@@ -33,7 +33,7 @@ export default function UsersList({ users, handleEdit, handleDelete }) {
 
               <button
                 onClick={() => handleDelete(user._id)}
-                className="flex items-center px-3 py-1 text-red-500 border border-red-500 rounded hover:bg-red-500 hover:text-white transition duration-200 text-[12px]"
+                className="flex items-center px-3 py-1 text-white bg-red-500 border border-red-500 rounded hover:bg-white hover:text-red-500 transition duration-200 text-[12px]"
               >
                 <FaTrash className="mr-1" />
                 Delete

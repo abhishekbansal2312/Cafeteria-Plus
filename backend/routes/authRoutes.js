@@ -6,12 +6,8 @@ const {
   loginUser,
   logoutUser,
   refreshToken,
-  createNewUserWithRole,
 } = require("../controllers/authController");
-const {
-  verifyTokenAndAdmin,
-  verifyToken,
-} = require("../middleware/authMiddleware");
+const { verifyToken } = require("../middleware/authMiddleware");
 
 router.post("/register", registerUser);
 
@@ -20,8 +16,6 @@ router.post("/login", loginUser);
 router.delete("/logout", logoutUser);
 
 router.post("/refresh", refreshToken);
-
-router.post("/role", verifyTokenAndAdmin, createNewUserWithRole);
 
 router.get("/me", verifyToken, (req, res) => {
   res.json({ user: req.user });
