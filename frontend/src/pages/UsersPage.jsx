@@ -1,46 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
 import UsersList from "../components/users/UsersList";
 import UserForm from "../components/users/UsersForm";
 import Modal from "../components/Modal";
 import Button from "../components/Button";
 import SearchBar from "../components/SearchBar";
+import UserSkeleton from "../components/users/UserSkeleton";
+import {
+  setUsers,
+  setLoading,
+  setError,
+  deleteUser,
+  addUser,
+  updateUser,
+} from "../slices/usersSlice";
+import { setFormData, setIsEditing, setIsModalOpen } from "../slices/formSlice";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "customer",
-  });
+  const dispatch = useDispatch();
+  const { users, loading, error } = useSelector((state) => state.users);
+  const { formData, isEditing, isModalOpen } = useSelector(
+    (state) => state.form
+  );
 
   const makeRequest = useAxios();
 
   const fetchUsers = async () => {
     try {
+      dispatch(setLoading(true));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await makeRequest(
         "http://localhost:3000/api/users",
         "GET",
         null,
         true
       );
-      setUsers(response.data);
-      setLoading(false);
+      dispatch(setUsers(response.data));
+      dispatch(setLoading(false));
     } catch (error) {
-      console.error("Error fetching users:", error);
-      setError("Failed to fetch users");
-      setLoading(false);
+      dispatch(setError("Failed to fetch users"));
+      dispatch(setLoading(false));
     }
   };
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [dispatch]);
 
   const handleDelete = async (id) => {
     try {
@@ -50,30 +56,31 @@ export default function UsersPage() {
         null,
         true
       );
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
+      dispatch(deleteUser(id));
     } catch (error) {
-      console.error("Error deleting user:", error);
-      setError("Failed to delete user");
+      dispatch(setError("Failed to delete user"));
     }
   };
 
   const handleOpenModal = (user = null) => {
     if (user) {
-      setFormData(user);
-      setIsEditing(true);
+      dispatch(setFormData(user));
+      dispatch(setIsEditing(true));
     } else {
-      setFormData({ name: "", email: "", password: "", role: "customer" });
-      setIsEditing(false);
+      dispatch(
+        setFormData({ name: "", email: "", password: "", role: "customer" })
+      );
+      dispatch(setIsEditing(false));
     }
-    setIsModalOpen(true);
+    dispatch(setIsModalOpen(true));
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    dispatch(setIsModalOpen(false));
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    dispatch(setFormData({ ...formData, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -86,9 +93,7 @@ export default function UsersPage() {
           formData,
           true
         );
-        setUsers((prevUsers) =>
-          prevUsers.map((user) => (user._id === formData._id ? formData : user))
-        );
+        dispatch(updateUser(formData));
       } else {
         const response = await makeRequest(
           "http://localhost:3000/api/users",
@@ -96,44 +101,48 @@ export default function UsersPage() {
           formData,
           true
         );
-        setUsers([...users, response.data]);
+        dispatch(addUser(response.data));
       }
       handleCloseModal();
     } catch (error) {
-      console.error("Error submitting user:", error);
-      setError("Failed to save user");
+      dispatch(setError("Failed to save user"));
     }
   };
 
   return (
     <div className=" bg-black text-neutral-200 min-h-screen">
-      {loading && <p>Loading...</p>}
+      {loading ? (
+        <UserSkeleton />
+      ) : (
+        <div>
+          <div className="flex justify-between items-center mx-10 py-1">
+            <SearchBar />
+            <Button onClick={() => handleOpenModal()} text="Add User" />
+          </div>
+
+          <UsersList
+            users={users}
+            handleDelete={handleDelete}
+            handleEdit={handleOpenModal}
+          />
+
+          <Modal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            title={isEditing ? "Edit User" : "Add User"}
+          >
+            <UserForm
+              formData={formData}
+              isEditing={isEditing}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              darkMode={false}
+              onClose={handleCloseModal}
+            />
+          </Modal>
+        </div>
+      )}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div className="flex justify-between items-center mx-10 py-1">
-        <SearchBar />
-        <Button onClick={() => handleOpenModal()} text="Add User"></Button>
-      </div>
-
-      <UsersList
-        users={users}
-        handleDelete={handleDelete}
-        handleEdit={handleOpenModal}
-      />
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        title={isEditing ? "Edit User" : "Add User"}
-      >
-        <UserForm
-          formData={formData}
-          isEditing={isEditing}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          darkMode={false}
-          onClose={handleCloseModal}
-        />
-      </Modal>
     </div>
   );
 }
