@@ -7,6 +7,7 @@ import Modal from "../components/Modal";
 import Button from "../components/Button";
 import SearchBar from "../components/SearchBar";
 import UserSkeleton from "../components/users/UserSkeleton";
+import SortBy from "../components/users/SortBy";
 import {
   setUsers,
   setLoading,
@@ -46,7 +47,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, [dispatch]);
+  }, []);
 
   const handleDelete = async (id) => {
     try {
@@ -115,8 +116,11 @@ export default function UsersPage() {
         <UserSkeleton />
       ) : (
         <div>
-          <div className="flex justify-between items-center mx-10 py-1">
-            <SearchBar />
+          <div className="flex justify-between items-center mx-10 py-1 pt-4">
+            <div className="flex">
+              <SearchBar />
+              <SortBy />
+            </div>
             <Button onClick={() => handleOpenModal()} text="Add User" />
           </div>
 

@@ -47,7 +47,6 @@ export default function useAxios() {
             config.headers = {};
           }
           config.headers.Authorization = `Bearer ${accessToken}`;
-
           const retryResponse = await axios(config);
           return retryResponse.data;
         } catch (refreshError) {

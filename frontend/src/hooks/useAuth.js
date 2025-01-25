@@ -20,10 +20,8 @@ const useAuth = () => {
         );
 
         console.log(data, "response");
-
         if (data?.user) {
           const { user } = data;
-
           dispatch(loginUser(user));
         } else {
           dispatch(logoutUser());
@@ -35,9 +33,7 @@ const useAuth = () => {
     };
 
     checkAuth();
-  }, [dispatch, makeRequest]); // ✅ Added `makeRequest` to dependencies
-
-  // No need to return anything
+  }, []);
 };
 
 export default useAuth;

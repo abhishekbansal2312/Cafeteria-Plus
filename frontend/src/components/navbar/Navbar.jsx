@@ -3,11 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import React from "react";
 import Cart from "./Cart";
 import { useSelector } from "react-redux";
+import Logout from "./Logout";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const user = useSelector((state) => state.userDetail.user);
+  const isLoggedIn = useSelector((state) => state.userDetail.isLoggedIn);
   console.log(user, "navbar");
 
   const isActive = (path) => location.pathname === path;
@@ -92,15 +94,23 @@ const Navbar = () => {
               <Cart />
             </Link>
           </li>
+
           <li>
-            <Link to="/profile">
-              <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNKfj6RsyRZqO4nnWkPFrYMmgrzDmyG31pFQ&s"
-                alt=""
-                className="w-8 h-8 rounded-full"
-              />
-            </Link>
+            {isLoggedIn && (
+              <Link to="/profile">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNKfj6RsyRZqO4nnWkPFrYMmgrzDmyG31pFQ&s"
+                  alt=""
+                  className="w-8 h-8 rounded-full"
+                />
+              </Link>
+            )}
           </li>
+          {isLoggedIn && (
+            <li>
+              <Logout />
+            </li>
+          )}
         </ul>
       </div>
     </nav>

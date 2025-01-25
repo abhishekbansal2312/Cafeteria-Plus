@@ -22,6 +22,7 @@ const getUsers = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid user ID" });

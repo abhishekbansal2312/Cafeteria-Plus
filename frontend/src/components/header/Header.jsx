@@ -12,7 +12,7 @@ const Header = () => {
             <h2 className="text-black text-[max(4.5vw,22px)] font-semibold">
               Order your favorite food here
             </h2>
-            <p className="text-white text-[1vw] hidden sm:block">
+            <p className="text-black text-[1vw] hidden sm:block">
               Choose from a diverse menu featuring a delectable array of dishes
               crafted with the finest ingredients. Satisfy your cravings and
               elevate your dining experience, one delicious meal at a time.
