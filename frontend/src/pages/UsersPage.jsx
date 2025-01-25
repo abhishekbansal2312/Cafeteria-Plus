@@ -4,6 +4,8 @@ import UsersList from "../components/users/UsersList";
 import UserForm from "../components/users/UsersForm";
 import Modal from "../components/Modal";
 import Button from "../components/Button";
+import SearchBar from "../components/SearchBar";
+
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,13 +109,17 @@ export default function UsersPage() {
     <div className=" bg-black text-neutral-200 min-h-screen">
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="flex justify-between items-center mx-10 py-1">
+        <SearchBar />
+        <Button onClick={() => handleOpenModal()} text="Add User"></Button>
+      </div>
 
-      <Button onClick={handleOpenModal} text="Add User" />
       <UsersList
         users={users}
         handleDelete={handleDelete}
         handleEdit={handleOpenModal}
       />
+
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

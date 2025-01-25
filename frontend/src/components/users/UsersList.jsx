@@ -7,7 +7,7 @@ export default function UsersList({ users, handleEdit, handleDelete }) {
       {users.map((user) => (
         <li
           key={user.id}
-          className="flex flex-col p-2 border-b-1 transition duration-300 pb-1 mx-10"
+          className="flex flex-col p-2 border-b-1 border-amber-600 transition duration-300 pb-1 mx-10"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div className="flex-1">

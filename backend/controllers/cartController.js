@@ -31,7 +31,6 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-// Get all items in the user's cart
 exports.getCart = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("cart.dish");
