@@ -5,9 +5,9 @@ import Cart from "./Cart";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation(); // To get the current path
+  const location = useLocation();
 
-  const isActive = (path) => location.pathname === path; // Check if the current path matches
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="bg-black text-white p-4 border-b-1 ">
