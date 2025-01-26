@@ -38,35 +38,28 @@ const CounterList = ({ counters, handleDelete, handleEdit }) => {
             </div>
             <p className="text-sm text-gray-600 mb-3">{counter.description}</p>
 
-            {/* Location */}
             <p className="text-sm text-gray-600 mb-2 flex items-center">
               <FaMapMarkerAlt className="mr-2 text-gray-600" />
               <span>{counter.location}</span>
             </p>
 
-            {/* Operating Hours */}
             <p className="text-sm text-gray-600 mb-3">
               <strong>Hours:</strong> {counter.operating_hours.open} -{" "}
               {counter.operating_hours.close}
             </p>
 
-            {/* Status with Icon */}
-
-            {/* Display Themes */}
             <p className="text-sm text-gray-600 mb-3">
               <strong>Themes:</strong>{" "}
               <span className="font-semibold text-gray-700">
                 {counter.theme.join(", ")}
               </span>
             </p>
-
-            {/* Buttons */}
             <div className="flex justify-between gap-4">
               <button onClick={() => handleEdit(counter)} className="">
-                <FaEdit className="mr-2" /> Edit
+                <FaEdit className="mr-2" />
               </button>
               <button onClick={() => handleDelete(counter._id)} className="">
-                <FaTrashAlt className="mr-2" /> Delete
+                <FaTrashAlt className="mr-2" />
               </button>
             </div>
           </div>

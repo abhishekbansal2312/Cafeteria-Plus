@@ -6,6 +6,14 @@ export const counterSlice = createSlice({
     counters: [],
     loading: true,
     error: null,
+    formData: {
+      counter_name: "",
+      description: "",
+      location: "",
+      imageUrl: "",
+      operating_hours: { open: "", close: "" },
+      isActive: false,
+    },
   },
   reducers: {
     setCounters: (state, action) => {
@@ -34,6 +42,19 @@ export const counterSlice = createSlice({
         (counter) => counter._id !== action.payload
       );
     },
+    setFormData: (state, action) => {
+      state.formData = { ...state.formData, ...action.payload };
+    },
+    resetFormData: (state) => {
+      state.formData = {
+        counter_name: "",
+        description: "",
+        location: "",
+        imageUrl: "",
+        operating_hours: { open: "", close: "" },
+        isActive: false,
+      };
+    },
   },
 });
 
@@ -44,6 +65,8 @@ export const {
   addCounter,
   updateCounter,
   deleteCounter,
+  setFormData,
+  resetFormData,
 } = counterSlice.actions;
 
 export default counterSlice.reducer;

@@ -8,6 +8,8 @@ import {
   addCounter,
   updateCounter,
   deleteCounter,
+  setFormData,
+  resetFormData,
 } from "../slices/counterSlice";
 import Button from "../components/Button";
 import CounterList from "../components/counter/CounterList";
@@ -17,15 +19,9 @@ import CounterForm from "../components/counter/CounterForm";
 export default function CounterPage({ theme }) {
   const dispatch = useDispatch();
   const makeRequest = useAxios();
-  const { counters, loading, error } = useSelector((state) => state.counter);
-  const [formData, setFormData] = useState({
-    counter_name: "",
-    description: "",
-    location: "",
-    imageUrl: "",
-    operating_hours: { open: "", close: "" },
-    isActive: false,
-  });
+  const { counters, loading, error, formData } = useSelector(
+    (state) => state.counter
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -64,24 +60,19 @@ export default function CounterPage({ theme }) {
 
   const handleOpenModal = (counter = null) => {
     if (counter) {
-      setFormData({
-        counter_name: counter.counter_name,
-        description: counter.description,
-        location: counter.location,
-        imageUrl: counter.imageUrl,
-        operating_hours: counter.operating_hours || { open: "", close: "" },
-        isActive: counter.isActive,
-      });
+      dispatch(
+        setFormData({
+          counter_name: counter.counter_name,
+          description: counter.description,
+          location: counter.location,
+          imageUrl: counter.imageUrl,
+          operating_hours: counter.operating_hours || { open: "", close: "" },
+          isActive: counter.isActive,
+        })
+      );
       setIsEditing(true);
     } else {
-      setFormData({
-        counter_name: "",
-        description: "",
-        location: "",
-        imageUrl: "",
-        operating_hours: { open: "", close: "" },
-        isActive: false,
-      });
+      dispatch(resetFormData());
       setIsEditing(false);
     }
     setIsModalOpen(true);
@@ -89,14 +80,7 @@ export default function CounterPage({ theme }) {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setFormData({
-      counter_name: "",
-      description: "",
-      location: "",
-      imageUrl: "",
-      operating_hours: { open: "", close: "" },
-      isActive: false,
-    });
+    dispatch(resetFormData());
   };
 
   const handleSubmit = async (e) => {
@@ -126,18 +110,16 @@ export default function CounterPage({ theme }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "operating_hours.open" || name === "operating_hours.close") {
-      setFormData((prevData) => ({
-        ...prevData,
-        operating_hours: {
-          ...prevData.operating_hours,
-          [name.split(".")[1]]: value,
-        },
-      }));
+      dispatch(
+        setFormData({
+          operating_hours: {
+            ...formData.operating_hours,
+            [name.split(".")[1]]: value,
+          },
+        })
+      );
     } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
+      dispatch(setFormData({ [name]: value }));
     }
   };
 
