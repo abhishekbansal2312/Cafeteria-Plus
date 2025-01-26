@@ -6,7 +6,6 @@ const CounterSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
       },
     ],
     dishes: [
@@ -38,6 +37,9 @@ const CounterSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    theme: {
+      type: [{ type: String }],
     },
   },
   { timestamps: true }

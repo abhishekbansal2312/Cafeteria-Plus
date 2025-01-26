@@ -9,7 +9,20 @@ const createCounter = async (req, res) => {
       location,
       imageUrl,
       operating_hours,
+      theme,
+      isActive,
     } = req.body;
+
+    console.log(
+      merchants,
+      counter_name,
+      description,
+      location,
+      imageUrl,
+      operating_hours,
+      theme,
+      isActive
+    );
 
     const newCounter = new Counter({
       merchants,
@@ -18,6 +31,8 @@ const createCounter = async (req, res) => {
       location,
       imageUrl,
       operating_hours,
+      theme,
+      isActive,
     });
 
     const savedCounter = await newCounter.save();

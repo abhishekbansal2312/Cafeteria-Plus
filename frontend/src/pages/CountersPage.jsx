@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
 import {
@@ -14,24 +14,28 @@ import CounterList from "../components/counter/CounterList";
 import Modal from "../components/Modal";
 import CounterForm from "../components/counter/CounterForm";
 
-export default function CounterPage() {
+export default function CounterPage({ theme }) {
   const dispatch = useDispatch();
   const makeRequest = useAxios();
   const { counters, loading, error } = useSelector((state) => state.counter);
-  const { isModalOpen, isEditing, formData } = useSelector(
-    (state) => state.counterForm
-  );
+  const [formData, setFormData] = useState({
+    counter_name: "",
+    description: "",
+    location: "",
+    imageUrl: "",
+    operating_hours: { open: "", close: "" },
+    isActive: false,
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchCounters = async () => {
-    //working
     try {
       dispatch(setLoading(true));
       const response = await makeRequest(
         "http://localhost:3000/api/counters",
         "GET"
       );
-      console.log(response.data);
-
       dispatch(setCounters(response.data));
       dispatch(setLoading(false));
     } catch (error) {
@@ -45,7 +49,6 @@ export default function CounterPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    //working
     try {
       await makeRequest(
         `http://localhost:3000/api/counters/${id}`,
@@ -61,17 +64,39 @@ export default function CounterPage() {
 
   const handleOpenModal = (counter = null) => {
     if (counter) {
-      dispatch(setFormData(counter));
-      dispatch(setIsEditing(true));
+      setFormData({
+        counter_name: counter.counter_name,
+        description: counter.description,
+        location: counter.location,
+        imageUrl: counter.imageUrl,
+        operating_hours: counter.operating_hours || { open: "", close: "" },
+        isActive: counter.isActive,
+      });
+      setIsEditing(true);
     } else {
-      dispatch(setFormData({ name: "", value: 0 }));
-      dispatch(setIsEditing(false));
+      setFormData({
+        counter_name: "",
+        description: "",
+        location: "",
+        imageUrl: "",
+        operating_hours: { open: "", close: "" },
+        isActive: false,
+      });
+      setIsEditing(false);
     }
-    dispatch(setIsModalOpen(true));
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    dispatch(setIsModalOpen(false));
+    setIsModalOpen(false);
+    setFormData({
+      counter_name: "",
+      description: "",
+      location: "",
+      imageUrl: "",
+      operating_hours: { open: "", close: "" },
+      isActive: false,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -90,7 +115,7 @@ export default function CounterPage() {
           "POST",
           formData
         );
-        dispatch(addCounter(response.data));
+        dispatch(addCounter(response));
       }
       handleCloseModal();
     } catch (error) {
@@ -98,10 +123,32 @@ export default function CounterPage() {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "operating_hours.open" || name === "operating_hours.close") {
+      setFormData((prevData) => ({
+        ...prevData,
+        operating_hours: {
+          ...prevData.operating_hours,
+          [name.split(".")[1]]: value,
+        },
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
   return (
-    <div className="bg-black text-neutral-200 min-h-screen">
+    <div
+      className={`${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      } min-h-screen`}
+    >
       {loading ? (
-        <div>Loading...</div> // Loading state
+        <div>Loading...</div>
       ) : (
         <div>
           <div className="flex justify-between items-center mx-10 py-1 pt-4">
@@ -123,11 +170,7 @@ export default function CounterPage() {
               formData={formData}
               isEditing={isEditing}
               handleSubmit={handleSubmit}
-              handleChange={(e) =>
-                dispatch(
-                  setFormData({ ...formData, [e.target.name]: e.target.value })
-                )
-              }
+              handleChange={handleChange}
             />
           </Modal>
         </div>

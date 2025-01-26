@@ -14,7 +14,7 @@ const {
   verifyTokenAndMerchant,
 } = require("../middleware/authMiddleware");
 
-router.post("/", verifyTokenAndAdmin, createCounter);
+router.post("/", createCounter);
 
 router.get("/", getAllCounters);
 router.get("/merchant", verifyTokenAndMerchant, getAllMerchantCounters);
