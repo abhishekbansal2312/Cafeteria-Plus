@@ -37,6 +37,8 @@ export default function UsersPage() {
         null,
         true
       );
+      console.log(response.data);
+
       dispatch(setUsers(response.data));
       dispatch(setLoading(false));
     } catch (error) {
@@ -88,13 +90,15 @@ export default function UsersPage() {
     e.preventDefault();
     try {
       if (isEditing) {
-        await makeRequest(
+        const response = await makeRequest(
           `http://localhost:3000/api/users/${formData._id}`,
           "PUT",
           formData,
           true
         );
-        dispatch(updateUser(formData));
+        console.log(response, "response edit");
+
+        dispatch(updateUser(response.user));
       } else {
         const response = await makeRequest(
           "http://localhost:3000/api/users",
@@ -102,6 +106,7 @@ export default function UsersPage() {
           formData,
           true
         );
+        console.log(response.data, "response");
         dispatch(addUser(response.data));
       }
       handleCloseModal();
