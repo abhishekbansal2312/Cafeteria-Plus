@@ -15,6 +15,7 @@ const {
 } = require("../middleware/authMiddleware");
 // user routes for admin access
 router.get("/", verifyTokenAndAdmin, getUsers);
+router.get("/:id", verifyTokenAndAdmin, getUserById);
 router.post("/", verifyTokenAndAdmin, createUser);
 router.put("/:id", verifyTokenAndAdmin, updateUserByAdmin);
 // user routes for customer access

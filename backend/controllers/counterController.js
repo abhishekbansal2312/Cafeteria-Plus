@@ -34,7 +34,7 @@ const getAllCounters = async (req, res) => {
     const counters = await Counter.find()
       .populate("merchants", "name email")
       .populate("dishes");
-    res.status(200).json(counters);
+    res.status(200).json({ data: counters });
   } catch (error) {
     res
       .status(500)
@@ -64,7 +64,7 @@ const getCounterById = async (req, res) => {
 const updateCounter = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedCounter = await Counter.findByIdAndUpdate(id, req.body, {
+    const updatedCounter = await Counter.findByIdAndUpdate(id, {
       new: true,
     });
 

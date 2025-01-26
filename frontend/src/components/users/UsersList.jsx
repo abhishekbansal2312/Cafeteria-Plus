@@ -2,8 +2,6 @@ import React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 export default function UsersList({ users, handleEdit, handleDelete }) {
-  console.log(users);
-
   return (
     <ul className="w-full gap-2">
       {users.map((user) => (

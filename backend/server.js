@@ -24,7 +24,6 @@ const cartRoutes = require("./routes/cartRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-
 app.use("/api/dishes", dishRoutes);
 app.use("/api/counters", counterRoutes);
 app.use("/api/cart", cartRoutes);

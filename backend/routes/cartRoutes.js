@@ -12,9 +12,10 @@ const {
 
 router.get("/", verifyToken, getCart);
 router.post("/", verifyToken, addToCart);
-router.delete("/:itemId", verifyToken, removeFromCart);
-router.put("/:itemId", verifyToken, updateCartItem);
-router.put("/:itemId/increase", verifyToken, increaseCartQuantity);
-router.put("/:itemId/decrease", verifyToken, decreaseCartQuantity);
+router.delete("/", verifyToken, removeFromCart);
+router.put("/:id", verifyToken, updateCartItem);
+
+router.put("/increase/:id", verifyToken, increaseCartQuantity);
+router.put("/decrease/:id", verifyToken, decreaseCartQuantity);
 
 module.exports = router;

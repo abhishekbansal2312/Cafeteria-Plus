@@ -17,7 +17,7 @@ const {
 router.post("/", verifyTokenAndAdmin, createCounter);
 
 router.get("/", getAllCounters);
-router.get("/merchant", verifyTokenAndMerchant, getAllMerchantCounters); // have to work on this
+router.get("/merchant", verifyTokenAndMerchant, getAllMerchantCounters);
 router.put("/merchant/:id", verifyTokenAndMerchant, updateCounter);
 router.get("/:id", getCounterById);
 router.put("/:id", verifyTokenAndAdmin, updateCounter);

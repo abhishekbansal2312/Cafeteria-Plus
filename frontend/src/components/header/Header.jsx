@@ -17,7 +17,7 @@ const Header = () => {
               crafted with the finest ingredients. Satisfy your cravings and
               elevate your dining experience, one delicious meal at a time.
             </p>
-            <a href="/menu">
+            <a href="/dishes">
               <button className="bg-white  text-gray-700 font-medium py-2 px-6 text-[max(1vw,18px)] rounded-full cursor-pointer transition duration-300 hover:bg-gray-100">
                 View Menu
               </button>

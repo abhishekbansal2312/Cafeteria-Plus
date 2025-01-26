@@ -10,7 +10,6 @@ const Navbar = () => {
   const location = useLocation();
   const user = useSelector((state) => state.userDetail.user);
   const isLoggedIn = useSelector((state) => state.userDetail.isLoggedIn);
-  console.log(user, "navbar");
 
   const isActive = (path) => location.pathname === path;
 
