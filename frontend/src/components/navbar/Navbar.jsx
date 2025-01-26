@@ -25,7 +25,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
-          Cafeteria
+          DineSync
         </Link>
         <div className="md:hidden">
           <button

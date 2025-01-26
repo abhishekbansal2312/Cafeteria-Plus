@@ -121,7 +121,7 @@ export default function UsersPage({ theme }) {
   return (
     <div
       className={`${
-        theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       } min-h-screen`}
     >
       {loading ? (

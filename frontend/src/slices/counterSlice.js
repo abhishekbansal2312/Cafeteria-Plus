@@ -7,12 +7,14 @@ export const counterSlice = createSlice({
     loading: true,
     error: null,
     formData: {
+      _id: "",
       counter_name: "",
       description: "",
       location: "",
       imageUrl: "",
       operating_hours: { open: "", close: "" },
       isActive: false,
+      theme: "",
     },
   },
   reducers: {
@@ -47,12 +49,14 @@ export const counterSlice = createSlice({
     },
     resetFormData: (state) => {
       state.formData = {
+        _id: "",
         counter_name: "",
         description: "",
         location: "",
         imageUrl: "",
         operating_hours: { open: "", close: "" },
         isActive: false,
+        theme: "",
       };
     },
   },

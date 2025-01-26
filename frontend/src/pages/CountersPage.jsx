@@ -15,6 +15,7 @@ import Button from "../components/Button";
 import CounterList from "../components/counter/CounterList";
 import Modal from "../components/Modal";
 import CounterForm from "../components/counter/CounterForm";
+import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
 
 export default function CounterPage({ theme }) {
   const dispatch = useDispatch();
@@ -22,8 +23,8 @@ export default function CounterPage({ theme }) {
   const { counters, loading, error, formData } = useSelector(
     (state) => state.counter
   );
-  const [isEditing, setIsEditing] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const isEditing = useSelector((state) => state.form.isEditing);
+  const isModalOpen = useSelector((state) => state.form.isModalOpen);
 
   const fetchCounters = async () => {
     try {
@@ -57,29 +58,30 @@ export default function CounterPage({ theme }) {
       dispatch(setError("Failed to delete counter"));
     }
   };
-
   const handleOpenModal = (counter = null) => {
     if (counter) {
       dispatch(
         setFormData({
+          _id: counter._id,
           counter_name: counter.counter_name,
           description: counter.description,
           location: counter.location,
           imageUrl: counter.imageUrl,
           operating_hours: counter.operating_hours || { open: "", close: "" },
           isActive: counter.isActive,
+          theme: counter.theme,
         })
       );
-      setIsEditing(true);
+      dispatch(setIsEditing(true));
     } else {
       dispatch(resetFormData());
-      setIsEditing(false);
+      dispatch(setIsEditing(false));
     }
-    setIsModalOpen(true);
+    dispatch(setIsModalOpen(true));
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    dispatch(setIsModalOpen(false));
     dispatch(resetFormData());
   };
 
@@ -108,8 +110,13 @@ export default function CounterPage({ theme }) {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "operating_hours.open" || name === "operating_hours.close") {
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      dispatch(setFormData({ [name]: checked }));
+    } else if (
+      name === "operating_hours.open" ||
+      name === "operating_hours.close"
+    ) {
       dispatch(
         setFormData({
           operating_hours: {
