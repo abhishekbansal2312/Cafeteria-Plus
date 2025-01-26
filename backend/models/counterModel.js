@@ -8,12 +8,6 @@ const CounterSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    dishes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Dish",
-      },
-    ],
     counter_name: {
       type: String,
       required: [true, "Please provide a name"],

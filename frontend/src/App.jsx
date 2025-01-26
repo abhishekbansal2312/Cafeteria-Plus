@@ -10,6 +10,7 @@ import CounterPage from "./pages/CountersPage";
 import DishesPage from "./pages/DishesPage";
 import CartPage from "./pages/CartPage";
 import { ThemeContext } from "./context/ThemeContext";
+import SingleCounterPage from "./pages/SingleCounterPage";
 
 export default function App() {
   useAuth();
@@ -25,6 +26,10 @@ export default function App() {
           <Route path="/register" element={<SignUpPage />} />
           <Route path="/users" element={<UsersPage theme={theme} />} />
           <Route path="/counters" element={<CounterPage theme={theme} />} />
+          <Route
+            path="/counters/:id"
+            element={<SingleCounterPage theme={theme} />}
+          />
           <Route path="/dishes" element={<DishesPage />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>

@@ -4,13 +4,24 @@ import InputField from "../inputs/InputField";
 const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <InputField
-        label="Counter Name"
-        type="text"
-        name="counter_name"
-        value={formData.counter_name || ""}
-        onChange={handleChange}
-      />
+      {/* Two-column grid for basic details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InputField
+          label="Counter Name"
+          type="text"
+          name="counter_name"
+          value={formData.counter_name || ""}
+          onChange={handleChange}
+        />
+
+        <InputField
+          label="Location"
+          type="text"
+          name="location"
+          value={formData.location || ""}
+          onChange={handleChange}
+        />
+      </div>
 
       <InputField
         label="Description"
@@ -20,23 +31,27 @@ const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
         onChange={handleChange}
       />
 
-      <InputField
-        label="Location"
-        type="text"
-        name="location"
-        value={formData.location || ""}
-        onChange={handleChange}
-      />
+      {/* Two-column grid for Image URL and Theme */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InputField
+          label="Image URL"
+          type="text"
+          name="imageUrl"
+          value={formData.imageUrl || ""}
+          onChange={handleChange}
+        />
 
-      <InputField
-        label="Image URL"
-        type="text"
-        name="imageUrl"
-        value={formData.imageUrl || ""}
-        onChange={handleChange}
-      />
+        <InputField
+          label="Theme"
+          type="text"
+          name="theme"
+          value={formData.theme || ""}
+          onChange={handleChange}
+        />
+      </div>
 
-      <div className="flex space-x-4">
+      {/* Two-column grid for Operating Hours */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField
           label="Open Time"
           type="text"
@@ -54,10 +69,12 @@ const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
         />
       </div>
 
+      {/* Active Checkbox */}
       <div className="flex items-center space-x-2">
         <input
           type="checkbox"
           id="isActive"
+          name="isActive"
           checked={formData.isActive || false}
           onChange={handleChange}
           className="h-4 w-4"
@@ -67,6 +84,7 @@ const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
         </label>
       </div>
 
+      {/* Submit Button */}
       <div className="flex justify-end space-x-4">
         <button
           type="submit"

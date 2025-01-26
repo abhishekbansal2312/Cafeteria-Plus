@@ -14,14 +14,15 @@ const {
   verifyTokenAndAdmin,
 } = require("../middleware/authMiddleware");
 // user routes for admin access
-router.get("/", verifyTokenAndAdmin, getUsers);
-router.get("/:id", verifyTokenAndAdmin, getUserById);
-router.post("/", verifyTokenAndAdmin, createUser);
-router.put("/:id", verifyTokenAndAdmin, updateUserByAdmin);
+router.get("/", verifyTokenAndAdmin, getUsers); // done
+router.get("/:id", verifyTokenAndAdmin, getUserById); // done
+router.post("/", verifyTokenAndAdmin, createUser); // done
+router.put("/:id", verifyTokenAndAdmin, updateUserByAdmin); // done
+router.delete("/:id", verifyTokenAndAdmin, deleteUser); // done
 // user routes for customer access
 router.get("/profile", verifyToken, getUserById);
 router.put("/profile", verifyToken, updateUser);
-router.delete("/:id", verifyToken, deleteUser);
+
 // merchant routes
 router.get("/merchants", verifyTokenAndAdmin, getMerchants);
 

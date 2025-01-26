@@ -10,9 +10,9 @@ const {
   decreaseCartQuantity,
 } = require("../controllers/cartController");
 
-router.get("/", verifyToken, getCart);
-router.post("/", verifyToken, addToCart);
-router.delete("/", verifyToken, removeFromCart);
+router.get("/", verifyToken, getCart); // get cart
+router.post("/", verifyToken, addToCart); // add to cart
+router.delete("/", verifyToken, removeFromCart); // remove item from cart
 router.put("/:id", verifyToken, updateCartItem);
 
 router.put("/increase/:id", verifyToken, increaseCartQuantity);
