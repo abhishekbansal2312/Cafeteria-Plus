@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/navbar/Navbar";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import UsersPage from "./pages/UsersPage";
@@ -9,19 +9,22 @@ import useAuth from "./hooks/useAuth";
 import CounterPage from "./pages/CountersPage";
 import DishesPage from "./pages/DishesPage";
 import CartPage from "./pages/CartPage";
+import { ThemeContext } from "./context/ThemeContext";
 
 export default function App() {
   useAuth();
+  const { theme } = useContext(ThemeContext);
+
   return (
-    <div>
+    <div className={`${theme} min-h-screen transition-colors duration-300`}>
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage theme={theme} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<SignUpPage />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/counters" element={<CounterPage />} />
+          <Route path="/users" element={<UsersPage theme={theme} />} />
+          <Route path="/counters" element={<CounterPage theme={theme} />} />
           <Route path="/dishes" element={<DishesPage />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>

@@ -38,11 +38,17 @@ const CATEGORIES = [
   },
 ];
 
-export default function Categories() {
+export default function Categories({ theme }) {
   return (
-    <div className="w-full py-8 bg-black">
+    <div className={`${theme === "dark" ? "bg-black" : "bg-whte"} w-full py-8`}>
       <div className="container mx-auto px-4">
-        <h2 className="text-white text-3xl mb-4">Explore by Categories</h2>
+        <h2
+          className={`${
+            theme === "dark" ? "text-white" : "text-black"
+          } text-3xl mb-4`}
+        >
+          Explore by Categories
+        </h2>
         <div className="flex overflow-x-scroll space-x-6">
           {CATEGORIES.map((category, index) => (
             <div key={index} className="flex flex-col items-center">
@@ -52,7 +58,13 @@ export default function Categories() {
                   backgroundImage: `url(${category.image})`,
                 }}
               ></div>
-              <p className="text-white mt-2 text-sm">{category.title}</p>{" "}
+              <p
+                className={`${
+                  theme === "dark" ? "text-gray-300" : "text-black"
+                } mt-2 text-sm`}
+              >
+                {category.title}
+              </p>
             </div>
           ))}
         </div>

@@ -4,17 +4,25 @@ import React from "react";
 import Cart from "./Cart";
 import { useSelector } from "react-redux";
 import Logout from "./Logout";
+import Theme from "./Theme";
+import { useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const user = useSelector((state) => state.userDetail.user);
   const isLoggedIn = useSelector((state) => state.userDetail.isLoggedIn);
+  const { theme } = useContext(ThemeContext);
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-black text-white p-4 border-b-1 ">
+    <nav
+      className={`p-4 border-b-1 ${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
           Cafeteria
@@ -28,7 +36,9 @@ const Navbar = () => {
           </button>
         </div>
         <ul
-          className={`md:flex md:space-x-6 absolute md:static bg-black w-full md:w-auto left-0 md:flex-row flex-col items-center md:items-center space-y-4 md:space-y-0 p-4 md:p-0 transition-all duration-300 ease-in ${
+          className={`md:flex md:space-x-6 absolute md:static ${
+            theme === "dark" ? "bg-black" : "bg-white"
+          } w-full md:w-auto left-0 md:flex-row flex-col items-center md:items-center space-y-4 md:space-y-0 p-4 md:p-0 ease-in ${
             isOpen ? "top-16" : "top-[-500px]"
           }`}
         >
@@ -37,7 +47,14 @@ const Navbar = () => {
               <>Welcome, {user.name}</>
             ) : (
               <button>
-                <Link to="/login">Login</Link>
+                <Link
+                  to="/login"
+                  className={`${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  Login
+                </Link>
               </button>
             )}
           </li>
@@ -80,6 +97,9 @@ const Navbar = () => {
             >
               Counters
             </Link>
+          </li>
+          <li>
+            <Theme />
           </li>
           <li>
             <Link
