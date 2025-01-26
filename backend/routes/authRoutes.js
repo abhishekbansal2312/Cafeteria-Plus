@@ -9,16 +9,16 @@ const {
 } = require("../controllers/authController");
 const { verifyToken } = require("../middleware/authMiddleware");
 
-router.post("/register", registerUser);
+router.post("/register", registerUser); // done
 
-router.post("/login", loginUser);
+router.post("/login", loginUser); // done
 
-router.delete("/logout", logoutUser);
+router.delete("/logout", logoutUser); // done
 
-router.post("/refresh", refreshToken);
+router.post("/refresh", refreshToken); // done
 
 router.get("/me", verifyToken, (req, res) => {
   res.json({ user: req.user });
-});
+}); // done
 
 module.exports = router;

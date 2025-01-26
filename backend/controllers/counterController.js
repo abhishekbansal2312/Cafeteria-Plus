@@ -1,9 +1,15 @@
 const Counter = require("../models/counterModel");
+const Dish = require("../models/dishModel");
+
+const StringToArray = (str) => {
+  if (!str) return [];
+  if (Array.isArray(str)) return str;
+  return str.split(",").map((item) => item.trim());
+};
 
 const createCounter = async (req, res) => {
   try {
     const {
-      merchants,
       counter_name,
       description,
       location,
@@ -12,26 +18,14 @@ const createCounter = async (req, res) => {
       theme,
       isActive,
     } = req.body;
-
-    console.log(
-      merchants,
-      counter_name,
-      description,
-      location,
-      imageUrl,
-      operating_hours,
-      theme,
-      isActive
-    );
-
+    const arrayTheme = StringToArray(theme);
     const newCounter = new Counter({
-      merchants,
       counter_name,
       description,
       location,
       imageUrl,
       operating_hours,
-      theme,
+      theme: arrayTheme,
       isActive,
     });
 
@@ -46,9 +40,8 @@ const createCounter = async (req, res) => {
 
 const getAllCounters = async (req, res) => {
   try {
-    const counters = await Counter.find()
-      .populate("merchants", "name email")
-      .populate("dishes");
+    const counters = await Counter.find().populate("merchants", "name email");
+
     res.status(200).json({ data: counters });
   } catch (error) {
     res
@@ -60,15 +53,21 @@ const getAllCounters = async (req, res) => {
 const getCounterById = async (req, res) => {
   try {
     const { id } = req.params;
-    const counter = await Counter.findById(id)
-      .populate("merchants", "name email")
-      .populate("dishes");
+    console.log(id);
+
+    const counter = await Counter.findById(id).populate(
+      "merchants",
+      "name email"
+    );
 
     if (!counter) {
       return res.status(404).json({ message: "Counter not found" });
     }
+    const dishes = await Dish.find({ counter: id }).populate("counter");
 
-    res.status(200).json(counter);
+    console.log(dishes);
+
+    res.status(200).json({ counter, dishes });
   } catch (error) {
     res
       .status(500)
@@ -79,9 +78,31 @@ const getCounterById = async (req, res) => {
 const updateCounter = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedCounter = await Counter.findByIdAndUpdate(id, {
-      new: true,
-    });
+    const {
+      counter_name,
+      description,
+      location,
+      imageUrl,
+      operating_hours,
+      theme,
+      isActive,
+    } = req.body;
+
+    const arrayTheme = theme ? StringToArray(theme) : undefined;
+
+    const updatedCounter = await Counter.findByIdAndUpdate(
+      id,
+      {
+        counter_name,
+        description,
+        location,
+        imageUrl,
+        operating_hours,
+        ...(arrayTheme && { theme: arrayTheme }),
+        isActive,
+      },
+      { new: true }
+    );
 
     if (!updatedCounter) {
       return res.status(404).json({ message: "Counter not found" });
