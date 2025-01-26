@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
 import UsersList from "../components/users/UsersList";
@@ -16,14 +16,19 @@ import {
   addUser,
   updateUser,
 } from "../slices/usersSlice";
-import { setFormData, setIsEditing, setIsModalOpen } from "../slices/formSlice";
+import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
 
-export default function UsersPage() {
+export default function UsersPage({ theme }) {
   const dispatch = useDispatch();
   const { users, loading, error } = useSelector((state) => state.users);
-  const { formData, isEditing, isModalOpen } = useSelector(
-    (state) => state.form
-  );
+  const { isEditing, isModalOpen } = useSelector((state) => state.form);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "customer",
+  });
 
   const makeRequest = useAxios();
 
@@ -67,12 +72,10 @@ export default function UsersPage() {
 
   const handleOpenModal = (user = null) => {
     if (user) {
-      dispatch(setFormData(user));
+      setFormData(user);
       dispatch(setIsEditing(true));
     } else {
-      dispatch(
-        setFormData({ name: "", email: "", password: "", role: "customer" })
-      );
+      setFormData({ name: "", email: "", password: "", role: "customer" });
       dispatch(setIsEditing(false));
     }
     dispatch(setIsModalOpen(true));
@@ -83,7 +86,7 @@ export default function UsersPage() {
   };
 
   const handleChange = (e) => {
-    dispatch(setFormData({ ...formData, [e.target.name]: e.target.value }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -116,7 +119,11 @@ export default function UsersPage() {
   };
 
   return (
-    <div className=" bg-black text-neutral-200 min-h-screen">
+    <div
+      className={`${
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"
+      } min-h-screen`}
+    >
       {loading ? (
         <UserSkeleton />
       ) : (
@@ -145,13 +152,13 @@ export default function UsersPage() {
               isEditing={isEditing}
               handleChange={handleChange}
               handleSubmit={handleSubmit}
-              darkMode={false}
+              darkMode={theme === "dark"}
               onClose={handleCloseModal}
             />
           </Modal>
         </div>
       )}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
