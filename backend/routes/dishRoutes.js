@@ -14,9 +14,9 @@ const {
 
 router.post("/:counterId", verifyTokenForAdminAndMerchant, createDish);
 
-router.get("/", getAllDishes);
+router.get("/", getAllDishes); // done
 router.get("/:id", getDishById);
-router.put("/:id", verifyTokenForAdminAndMerchant, updateDish);
-router.delete("/:id", verifyTokenForAdminAndMerchant, deleteDish);
+router.put("/:id", verifyTokenForAdminAndMerchant, updateDish); // done
+router.delete("/:id", verifyTokenForAdminAndMerchant, deleteDish); // done
 
 module.exports = router;

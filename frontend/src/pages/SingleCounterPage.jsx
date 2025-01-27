@@ -14,6 +14,7 @@ import {
   deleteDish,
 } from "../slices/dishesSlice";
 import Modal from "../components/Modal";
+import AddMerchant from "../components/singleCounter/AddMerchant";
 
 export default function SingleCounterPage({ theme }) {
   const dispatch = useDispatch();
@@ -22,6 +23,8 @@ export default function SingleCounterPage({ theme }) {
   const [counter, setCounter] = useState({});
   const { dishes } = useSelector((state) => state.dishes);
   const { isModalOpen, isEditing } = useSelector((state) => state.form);
+  const [isMerchantModalOpen, setIsMerchantModalOpen] = useState(false);
+  const [merchants, setMerchants] = useState([]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -45,29 +48,43 @@ export default function SingleCounterPage({ theme }) {
     }
   };
 
+  const fetchMerchants = async () => {
+    const response = await makeRequest(
+      `http://localhost:3000/api/counters/merchants`,
+      "GET",
+      null,
+      true
+    );
+    if (response) {
+      setMerchants(response.merchants);
+    }
+  };
+
+  const addMerchantInCounter = async (selectedMerchants) => {
+    const response = await makeRequest(
+      `http://localhost:3000/api/counters/merchants/${id}`,
+      "PUT",
+      { merchantIds: selectedMerchants },
+      true
+    );
+    if (response) {
+      setCounter(response.counter);
+      setIsMerchantModalOpen(false);
+    }
+  };
+
   const handleSubmitDish = async (e) => {
     e.preventDefault();
-    if (isEditing) {
-      const response = await makeRequest(
-        `http://localhost:3000/api/dishes/${formData._id}`,
-        "PUT",
-        formData,
-        true
-      );
-      if (response) {
-        dispatch(updateDish(response.dish));
-      }
-    } else {
-      const response = await makeRequest(
-        `http://localhost:3000/api/dishes/${id}`,
-        "POST",
-        formData,
-        true
-      );
-      if (response) {
-        dispatch(addDish(response.dish));
-      }
+    const url = isEditing
+      ? `http://localhost:3000/api/dishes/${formData._id}`
+      : `http://localhost:3000/api/dishes/${id}`;
+    const method = isEditing ? "PUT" : "POST";
+
+    const response = await makeRequest(url, method, formData, true);
+    if (response) {
+      dispatch(isEditing ? updateDish(response.dish) : addDish(response.dish));
     }
+
     dispatch(setIsModalOpen(false));
     dispatch(setIsEditing(false));
     resetForm();
@@ -87,14 +104,12 @@ export default function SingleCounterPage({ theme }) {
 
   useEffect(() => {
     getDishByCounter();
-  }, [id]);
+    fetchMerchants();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
 
   const resetForm = () => {
@@ -119,33 +134,45 @@ export default function SingleCounterPage({ theme }) {
     dispatch(setIsModalOpen(true));
   };
 
-  const handleCloseModal = () => {
-    resetForm();
-    dispatch(setIsModalOpen(false));
-    dispatch(setIsEditing(false));
-  };
-
   return (
     <div
       className={`p-6 min-h-screen ${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-end gap-3 items-center mb-6">
         <Button onClick={() => handleOpenModal()} text="Add Dish" />
+
+        <Button
+          onClick={() => setIsMerchantModalOpen(true)}
+          text="Add Merchants"
+        />
       </div>
+
+      {isMerchantModalOpen && (
+        <Modal
+          title="Select Merchants"
+          isOpen={isMerchantModalOpen}
+          onClose={() => setIsMerchantModalOpen(false)}
+        >
+          <AddMerchant
+            merchants={merchants}
+            addMerchantInCounter={addMerchantInCounter}
+          />
+        </Modal>
+      )}
 
       {isModalOpen && (
         <Modal
           title={isEditing ? "Edit Dish" : "Add Dish"}
           isOpen={isModalOpen}
-          onClose={handleCloseModal}
+          onClose={() => dispatch(setIsModalOpen(false))}
         >
           <DishForm
             formData={formData}
             handleChange={handleChange}
             handleSubmit={handleSubmitDish}
-            onCancel={handleCloseModal}
+            onCancel={() => dispatch(setIsModalOpen(false))}
           />
         </Modal>
       )}

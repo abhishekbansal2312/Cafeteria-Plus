@@ -6,19 +6,20 @@ const {
   getCounterById,
   updateCounter,
   deleteCounter,
-  toggleCounterStatus,
+  addMerchantInCounter,
   getAllMerchantCounters,
+  getMerchants,
 } = require("../controllers/counterController");
 const {
   verifyTokenAndAdmin,
   verifyTokenAndMerchant,
 } = require("../middleware/authMiddleware");
 
+router.get("/merchants", verifyTokenAndAdmin, getMerchants);
+router.put("/merchants/:id", verifyTokenAndAdmin, addMerchantInCounter);
 router.post("/", createCounter); // done
 router.get("/", getAllCounters); // done
-// router.get("/merchant", verifyTokenAndMerchant, getAllMerchantCounters);
-// router.put("/merchant/:id", verifyTokenAndMerchant, updateCounter);
-router.get("/:id", getCounterById);
+router.get("/:id", getCounterById); // done
 router.put("/:id", updateCounter); // done
 router.delete("/:id", verifyTokenAndAdmin, deleteCounter); // done
 

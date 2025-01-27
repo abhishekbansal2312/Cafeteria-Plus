@@ -1,5 +1,6 @@
 const Counter = require("../models/counterModel");
 const Dish = require("../models/dishModel");
+const User = require("../models/userModel");
 
 const StringToArray = (str) => {
   if (!str) return [];
@@ -176,12 +177,65 @@ const getAllMerchantCounters = async (req, res) => {
   }
 };
 
+const addMerchantInCounter = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const counter = await Counter.findById(id);
+    const { merchantIds } = req.body;
+
+    if (!counter) {
+      return res.status(404).json({ message: "Counter not found" });
+    }
+
+    const merchants = await User.find({ _id: { $in: merchantIds } });
+    const validMerchantIds = merchants.map((merchant) =>
+      merchant._id.toString()
+    );
+
+    if (validMerchantIds.length !== merchantIds.length) {
+      return res.status(400).json({ message: "Some merchants were not found" });
+    }
+
+    counter.merchants = [
+      ...new Set([...counter.merchants, ...validMerchantIds]),
+    ];
+
+    await counter.save();
+    res.status(200).json({
+      message: "Merchants added successfully",
+      counter: counter,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error adding merchants to counter",
+      error: error.message,
+    });
+  }
+};
+
+const getMerchants = async (req, res) => {
+  try {
+    const merchants = await User.find({ role: "merchant" });
+    console.log(merchants);
+
+    res.status(200).json({
+      merchants,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error retrieving merchants",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createCounter,
   getAllCounters,
   getCounterById,
   updateCounter,
   deleteCounter,
-  toggleCounterStatus,
   getAllMerchantCounters,
+  addMerchantInCounter,
+  getMerchants,
 };
