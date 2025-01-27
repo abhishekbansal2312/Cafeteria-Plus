@@ -6,14 +6,14 @@ const filterUsers = (model) => (req, res, next) => {
     filter.role = role;
   }
   if (email) {
-    filter.email = { $regex: email, $options: "i" }; // Case-insensitive regex search
+    filter.email = { $regex: email, $options: "i" };
   }
   if (isActive !== undefined) {
-    filter.isActive = isActive === "true"; // Convert to boolean
+    filter.isActive = isActive === "true";
   }
 
-  req.filter = filter; // Store filter in request object
-  req.model = model; // Attach model to request object
+  req.filter = filter;
+  req.model = model;
 
   next();
 };

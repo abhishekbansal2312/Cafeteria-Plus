@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const CounterList = ({ counters, handleDelete, handleEdit }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 p-4 ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mx-10 mt-2 ">
       {counters.map((counter, index) => (
         <div
           key={index}

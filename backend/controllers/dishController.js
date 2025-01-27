@@ -27,7 +27,9 @@ const createDish = async (req, res) => {
 
     const savedDish = await newDish.save();
 
-    res.status(201).json(savedDish);
+    res.status(201).json({
+      dish: savedDish,
+    });
   } catch (error) {
     res
       .status(500)
@@ -80,7 +82,9 @@ const updateDish = async (req, res) => {
       return res.status(404).json({ message: "Dish not found" });
     }
 
-    res.status(200).json(updatedDish);
+    res.status(200).json({
+      dish: updatedDish,
+    });
   } catch (error) {
     res
       .status(500)

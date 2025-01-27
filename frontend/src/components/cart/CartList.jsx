@@ -12,7 +12,7 @@ const CartList = ({ cart, updateQuantity, removeItem }) => {
   }, [cart]);
 
   return (
-    <div className="bg-white text-black p-6 rounded-lg border max-w-2xl mx-auto">
+    <div className=" p-6 rounded-lg border max-w-2xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4 border-b pb-2">
         🛒 Your Cart
       </h2>

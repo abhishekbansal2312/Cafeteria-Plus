@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import useAxios from "../hooks/useAxios";
 import CartList from "../components/cart/CartList";
 
-export default function CartPage() {
+export default function CartPage({ theme }) {
   const makeRequest = useAxios();
   const [cart, setCart] = useState([]);
 

@@ -31,7 +31,7 @@ export default function App() {
             element={<SingleCounterPage theme={theme} />}
           />
           <Route path="/dishes" element={<DishesPage />} />
-          <Route path="/cart" element={<CartPage />} />
+          <Route path="/cart" element={<CartPage theme={theme} />} />
         </Routes>
       </BrowserRouter>
     </div>

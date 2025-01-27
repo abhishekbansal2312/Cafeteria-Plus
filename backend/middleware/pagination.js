@@ -19,7 +19,11 @@ const paginate = async (req, res, next) => {
     const totalPages = Math.ceil(totalResults / lim);
     const startIndex = (pageNum - 1) * lim;
 
-    const results = await model.find(filter).skip(startIndex).limit(lim);
+    const results = await model
+      .find(filter)
+      .skip(startIndex)
+      .limit(lim)
+      .select("-password");
 
     res.paginationResult = {
       results,
