@@ -8,6 +8,7 @@ import Button from "../components/Button";
 import SearchBar from "../components/SearchBar";
 import UserSkeleton from "../components/users/UserSkeleton";
 import SortBy from "../components/users/SortBy";
+import PaginateUsers from "../components/users/PaginateUsers";
 import {
   setUsers,
   setLoading,
@@ -23,28 +24,35 @@ export default function UsersPage({ theme }) {
   const { users, loading, error } = useSelector((state) => state.users);
   const { isEditing, isModalOpen } = useSelector((state) => state.form);
 
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     role: "customer",
   });
+  const [role, setRole] = useState("");
 
   const makeRequest = useAxios();
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (pageNum = 1, role = "") => {
     try {
       dispatch(setLoading(true));
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const response = await makeRequest(
-        "http://localhost:3000/api/users",
+        `http://localhost:3000/api/users?page=${pageNum}&limit=5&role=${role}`,
         "GET",
         null,
         true
       );
-      console.log(response.data);
 
-      dispatch(setUsers(response.data));
+      console.log(response.data);
+      dispatch(setUsers(response.data.results));
+      setTotalPages(response.data.totalPages);
+      setPage(pageNum);
+
       dispatch(setLoading(false));
     } catch (error) {
       dispatch(setError("Failed to fetch users"));
@@ -53,8 +61,8 @@ export default function UsersPage({ theme }) {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers(1, role);
+  }, [role]);
 
   const handleDelete = async (id) => {
     try {
@@ -99,8 +107,6 @@ export default function UsersPage({ theme }) {
           formData,
           true
         );
-        console.log(response, "response edit");
-
         dispatch(updateUser(response.user));
       } else {
         const response = await makeRequest(
@@ -109,7 +115,6 @@ export default function UsersPage({ theme }) {
           formData,
           true
         );
-        console.log(response.data, "response");
         dispatch(addUser(response.data));
       }
       handleCloseModal();
@@ -131,7 +136,7 @@ export default function UsersPage({ theme }) {
           <div className="flex justify-between items-center mx-10 py-1 pt-4">
             <div className="flex">
               <SearchBar />
-              <SortBy />
+              <SortBy setRole={setRole} fetchUsers={fetchUsers} role={role} />
             </div>
             <Button onClick={() => handleOpenModal()} text="Add User" />
           </div>
@@ -140,6 +145,11 @@ export default function UsersPage({ theme }) {
             users={users}
             handleDelete={handleDelete}
             handleEdit={handleOpenModal}
+          />
+          <PaginateUsers
+            fetchUsers={fetchUsers}
+            page={page}
+            totalPages={totalPages}
           />
 
           <Modal

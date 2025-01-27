@@ -4,15 +4,13 @@ const { isUserExists, hashPassword } = require("./authController");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
-
-    if (!users || users.length === 0) {
+    if (!res.paginationResult || res.paginationResult.results.length === 0) {
       return res.status(404).json({ message: "No users found" });
     }
 
     res.status(200).json({
       status: "success",
-      data: users,
+      data: res.paginationResult,
     });
   } catch (error) {
     console.error("Error fetching users:", error);
