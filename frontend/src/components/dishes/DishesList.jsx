@@ -1,6 +1,7 @@
 import React from "react";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-const DishesList = ({ dishes, makeRequest }) => {
+const DishesList = ({ dishes, makeRequest, handleDelete, handleEdit }) => {
   const addToCart = async (dish) => {
     console.log(dish._id);
     const response = await makeRequest(
@@ -16,7 +17,7 @@ const DishesList = ({ dishes, makeRequest }) => {
       {dishes.map((dish) => (
         <div
           key={dish._id}
-          className="bg-white shadow-lg rounded-lg overflow-hidden"
+          className=" shadow-lg rounded-lg overflow-hidden border-1"
         >
           <img
             src={dish.image}
@@ -24,14 +25,12 @@ const DishesList = ({ dishes, makeRequest }) => {
             className="w-full h-40 object-cover"
           />
           <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-800">{dish.name}</h3>
-            <p className="text-gray-600 text-sm">{dish.description}</p>
+            <h3 className="text-lg font-semibold ">{dish.name}</h3>
+            <p className=" text-sm">{dish.description}</p>
             <div className="flex justify-between items-center">
-              <div className="text-gray-600 text-sm">
-                <p className="text-gray-900 font-bold mt-2">₹{dish.price}</p>
-                <p className="text-gray-700 text-sm">
-                  Category: {dish.category}
-                </p>
+              <div className=" text-sm">
+                <p className=" font-bold mt-2">₹{dish.price}</p>
+                <p className=" text-sm">Category: {dish.category}</p>
                 <p
                   className={`mt-2 text-sm font-medium ${
                     dish.availability ? "text-green-600" : "text-red-600"
@@ -48,6 +47,14 @@ const DishesList = ({ dishes, makeRequest }) => {
                   Order Now
                 </button>
               </div>
+            </div>
+            <div className="flex justify-between gap-4 mt-1">
+              <button onClick={() => handleEdit(dish)} className="">
+                <FaEdit className="mr-2" />
+              </button>
+              <button onClick={() => handleDelete(dish._id)} className="">
+                <FaTrashAlt className="mr-2" />
+              </button>
             </div>
           </div>
         </div>
