@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import image from "../../assets/add-to-cart.png";
+import Light from "../../assets/add-to-cart.png";
+import Dark from "../../assets/add-to-cart1.png";
 
-export default function Cart() {
+export default function Cart({ theme }) {
   const cartCount = 2;
 
   return (
     <div className="relative">
-      <img src={image} alt="cart" className="h-8 w-8" />
-
+      {theme === "dark" ? (
+        <img src={Light} alt="Logo" className="w-full h-8" />
+      ) : (
+        <img src={Dark} alt="Logo" className="w-full h-8" />
+      )}
       {cartCount > 0 && (
         <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
           {cartCount}

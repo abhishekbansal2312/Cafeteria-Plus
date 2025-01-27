@@ -7,6 +7,8 @@ import Logout from "./Logout";
 import Theme from "./Theme";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
+import Light from "../../assets/logo-light.png";
+import Dark from "../../assets/logo-dark.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +27,11 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
-          DineSync
+          {theme === "dark" ? (
+            <img src={Dark} alt="Logo" className="w-full h-10" />
+          ) : (
+            <img src={Light} alt="Logo" className="w-full h-10" />
+          )}
         </Link>
         <div className="md:hidden">
           <button
@@ -110,7 +116,7 @@ const Navbar = () => {
                   : ""
               }`}
             >
-              <Cart />
+              <Cart theme={theme} />
             </Link>
           </li>
 
