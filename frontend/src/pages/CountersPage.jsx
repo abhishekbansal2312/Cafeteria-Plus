@@ -140,7 +140,7 @@ export default function CounterPage({ theme }) {
         <div>Loading...</div>
       ) : (
         <div>
-          <div className="flex justify-between items-center mx-10 py-1 pt-4">
+          <div className="flex justify-end  mx-10 py-1 pt-4">
             <Button onClick={() => handleOpenModal()} text="Add Counter" />
           </div>
 
