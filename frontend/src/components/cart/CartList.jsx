@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { MdDeleteForever } from "react-icons/md";
+import { CiCircleRemove } from "react-icons/ci";
+
 import { FiShoppingCart } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -55,7 +56,7 @@ export default function CartList({
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center">
                     <button
                       className="border px-3 py-1 rounded-md bg-white hover:bg-gray-200 transition-all text-lg font-semibold"
                       onClick={() =>
@@ -82,10 +83,10 @@ export default function CartList({
                   </div>
 
                   <button
-                    className="text-red-500 hover:text-red-700 transition-all"
+                    className="text-red-500 hover:text-red-700 transition-all ml-1"
                     onClick={() => removeItem(item._id)}
                   >
-                    <MdDeleteForever className="h-8 w-8" />
+                    <CiCircleRemove className="h-8 w-8" />
                   </button>
                 </div>
               ))}
