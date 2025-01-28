@@ -23,6 +23,8 @@ export default function LoginPage() {
         password,
       }
     );
+    console.log(response);
+
     if (response) {
       const { accessToken, refreshToken } = response;
       dispatch(loginUser(response.user));

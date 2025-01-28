@@ -56,7 +56,7 @@ const removeFromCart = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.cart = user.cart.filter((item) => item.dish.toString() !== itemId);
+    user.cart = user.cart.filter((item) => item._id.toString() !== itemId);
 
     await user.save();
     res.status(200).json(user.cart);

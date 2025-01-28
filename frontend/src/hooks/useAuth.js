@@ -20,6 +20,7 @@ const useAuth = () => {
         );
 
         console.log(data, "response");
+
         if (data?.user) {
           const { user } = data;
           dispatch(loginUser(user));

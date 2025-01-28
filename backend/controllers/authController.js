@@ -73,6 +73,7 @@ const loginUser = async (req, res) => {
         email: user.email,
         id: user._id,
         role: user.role,
+        cart: user.cart.length || 0,
       },
       accessToken,
       refreshToken,

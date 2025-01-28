@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Light from "../../assets/add-to-cart.png";
 import Dark from "../../assets/add-to-cart1.png";
+import { useSelector } from "react-redux";
 
 export default function Cart({ theme }) {
-  const cartCount = 2;
+  const cart = useSelector((state) => state.userDetail.user);
+
+  const cartCount = cart?.cart || 0;
 
   return (
     <div className="relative">
