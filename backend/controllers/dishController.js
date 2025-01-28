@@ -4,7 +4,6 @@ const Counter = require("../models/counterModel");
 const createDish = async (req, res) => {
   try {
     const { counterId } = req.params;
-    console.log(counterId);
 
     const { name, description, price, image, category, availability } =
       req.body;

@@ -39,7 +39,7 @@ export default function CounterPage({ theme }) {
           ? "http://localhost:3000/api/counters"
           : "http://localhost:3000/api/counters/merchants";
 
-      const response = await makeRequest(url, "GET", null, filter === "my");
+      const response = await makeRequest(url, "GET", null, true);
       if (filter === "my") {
         dispatch(setCounters(response));
       } else {
@@ -104,14 +104,16 @@ export default function CounterPage({ theme }) {
         await makeRequest(
           `http://localhost:3000/api/counters/${formData._id}`,
           "PUT",
-          formData
+          formData,
+          true
         );
         dispatch(updateCounter(formData));
       } else {
         const response = await makeRequest(
           "http://localhost:3000/api/counters",
           "POST",
-          formData
+          formData,
+          true
         );
         dispatch(addCounter(response));
       }
@@ -146,7 +148,7 @@ export default function CounterPage({ theme }) {
     <div
       className={`${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
-      } min-h-screen`}
+      } min-h-screen mb-20`}
     >
       {loading ? (
         <div>

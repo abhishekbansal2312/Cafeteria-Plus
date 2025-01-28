@@ -11,16 +11,12 @@ const useAuth = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        console.log("hello");
-
         const data = await makeRequest(
           `http://localhost:3000/api/auth/me`,
           "GET",
           null,
           true
         );
-
-        console.log(data, "response");
 
         if (data?.user) {
           const { user } = data;

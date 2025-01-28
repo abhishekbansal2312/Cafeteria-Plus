@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedMerchants } from "../../slices/merchantsSlice"; // Adjust the import path
+import { setSelectedMerchants } from "../../slices/merchantsSlice";
 
 export default function AddMerchant({ merchants, addMerchantInCounter }) {
   const dispatch = useDispatch();

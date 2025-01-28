@@ -54,7 +54,6 @@ const getAllCounters = async (req, res) => {
 const getCounterById = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
 
     const counter = await Counter.findById(id).populate(
       "merchants",
@@ -65,8 +64,6 @@ const getCounterById = async (req, res) => {
       return res.status(404).json({ message: "Counter not found" });
     }
     const dishes = await Dish.find({ counter: id }).populate("counter");
-
-    console.log(dishes);
 
     res.status(200).json({ counter, dishes });
   } catch (error) {
@@ -162,7 +159,6 @@ const addMerchantInCounter = async (req, res) => {
     const { id } = req.params;
     const counter = await Counter.findById(id);
     const { merchantIds } = req.body;
-    console.log(merchantIds);
 
     if (!counter) {
       return res.status(404).json({ message: "Counter not found" });
@@ -197,7 +193,6 @@ const addMerchantInCounter = async (req, res) => {
 const getMerchants = async (req, res) => {
   try {
     const merchants = await User.find({ role: "merchant" });
-    console.log(merchants);
 
     res.status(200).json({
       merchants,

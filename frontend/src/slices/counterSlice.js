@@ -36,7 +36,6 @@ export const counterSlice = createSlice({
     },
     updateCounter: (state, action) => {
       const updatedCounter = action.payload;
-      console.log(updatedCounter);
 
       const index = state.counters.findIndex(
         (counter) => counter._id === updatedCounter._id

@@ -14,8 +14,6 @@ const cartSlice = createSlice({
     },
     setTotalCartItems(state, action) {
       if (action.payload === "inc") {
-        console.log("hello");
-
         state.totalCartItems += 1;
       } else if (action.payload === "dec") {
         state.totalCartItems -= 1;
@@ -30,8 +28,6 @@ const cartSlice = createSlice({
       state.dishes = state.dishes.filter((dish) => dish._id !== action.payload);
     },
     increaseQuantity(state, action) {
-      console.log(action.payload);
-
       const dish = state.dishes.find((dish) => dish._id === action.payload);
       if (dish) {
         dish.quantity += 1;
@@ -40,12 +36,10 @@ const cartSlice = createSlice({
 
     decreaseQuantity(state, action) {
       const dish = state.dishes.find((dish) => dish._id === action.payload);
-      console.log(dish);
 
       if (dish) {
         dish.quantity -= 1;
       }
-      console.log(dish, "decrease");
     },
     setLoading(state, action) {
       state.loading = action.payload;

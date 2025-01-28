@@ -23,7 +23,6 @@ export default function LoginPage() {
         password,
       }
     );
-    console.log(response);
 
     if (response) {
       const { accessToken, refreshToken } = response;
@@ -37,12 +36,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white">
-      <div className="w-full max-w-md p-8  bg-black rounded-xl shadow-lg">
+    <div className="flex items-center justify-center min-h-screen ">
+      <div className="w-full max-w-md p-8 rounded-xl shadow-lg">
         <h2 className="text-3xl font-semibold">Sign In</h2>
-        <p className="text-gray-400 mb-8">
-          Enter your email and password to sign in
-        </p>
+        <p className=" mb-8">Enter your email and password to sign in</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -52,7 +49,7 @@ export default function LoginPage() {
             <InputField
               type="email"
               name="email"
-              className="w-full p-3 border-2 border-gray-600 rounded-md bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white"
+              className="w-full p-3 border-2 border-gray-600 rounded-md bg-transparent  placeholder-gray-400 focus:outline-none focus:border-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -65,7 +62,7 @@ export default function LoginPage() {
             <InputField
               type="password"
               name="password"
-              className="w-full p-3 border-2 border-gray-600 rounded-md bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white"
+              className="w-full p-3 border-2 border-gray-600 rounded-md bg-transparent placeholder-gray-400 focus:outline-none focus:border-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -80,7 +77,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-white text-black font-semibold rounded-md hover:bg-gray-200 focus:outline-none"
+            className="w-full py-3  font-semibold rounded-md border-1 hover:bg-gray-200 focus:outline-none"
           >
             Sign In
           </button>

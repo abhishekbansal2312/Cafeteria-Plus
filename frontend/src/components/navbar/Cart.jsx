@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 export default function Cart({ theme }) {
   const cartCount = useSelector((state) => state.cart.totalCartItems);
-  // console.log(cart, " cart");
 
   return (
     <div className="relative">

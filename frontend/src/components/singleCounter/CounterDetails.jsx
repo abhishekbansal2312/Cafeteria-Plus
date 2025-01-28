@@ -3,10 +3,8 @@ import { useSelector } from "react-redux";
 
 export default function CounterDetails({ counter }) {
   if (!counter.counter_name) return null;
-  console.log(counter);
 
   const { selectedMerchants } = useSelector((state) => state.merchants);
-  console.log(selectedMerchants, "selectedMerchants");
 
   return (
     <div className="max-w-4xl mx-auto p-6  shadow-lg rounded-lg flex border-2">

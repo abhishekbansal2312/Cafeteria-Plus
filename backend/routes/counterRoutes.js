@@ -12,16 +12,16 @@ const {
 } = require("../controllers/counterController");
 const {
   verifyTokenAndAdmin,
-  verifyTokenAndMerchant,
+  verifyTokenForAdminAndMerchant,
   verifyToken,
 } = require("../middleware/authMiddleware");
 
-router.get("/merchants", verifyTokenAndMerchant, getAllMerchantCounters);
+router.get("/merchants", verifyToken, getAllMerchantCounters);
 router.put("/merchants/:id", verifyTokenAndAdmin, addMerchantInCounter);
 router.post("/", verifyTokenAndAdmin, createCounter); // done
 router.get("/", getAllCounters); // done
 router.get("/:id", getCounterById); // done
-router.put("/:id", updateCounter); // done
+router.put("/:id", verifyTokenForAdminAndMerchant, updateCounter); // done
 router.delete("/:id", verifyTokenAndAdmin, deleteCounter); // done
 
 module.exports = router;

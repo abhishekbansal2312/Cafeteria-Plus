@@ -23,7 +23,6 @@ export default function CartPage({ theme }) {
         null,
         true
       );
-      console.log("Fetched Cart:", response);
 
       dispatch(setDishes(response || []));
     } catch (error) {
@@ -44,7 +43,7 @@ export default function CartPage({ theme }) {
         { id },
         true
       );
-      console.log("Delete Response:", response);
+
       if (response) {
         dispatch(removeDish(id));
         dispatch(setTotalCartItems(response.length));
@@ -72,11 +71,9 @@ export default function CartPage({ theme }) {
         { quantity: newQuantity },
         true
       );
-      console.log("Quantity update response:", response);
+
       if (response) {
         if (action === "inc") {
-          console.log("jijiuhi");
-
           dispatch(increaseQuantity(id));
         } else if (action === "dec") {
           dispatch(decreaseQuantity(id));

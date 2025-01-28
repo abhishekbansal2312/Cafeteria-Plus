@@ -3,7 +3,6 @@ const Dish = require("../models/dishModel");
 
 const addToCart = async (req, res) => {
   const { id } = req.body;
-  console.log(id);
 
   try {
     const dish = await Dish.findById(id);
@@ -48,7 +47,6 @@ const getCart = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
   const itemId = req.body.id;
-  console.log(itemId);
 
   try {
     const user = await User.findById(req.user.id);
@@ -84,7 +82,6 @@ const updateCartItem = async (req, res) => {
     if (!cartItem) {
       return res.status(404).json({ message: "Item not found in cart" });
     }
-    console.log();
 
     cartItem.quantity = quantity;
     await user.save();
