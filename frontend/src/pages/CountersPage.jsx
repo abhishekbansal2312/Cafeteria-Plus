@@ -16,6 +16,7 @@ import CounterList from "../components/counter/CounterList";
 import Modal from "../components/Modal";
 import CounterForm from "../components/counter/CounterForm";
 import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
+import CounterSkeleton from "../components/counter/CounterSkeleton";
 
 export default function CounterPage({ theme }) {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ export default function CounterPage({ theme }) {
   const fetchCounters = async () => {
     try {
       dispatch(setLoading(true));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const response = await makeRequest(
         "http://localhost:3000/api/counters",
         "GET"
@@ -137,7 +139,9 @@ export default function CounterPage({ theme }) {
       } min-h-screen`}
     >
       {loading ? (
-        <div>Loading...</div>
+        <div>
+          <CounterSkeleton />
+        </div>
       ) : (
         <div>
           <div className="flex justify-end  mx-10 py-1 pt-4">
@@ -148,7 +152,6 @@ export default function CounterPage({ theme }) {
             counters={counters}
             handleDelete={handleDelete}
             handleEdit={handleOpenModal}
-            loading={loading}
           />
 
           <Modal
