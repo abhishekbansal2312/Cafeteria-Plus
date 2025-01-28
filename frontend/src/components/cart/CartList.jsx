@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { MdDeleteForever } from "react-icons/md";
-import { increaseQuantity, decreaseQuantity } from "../../slices/cartSlice";
-import { useDispatch } from "react-redux";
-const CartList = ({ cart, updateQuantity, removeItem, loading, error }) => {
+
+export default function CartList({
+  cart,
+  updateQuantity,
+  removeItem,
+  loading,
+  error,
+}) {
   const [total, setTotal] = useState(0);
-  const dispatch = useDispatch();
 
   const totalPrice = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.dish.price * item.quantity, 0);
@@ -13,18 +17,6 @@ const CartList = ({ cart, updateQuantity, removeItem, loading, error }) => {
   useEffect(() => {
     setTotal(totalPrice);
   }, [totalPrice]);
-
-  const handleDecrease = (id, quantity) => {
-    if (quantity > 1) {
-      updateQuantity(id, quantity - 1);
-    }
-    dispatch(decreaseQuantity(id));
-  };
-
-  const handleIncrease = (id, quantity) => {
-    updateQuantity(id, quantity + 1);
-    dispatch(increaseQuantity(id));
-  };
 
   return (
     <div className="p-6 rounded-lg border max-w-2xl mx-auto">
@@ -61,14 +53,14 @@ const CartList = ({ cart, updateQuantity, removeItem, loading, error }) => {
               <div className="flex items-center">
                 <button
                   className="border px-3 py-1 rounded-md mr-2 bg-white hover:bg-gray-100"
-                  onClick={() => handleDecrease(item.dish._id, item.quantity)}
+                  onClick={() => updateQuantity(item._id, item.quantity, "dec")}
                 >
                   ➖
                 </button>
                 <span className="text-lg font-medium">{item.quantity}</span>
                 <button
-                  className="border px-3 py-1 rounded-md ml-1 bg-white hover:bg-gray-100"
-                  onClick={() => handleIncrease(item.dish._id, item.quantity)}
+                  className="border px-3 py-1 rounded-md mr-2 bg-white hover:bg-gray-100"
+                  onClick={() => updateQuantity(item._id, item.quantity, "inc")}
                 >
                   ➕
                 </button>
@@ -76,7 +68,7 @@ const CartList = ({ cart, updateQuantity, removeItem, loading, error }) => {
 
               <button
                 className="text-black py-1 rounded-md ml-4"
-                onClick={() => removeItem(item.dish._id)}
+                onClick={() => removeItem(item._id)}
               >
                 <MdDeleteForever className="h-8 w-8" />
               </button>
@@ -91,6 +83,4 @@ const CartList = ({ cart, updateQuantity, removeItem, loading, error }) => {
       )}
     </div>
   );
-};
-
-export default CartList;
+}

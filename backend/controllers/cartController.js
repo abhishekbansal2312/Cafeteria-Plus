@@ -80,10 +80,11 @@ const updateCartItem = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const cartItem = user.cart.find((item) => item.dish.toString() === id);
+    const cartItem = user.cart.find((item) => item._id.toString() === id);
     if (!cartItem) {
       return res.status(404).json({ message: "Item not found in cart" });
     }
+    console.log();
 
     cartItem.quantity = quantity;
     await user.save();

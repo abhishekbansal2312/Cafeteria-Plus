@@ -1,8 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
+import {
+  setDishes,
+  removeDish,
+  increaseQuantity,
+  decreaseQuantity,
+} from "../slices/cartSlice";
 import CartList from "../components/cart/CartList";
-import { setDishes, removeDish } from "../slices/cartSlice";
 
 export default function CartPage({ theme }) {
   const dispatch = useDispatch();
@@ -18,6 +23,7 @@ export default function CartPage({ theme }) {
         true
       );
       console.log("Fetched Cart:", response);
+
       dispatch(setDishes(response || []));
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -39,8 +45,6 @@ export default function CartPage({ theme }) {
       );
       console.log("Delete Response:", response);
       if (response) {
-        console.log("hello");
-
         dispatch(removeDish(id));
       } else {
         console.error("Failed to remove item:", response);
@@ -50,7 +54,15 @@ export default function CartPage({ theme }) {
     }
   };
 
-  const updateQuantity = async (id, newQuantity) => {
+  const updateQuantity = async (id, currentQuantity, action) => {
+    let newQuantity = currentQuantity;
+
+    if (action === "inc") {
+      newQuantity += 1;
+    } else if (action === "dec" && currentQuantity > 1) {
+      newQuantity -= 1;
+    }
+
     try {
       const response = await makeRequest(
         `http://localhost:3000/api/cart/${id}`,
@@ -59,7 +71,15 @@ export default function CartPage({ theme }) {
         true
       );
       console.log("Quantity update response:", response);
-      fetchCart();
+      if (response) {
+        if (action === "inc") {
+          console.log("jijiuhi");
+
+          dispatch(increaseQuantity(id));
+        } else if (action === "dec") {
+          dispatch(decreaseQuantity(id));
+        }
+      }
     } catch (error) {
       console.error("Error updating quantity:", error);
     }

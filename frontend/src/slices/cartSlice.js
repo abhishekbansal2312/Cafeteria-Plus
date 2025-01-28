@@ -18,20 +18,22 @@ const cartSlice = createSlice({
       state.dishes = state.dishes.filter((dish) => dish._id !== action.payload);
     },
     increaseQuantity(state, action) {
-      const index = state.dishes.findIndex(
-        (dish) => dish._id === action.payload
-      );
-      if (index >= 0) {
-        state.dishes[index].quantity += 1;
+      console.log(action.payload);
+
+      const dish = state.dishes.find((dish) => dish._id === action.payload);
+      if (dish) {
+        dish.quantity += 1;
       }
     },
+
     decreaseQuantity(state, action) {
-      const index = state.dishes.findIndex(
-        (dish) => dish._id === action.payload
-      );
-      if (index >= 0) {
-        state.dishes[index].quantity -= 1;
+      const dish = state.dishes.find((dish) => dish._id === action.payload);
+      console.log(dish);
+
+      if (dish) {
+        dish.quantity -= 1;
       }
+      console.log(dish, "decrease");
     },
     setLoading(state, action) {
       state.loading = action.payload;
