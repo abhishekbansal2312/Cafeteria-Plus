@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
 import CartList from "../components/cart/CartList";
+import { setDishes, removeDish } from "../slices/cartSlice";
 
 export default function CartPage({ theme }) {
+  const dispatch = useDispatch();
+  const { dishes, loading, error } = useSelector((state) => state.cart);
   const makeRequest = useAxios();
-  const [cart, setCart] = useState([]);
 
   const fetchCart = async () => {
     try {
@@ -15,15 +18,16 @@ export default function CartPage({ theme }) {
         true
       );
       console.log("Fetched Cart:", response);
-      setCart(response || []);
+      dispatch(setDishes(response || []));
     } catch (error) {
       console.error("Error fetching cart:", error);
+      dispatch(setDishes([]));
     }
   };
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [dispatch]);
 
   const removeItem = async (id) => {
     try {
@@ -33,12 +37,11 @@ export default function CartPage({ theme }) {
         { id },
         true
       );
-
       console.log("Delete Response:", response);
-
       if (response) {
-        console.log(cart);
-        setCart((prevCart) => prevCart.filter((item) => item._id !== id));
+        console.log("hello");
+
+        dispatch(removeDish(id));
       } else {
         console.error("Failed to remove item:", response);
       }
@@ -47,9 +50,33 @@ export default function CartPage({ theme }) {
     }
   };
 
+  const updateQuantity = async (id, newQuantity) => {
+    try {
+      const response = await makeRequest(
+        `http://localhost:3000/api/cart/${id}`,
+        "PUT",
+        { quantity: newQuantity },
+        true
+      );
+      console.log("Quantity update response:", response);
+      fetchCart();
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading cart...</div>;
+  }
+
   return (
     <div>
-      <CartList cart={cart} removeItem={removeItem} />
+      {error && <div className="text-red-500">{error}</div>}
+      <CartList
+        cart={dishes}
+        updateQuantity={updateQuantity}
+        removeItem={removeItem}
+      />
     </div>
   );
 }

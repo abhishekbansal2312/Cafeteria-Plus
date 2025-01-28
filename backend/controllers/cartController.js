@@ -67,7 +67,7 @@ const removeFromCart = async (req, res) => {
 };
 
 const updateCartItem = async (req, res) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
   const { quantity } = req.body;
 
   try {
@@ -80,7 +80,7 @@ const updateCartItem = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const cartItem = user.cart.find((item) => item.dish.toString() === itemId);
+    const cartItem = user.cart.find((item) => item.dish.toString() === id);
     if (!cartItem) {
       return res.status(404).json({ message: "Item not found in cart" });
     }
@@ -95,63 +95,9 @@ const updateCartItem = async (req, res) => {
   }
 };
 
-const increaseCartQuantity = async (req, res) => {
-  const { itemId } = req.params;
-
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const cartItem = user.cart.find((item) => item.dish.toString() === itemId);
-    if (!cartItem) {
-      return res.status(404).json({ message: "Item not found in cart" });
-    }
-
-    cartItem.quantity += 1;
-    await user.save();
-
-    res.status(200).json(user.cart);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-
-const decreaseCartQuantity = async (req, res) => {
-  const { itemId } = req.params;
-
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const cartItem = user.cart.find((item) => item.dish.toString() === itemId);
-    if (!cartItem) {
-      return res.status(404).json({ message: "Item not found in cart" });
-    }
-
-    if (cartItem.quantity > 1) {
-      cartItem.quantity -= 1;
-    } else {
-      user.cart = user.cart.filter((item) => item.dish.toString() !== itemId);
-    }
-
-    await user.save();
-    res.status(200).json(user.cart);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-
 module.exports = {
   addToCart,
   getCart,
   removeFromCart,
   updateCartItem,
-  increaseCartQuantity,
-  decreaseCartQuantity,
 };

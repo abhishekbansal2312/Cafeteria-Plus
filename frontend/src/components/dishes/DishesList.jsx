@@ -1,7 +1,9 @@
 import React from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import useAxios from "../../hooks/useAxios";
 
-const DishesList = ({ dishes, makeRequest, handleDelete, handleEdit }) => {
+const DishesList = ({ dishes, handleDelete, handleEdit }) => {
+  const makeRequest = useAxios();
   const addToCart = async (dish) => {
     console.log(dish._id);
     const response = await makeRequest(
