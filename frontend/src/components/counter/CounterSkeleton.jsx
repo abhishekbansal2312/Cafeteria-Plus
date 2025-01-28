@@ -3,7 +3,7 @@ import React from "react";
 const CounterSkeleton = () => {
   const count = 6;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mx-10 mt-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mx-10 pt-4">
       {Array.from({ length: count }).map((_, index) => (
         <div key={index}>
           <div className="shadow-lg rounded-lg overflow-hidden border-1 animate-pulse bg-gray-100">

@@ -6,6 +6,7 @@ const {
   loginUser,
   logoutUser,
   refreshToken,
+  getme,
 } = require("../controllers/authController");
 const { verifyToken } = require("../middleware/authMiddleware");
 
@@ -17,8 +18,6 @@ router.delete("/logout", logoutUser); // done
 
 router.post("/refresh", refreshToken); // done
 
-router.get("/me", verifyToken, (req, res) => {
-  res.json({ user: req.user });
-}); // done
+router.get("/me", verifyToken, getme); // done
 
 module.exports = router;

@@ -112,7 +112,31 @@ const logoutUser = (req, res) => {
   res.status(200).json({ message: "User logged out successfully" });
 };
 
+const getme = async (req, res) => {
+  try {
+    console.log(req.user.id);
+
+    const user = await User.findById(req.user.id);
+    console.log(user);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        name: user.name,
+        cart: user.cart.length || 0,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
+  getme,
   registerUser,
   loginUser,
   logoutUser,
