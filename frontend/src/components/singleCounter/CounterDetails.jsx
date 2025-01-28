@@ -1,7 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 export default function CounterDetails({ counter }) {
   if (!counter.counter_name) return null;
+  console.log(counter);
+
+  const { selectedMerchants } = useSelector((state) => state.merchants);
+  console.log(selectedMerchants, "selectedMerchants");
 
   return (
     <div className="max-w-4xl mx-auto p-6  shadow-lg rounded-lg flex border-2">
@@ -22,6 +27,18 @@ export default function CounterDetails({ counter }) {
         <p className="text-sm ">
           <strong>Operating Hours:</strong> {counter.operating_hours.open} -{" "}
           {counter.operating_hours.close}
+        </p>
+        <p className="text-sm flex flex-col mt-2">
+          {selectedMerchants.length > 0 && (
+            <>
+              {selectedMerchants.map((merchant, index) => (
+                <span key={index}>
+                  {"- "}
+                  {merchant.name} ({merchant.email})
+                </span>
+              ))}
+            </>
+          )}
         </p>
       </div>
     </div>

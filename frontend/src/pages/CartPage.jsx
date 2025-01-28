@@ -34,7 +34,7 @@ export default function CartPage({ theme }) {
 
   useEffect(() => {
     fetchCart();
-  }, [dispatch]);
+  }, []);
 
   const removeItem = async (id) => {
     try {

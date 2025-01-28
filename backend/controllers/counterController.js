@@ -134,28 +134,6 @@ const deleteCounter = async (req, res) => {
   }
 };
 
-const toggleCounterStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const counter = await Counter.findById(id);
-
-    if (!counter) {
-      return res.status(404).json({ message: "Counter not found" });
-    }
-
-    counter.isActive = !counter.isActive;
-    await counter.save();
-
-    res.status(200).json({
-      message: `Counter ${counter.isActive ? "activated" : "deactivated"}`,
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error toggling counter status", error: error.message });
-  }
-};
-
 const getAllMerchantCounters = async (req, res) => {
   try {
     const merchantId = req.user.id;
@@ -168,7 +146,7 @@ const getAllMerchantCounters = async (req, res) => {
         .json({ message: "No counters found for this merchant." });
     }
 
-    return res.status(200).json(counters); // Send counters data back in response
+    return res.status(200).json(counters);
   } catch (error) {
     console.error(error);
     return res
@@ -182,23 +160,23 @@ const addMerchantInCounter = async (req, res) => {
     const { id } = req.params;
     const counter = await Counter.findById(id);
     const { merchantIds } = req.body;
+    console.log(merchantIds);
 
     if (!counter) {
       return res.status(404).json({ message: "Counter not found" });
     }
+    const uniqueMerchantIds = [...new Set(merchantIds)];
 
-    const merchants = await User.find({ _id: { $in: merchantIds } });
+    const merchants = await User.find({ _id: { $in: uniqueMerchantIds } });
     const validMerchantIds = merchants.map((merchant) =>
       merchant._id.toString()
     );
 
-    if (validMerchantIds.length !== merchantIds.length) {
+    if (validMerchantIds.length !== uniqueMerchantIds.length) {
       return res.status(400).json({ message: "Some merchants were not found" });
     }
 
-    counter.merchants = [
-      ...new Set([...counter.merchants, ...validMerchantIds]),
-    ];
+    counter.merchants = validMerchantIds;
 
     await counter.save();
     res.status(200).json({

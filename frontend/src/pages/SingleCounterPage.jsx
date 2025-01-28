@@ -75,8 +75,6 @@ export default function SingleCounterPage({ theme }) {
       true
     );
     if (response) {
-      console.log(response.merchants, "response");
-
       dispatch(setSelectedMerchants(response.merchants));
       dispatch(setCounter(response.counter));
       dispatch(setIsMerchantModalOpen(false));

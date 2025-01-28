@@ -2,7 +2,7 @@ import React from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
 import { setTotalCartItems } from "../../slices/cartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const DishesList = ({ dishes, handleDelete, handleEdit }) => {
   const dispatch = useDispatch();
@@ -15,9 +15,15 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
       { id: dish._id },
       true
     );
-
     dispatch(setTotalCartItems(response.length));
   };
+
+  // const cartItems = useSelector((state) => state.cart.dishes);
+  // console.log(cartItems);
+
+  // const dishIds = cartItems.map((dish) => dish._id);
+  // console.log(dishIds, " dishIds");
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
       {dishes.map((dish) => (
