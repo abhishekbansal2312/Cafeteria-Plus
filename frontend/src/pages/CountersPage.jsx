@@ -148,6 +148,7 @@ export default function CounterPage({ theme }) {
             counters={counters}
             handleDelete={handleDelete}
             handleEdit={handleOpenModal}
+            loading={loading}
           />
 
           <Modal

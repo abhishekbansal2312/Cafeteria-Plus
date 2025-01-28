@@ -15,17 +15,23 @@ import {
 } from "../slices/dishesSlice";
 import Modal from "../components/Modal";
 import AddMerchant from "../components/singleCounter/AddMerchant";
+import {
+  setMerchants,
+  setIsMerchantModalOpen,
+  setSelectedMerchants,
+} from "../slices/merchantsSlice";
+import { setCounter } from "../slices/counterSlice";
 
 export default function SingleCounterPage({ theme }) {
   const dispatch = useDispatch();
   const makeRequest = useAxios();
   const { id } = useParams();
-  const [counter, setCounter] = useState({});
   const { dishes } = useSelector((state) => state.dishes);
   const { isModalOpen, isEditing } = useSelector((state) => state.form);
-  const [isMerchantModalOpen, setIsMerchantModalOpen] = useState(false);
-  const [merchants, setMerchants] = useState([]);
-
+  const { counter } = useSelector((state) => state.counter);
+  const { isMerchantModalOpen, merchants } = useSelector(
+    (state) => state.merchants
+  );
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -43,7 +49,8 @@ export default function SingleCounterPage({ theme }) {
       true
     );
     if (response) {
-      setCounter(response.counter);
+      dispatch(setSelectedMerchants(response.counter.merchants));
+      dispatch(setCounter(response.counter));
       dispatch(setDishes(response.dishes));
     }
   };
@@ -56,7 +63,7 @@ export default function SingleCounterPage({ theme }) {
       true
     );
     if (response) {
-      setMerchants(response.merchants);
+      dispatch(setMerchants(response.merchants));
     }
   };
 
@@ -68,8 +75,11 @@ export default function SingleCounterPage({ theme }) {
       true
     );
     if (response) {
-      setCounter(response.counter);
-      setIsMerchantModalOpen(false);
+      console.log(response.merchants, "response");
+
+      dispatch(setSelectedMerchants(response.merchants));
+      dispatch(setCounter(response.counter));
+      dispatch(setIsMerchantModalOpen(false));
     }
   };
 
@@ -144,7 +154,7 @@ export default function SingleCounterPage({ theme }) {
         <Button onClick={() => handleOpenModal()} text="Add Dish" />
 
         <Button
-          onClick={() => setIsMerchantModalOpen(true)}
+          onClick={() => dispatch(setIsMerchantModalOpen(true))} // Open modal via redux
           text="Add Merchants"
         />
       </div>
@@ -153,7 +163,7 @@ export default function SingleCounterPage({ theme }) {
         <Modal
           title="Select Merchants"
           isOpen={isMerchantModalOpen}
-          onClose={() => setIsMerchantModalOpen(false)}
+          onClose={() => dispatch(setIsMerchantModalOpen(false))} // Close modal via redux
         >
           <AddMerchant
             merchants={merchants}

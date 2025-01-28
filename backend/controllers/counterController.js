@@ -204,6 +204,7 @@ const addMerchantInCounter = async (req, res) => {
     res.status(200).json({
       message: "Merchants added successfully",
       counter: counter,
+      merchants: merchants,
     });
   } catch (error) {
     res.status(500).json({

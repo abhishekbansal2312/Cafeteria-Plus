@@ -4,6 +4,7 @@ export const counterSlice = createSlice({
   name: "counter",
   initialState: {
     counters: [],
+    counter: {},
     loading: true,
     error: null,
     formData: {
@@ -20,6 +21,9 @@ export const counterSlice = createSlice({
   reducers: {
     setCounters: (state, action) => {
       state.counters = action.payload;
+    },
+    setCounter: (state, action) => {
+      state.counter = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -64,6 +68,7 @@ export const counterSlice = createSlice({
 
 export const {
   setCounters,
+  setCounter,
   setLoading,
   setError,
   addCounter,

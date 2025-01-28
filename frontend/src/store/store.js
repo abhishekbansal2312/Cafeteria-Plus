@@ -4,6 +4,7 @@ import usersReducer from "../slices/usersSlice";
 import formReducer from "../slices/formSlice";
 import counterReducer from "../slices/counterSlice";
 import dishesReducer from "../slices/dishesSlice";
+import merchantReducer from "../slices/merchantsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     form: formReducer,
     counter: counterReducer,
     dishes: dishesReducer,
+    merchants: merchantReducer,
   },
 });
