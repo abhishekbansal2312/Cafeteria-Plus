@@ -37,7 +37,7 @@ export default function CounterPage({ theme }) {
       const url =
         filter === "all"
           ? "http://localhost:3000/api/counters"
-          : "http://localhost:3000/api/counters/merchants";
+          : "http://localhost:3000/api/counters/merchantcounters";
 
       const response = await makeRequest(url, "GET", null, true);
       if (filter === "my") {

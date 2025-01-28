@@ -11,6 +11,8 @@ import DishesPage from "./pages/DishesPage";
 import CartPage from "./pages/CartPage";
 import { ThemeContext } from "./context/ThemeContext";
 import SingleCounterPage from "./pages/SingleCounterPage";
+import ProfilePage from "./pages/ProfilePage";
+import Footer from "./components/footer/Footer";
 
 export default function App() {
   useAuth();
@@ -32,7 +34,9 @@ export default function App() {
           />
           <Route path="/dishes" element={<DishesPage />} />
           <Route path="/cart" element={<CartPage theme={theme} />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   );

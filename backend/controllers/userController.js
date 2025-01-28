@@ -38,11 +38,7 @@ const deleteUser = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ message: "Invalid user ID" });
-  }
+  const { id } = req.user;
 
   try {
     const user = await User.findById(id).select("-password");
