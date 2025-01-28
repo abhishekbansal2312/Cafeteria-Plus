@@ -1,8 +1,11 @@
 import React from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
+import { setTotalCartItems } from "../../slices/cartSlice";
+import { useDispatch } from "react-redux";
 
 const DishesList = ({ dishes, handleDelete, handleEdit }) => {
+  const dispatch = useDispatch();
   const makeRequest = useAxios();
   const addToCart = async (dish) => {
     console.log(dish._id);
@@ -12,7 +15,8 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
       { id: dish._id },
       true
     );
-    console.log(response);
+
+    dispatch(setTotalCartItems(response.length));
   };
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">

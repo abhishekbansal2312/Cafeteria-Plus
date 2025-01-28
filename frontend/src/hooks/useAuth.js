@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser, logoutUser } from "../slices/userSlice";
 import useAxios from "./useAxios";
+import { setTotalCartItems } from "../slices/cartSlice";
 
 const useAuth = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const useAuth = () => {
         if (data?.user) {
           const { user } = data;
           dispatch(loginUser(user));
+          dispatch(setTotalCartItems(user.cart));
         } else {
           dispatch(logoutUser());
         }

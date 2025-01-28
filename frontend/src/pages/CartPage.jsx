@@ -6,6 +6,7 @@ import {
   removeDish,
   increaseQuantity,
   decreaseQuantity,
+  setTotalCartItems,
 } from "../slices/cartSlice";
 import CartList from "../components/cart/CartList";
 
@@ -46,6 +47,7 @@ export default function CartPage({ theme }) {
       console.log("Delete Response:", response);
       if (response) {
         dispatch(removeDish(id));
+        dispatch(setTotalCartItems(response.length));
       } else {
         console.error("Failed to remove item:", response);
       }

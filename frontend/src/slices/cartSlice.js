@@ -6,10 +6,22 @@ const cartSlice = createSlice({
     dishes: [],
     loading: false,
     error: null,
+    totalCartItems: 0,
   },
   reducers: {
     setDishes(state, action) {
       state.dishes = action.payload;
+    },
+    setTotalCartItems(state, action) {
+      if (action.payload === "inc") {
+        console.log("hello");
+
+        state.totalCartItems += 1;
+      } else if (action.payload === "dec") {
+        state.totalCartItems -= 1;
+      } else {
+        state.totalCartItems = action.payload;
+      }
     },
     addDish(state, action) {
       state.dishes.push(action.payload);
@@ -52,6 +64,7 @@ export const {
   decreaseQuantity,
   setLoading,
   setError,
+  setTotalCartItems,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
