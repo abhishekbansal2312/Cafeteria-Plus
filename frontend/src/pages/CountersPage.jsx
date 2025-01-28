@@ -26,16 +26,26 @@ export default function CounterPage({ theme }) {
   );
   const isEditing = useSelector((state) => state.form.isEditing);
   const isModalOpen = useSelector((state) => state.form.isModalOpen);
+  const [selectedButton, setSelectedButton] = useState("all");
+  const user = useSelector((state) => state.userDetail.user);
 
-  const fetchCounters = async () => {
+  const fetchCounters = async (filter = "all") => {
     try {
       dispatch(setLoading(true));
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const response = await makeRequest(
-        "http://localhost:3000/api/counters",
-        "GET"
-      );
-      dispatch(setCounters(response.data));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const url =
+        filter === "all"
+          ? "http://localhost:3000/api/counters"
+          : "http://localhost:3000/api/counters/merchants";
+
+      const response = await makeRequest(url, "GET", null, filter === "my");
+      if (filter === "my") {
+        dispatch(setCounters(response));
+      } else {
+        dispatch(setCounters(response.data));
+      }
+
       dispatch(setLoading(false));
     } catch (error) {
       dispatch(setError("Failed to fetch counters"));
@@ -144,8 +154,30 @@ export default function CounterPage({ theme }) {
         </div>
       ) : (
         <div>
-          <div className="flex justify-end  mx-10 py-1 pt-4">
-            <Button onClick={() => handleOpenModal()} text="Add Counter" />
+          <div className="flex justify-end gap-2  mx-10 py-1 pt-4 ">
+            {user && user.role === "merchant" && (
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    fetchCounters("all");
+                    setSelectedButton("all");
+                  }}
+                  text="All Counters"
+                  disabled={selectedButton === "all"}
+                />
+                <Button
+                  onClick={() => {
+                    fetchCounters("my");
+                    setSelectedButton("my");
+                  }}
+                  text="My Counters"
+                  disabled={selectedButton === "my"}
+                />
+              </div>
+            )}
+            {user && user.role === "admin" && (
+              <Button onClick={() => handleOpenModal()} text="Add Counter" />
+            )}
           </div>
 
           <CounterList

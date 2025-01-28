@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import { CiCircleRemove } from "react-icons/ci";
-
+import { TiDeleteOutline } from "react-icons/ti";
 import { FiShoppingCart } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import CartSummary from "./CartSummary";
+
 export default function CartList({
   cart,
   updateQuantity,
@@ -35,8 +35,15 @@ export default function CartList({
               {cart.map((item) => (
                 <div
                   key={item.dish._id}
-                  className="flex items-center justify-between border p-4 mb-3 rounded-md bg-gray-50 hover:shadow-lg transition-all"
+                  className="relative flex items-center justify-between border p-4 mb-3 rounded-md bg-gray-50 hover:shadow-lg transition-all"
                 >
+                  <button
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 transition-all"
+                    onClick={() => removeItem(item._id)}
+                  >
+                    <TiDeleteOutline className="h-7 w-7" />
+                  </button>
+
                   <img
                     src={item.dish.image}
                     alt={item.dish.name}
@@ -47,6 +54,7 @@ export default function CartList({
                     <h3 className="text-lg font-medium text-gray-900">
                       {item.dish.name}
                     </h3>
+
                     <p className="text-sm text-gray-600 italic">
                       {item.dish.description}
                     </p>
@@ -55,38 +63,33 @@ export default function CartList({
                     </p>
                   </div>
 
-                  <div className="flex items-center">
-                    <button
-                      className="border px-3 py-1 rounded-md bg-white hover:bg-gray-200 transition-all text-lg font-semibold"
-                      onClick={() =>
-                        item.quantity > 1
-                          ? updateQuantity(item._id, item.quantity, "dec")
-                          : removeItem(item._id)
-                      }
-                    >
-                      ➖
-                    </button>
+                  <div className="flex flex-col">
+                    <div>
+                      <button
+                        className="border px-3 py-1 rounded-md bg-white hover:bg-gray-200 transition-all text-lg font-semibold"
+                        onClick={() =>
+                          item.quantity > 1
+                            ? updateQuantity(item._id, item.quantity, "dec")
+                            : removeItem(item._id)
+                        }
+                      >
+                        ➖
+                      </button>
 
-                    <span className="text-lg font-semibold w-8 text-center">
-                      {item.quantity}
-                    </span>
+                      <span className="text-lg font-semibold w-8 text-center px-2">
+                        {item.quantity}
+                      </span>
 
-                    <button
-                      className="border px-3 py-1 rounded-md bg-white hover:bg-gray-200 transition-all text-lg font-semibold"
-                      onClick={() =>
-                        updateQuantity(item._id, item.quantity, "inc")
-                      }
-                    >
-                      ➕
-                    </button>
+                      <button
+                        className="border px-3 py-1 rounded-md bg-white hover:bg-gray-200 transition-all text-lg font-semibold"
+                        onClick={() =>
+                          updateQuantity(item._id, item.quantity, "inc")
+                        }
+                      >
+                        ➕
+                      </button>
+                    </div>
                   </div>
-
-                  <button
-                    className="text-red-500 hover:text-red-700 transition-all ml-1"
-                    onClick={() => removeItem(item._id)}
-                  >
-                    <CiCircleRemove className="h-8 w-8" />
-                  </button>
                 </div>
               ))}
             </div>

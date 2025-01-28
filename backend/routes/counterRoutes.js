@@ -13,11 +13,12 @@ const {
 const {
   verifyTokenAndAdmin,
   verifyTokenAndMerchant,
+  verifyToken,
 } = require("../middleware/authMiddleware");
 
-router.get("/merchants", verifyTokenAndAdmin, getMerchants);
+router.get("/merchants", verifyTokenAndMerchant, getAllMerchantCounters);
 router.put("/merchants/:id", verifyTokenAndAdmin, addMerchantInCounter);
-router.post("/", createCounter); // done
+router.post("/", verifyTokenAndAdmin, createCounter); // done
 router.get("/", getAllCounters); // done
 router.get("/:id", getCounterById); // done
 router.put("/:id", updateCounter); // done

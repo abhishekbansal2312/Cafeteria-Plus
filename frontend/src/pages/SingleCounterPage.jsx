@@ -40,7 +40,7 @@ export default function SingleCounterPage({ theme }) {
     category: "breakfast",
     availability: true,
   });
-
+  const user = useSelector((state) => state.userDetail.user);
   const getDishByCounter = async () => {
     const response = await makeRequest(
       `http://localhost:3000/api/counters/${id}`,
@@ -151,17 +151,19 @@ export default function SingleCounterPage({ theme }) {
       <div className="flex justify-end gap-3 items-center mb-6">
         <Button onClick={() => handleOpenModal()} text="Add Dish" />
 
-        <Button
-          onClick={() => dispatch(setIsMerchantModalOpen(true))} // Open modal via redux
-          text="Add Merchants"
-        />
+        {user && user.role === "admin" && (
+          <Button
+            onClick={() => dispatch(setIsMerchantModalOpen(true))}
+            text="Manage Merchants"
+          />
+        )}
       </div>
 
       {isMerchantModalOpen && (
         <Modal
           title="Select Merchants"
           isOpen={isMerchantModalOpen}
-          onClose={() => dispatch(setIsMerchantModalOpen(false))} // Close modal via redux
+          onClose={() => dispatch(setIsMerchantModalOpen(false))} //
         >
           <AddMerchant
             merchants={merchants}

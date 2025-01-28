@@ -35,14 +35,24 @@ export const counterSlice = createSlice({
       state.counters.push(action.payload);
     },
     updateCounter: (state, action) => {
-      const updateCounter = action.payload;
+      const updatedCounter = action.payload;
+      console.log(updatedCounter);
+
       const index = state.counters.findIndex(
-        (counter) => counter._id === updateCounter._id
+        (counter) => counter._id === updatedCounter._id
       );
+
       if (index !== -1) {
-        state.counters[index] = updateCounter;
+        state.counters[index] = {
+          ...state.counters[index],
+          ...updatedCounter,
+          theme: updatedCounter.theme
+            ? updatedCounter.theme.split(",").map((t) => t.trim())
+            : [],
+        };
       }
     },
+
     deleteCounter: (state, action) => {
       state.counters = state.counters.filter(
         (counter) => counter._id !== action.payload

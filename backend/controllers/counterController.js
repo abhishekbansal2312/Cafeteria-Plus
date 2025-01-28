@@ -138,7 +138,9 @@ const getAllMerchantCounters = async (req, res) => {
   try {
     const merchantId = req.user.id;
 
-    const counters = await Counter.find({ merchants: { $in: [merchantId] } });
+    const counters = await Counter.find({
+      merchants: { $in: [merchantId] },
+    }).populate("merchants", "name email");
 
     if (counters.length === 0) {
       return res

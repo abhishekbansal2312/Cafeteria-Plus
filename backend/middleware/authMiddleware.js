@@ -70,7 +70,7 @@ const verifyTokenAndMerchant = (req, res, next) => {
   }
 
   req.user = result.user;
-
+  log(req.user);
   if (req.user.role !== "merchant") {
     return res.status(403).json({ message: "Merchant access only." });
   }
