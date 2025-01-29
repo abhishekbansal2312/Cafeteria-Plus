@@ -100,18 +100,6 @@ export default function SingleCounterPage({ theme }) {
     resetForm();
   };
 
-  const handleDeleteDish = async (dishId) => {
-    const response = await makeRequest(
-      `http://localhost:3000/api/dishes/${dishId}`,
-      "DELETE",
-      null,
-      true
-    );
-    if (response) {
-      dispatch(deleteDish(dishId));
-    }
-  };
-
   useEffect(() => {
     getDishByCounter();
     fetchMerchants();
@@ -190,11 +178,7 @@ export default function SingleCounterPage({ theme }) {
       )}
 
       <CounterDetails counter={counter} />
-      <DishesList
-        dishes={dishes}
-        handleEdit={handleOpenModal}
-        handleDelete={handleDeleteDish}
-      />
+      <DishesList dishes={dishes} handleEdit={handleOpenModal} />
     </div>
   );
 }
