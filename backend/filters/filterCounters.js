@@ -1,9 +1,13 @@
-const Counter = require("../models/counterModel");
-const filterCounters = () => {
-  const role = req.user.role;
-  const counter = req.query.counter;
-  const filter = {};
-  if (counter === "merchant") {
-    filter.role = "merchant";
+const filterCounters = (model) => (req, res, next) => {
+  const { search } = req.query;
+  let filter = {};
+  if (search != null && search !== "") {
+    filter.counter_name = { $regex: search, $options: "i" };
   }
+  req.filter = filter;
+  req.model = model;
+
+  next();
 };
+
+module.exports = filterCounters;

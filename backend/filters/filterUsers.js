@@ -1,15 +1,11 @@
 const filterUsers = (model) => (req, res, next) => {
-  const { role, email, isActive } = req.query;
+  const { role, search, isActive } = req.query;
   let filter = {};
-
+  if (search != null && search !== "") {
+    filter.name = { $regex: search, $options: "i" };
+  }
   if (role) {
     filter.role = role;
-  }
-  if (email) {
-    filter.email = { $regex: email, $options: "i" };
-  }
-  if (isActive !== undefined) {
-    filter.isActive = isActive === "true";
   }
 
   req.filter = filter;

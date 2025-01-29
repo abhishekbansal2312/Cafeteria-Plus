@@ -41,7 +41,13 @@ const createCounter = async (req, res) => {
 
 const getAllCounters = async (req, res) => {
   try {
-    const counters = await Counter.find().populate("merchants", "name email");
+    if (!res.paginationResult || res.paginationResult.results.length === 0) {
+      return res.status(404).json({ message: "No Counters found" });
+    }
+
+    const counters = await Counter.find({
+      _id: { $in: res.paginationResult.results },
+    }).populate("merchants", "name email");
 
     res.status(200).json({ data: counters });
   } catch (error) {
