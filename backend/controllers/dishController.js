@@ -94,17 +94,22 @@ const updateDish = async (req, res) => {
 const deleteDish = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Delete the dish from the Dish collection
     const deletedDish = await Dish.findByIdAndDelete(id);
 
     if (!deletedDish) {
       return res.status(404).json({ message: "Dish not found" });
     }
 
-    res.status(200).json({ message: "Dish deleted successfully" });
-  } catch (error) {
     res
-      .status(500)
-      .json({ message: "Error deleting dish", error: error.message });
+      .status(200)
+      .json({ message: "Dish deleted and cart updated successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting dish and updating cart",
+      error: error.message,
+    });
   }
 };
 

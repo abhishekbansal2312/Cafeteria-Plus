@@ -12,7 +12,10 @@ export default function CartList({
   error,
 }) {
   const totalPrice = useMemo(() => {
-    return cart.reduce((acc, item) => acc + item.dish.price * item.quantity, 0);
+    return cart.reduce(
+      (acc, item) => (acc + item.dish.price || 1) * item.quantity,
+      0
+    );
   }, [cart]);
 
   const totalCartItems = useSelector((state) => state.cart.totalCartItems);
