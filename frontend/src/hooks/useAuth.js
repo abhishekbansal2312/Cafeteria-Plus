@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { loginUser, logoutUser } from "../slices/userSlice";
 import useAxios from "./useAxios";
 import { setTotalCartItems } from "../slices/cartSlice";
-import { setDishes } from "../slices/cartSlice";
+import { setCartDishes } from "../slices/cartSlice";
 
 const useAuth = () => {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const useAuth = () => {
           const { user } = data;
           dispatch(loginUser(user));
           dispatch(setTotalCartItems(user.cartLength));
-          dispatch(setDishes(user.cart));
+          dispatch(setCartDishes(user.cart));
         } else {
           dispatch(logoutUser());
         }

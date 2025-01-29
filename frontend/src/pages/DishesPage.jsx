@@ -11,7 +11,7 @@ export default function DishesPage() {
       null,
       null
     );
-    console.log(response);
+
     setDishes(response);
   };
   useEffect(() => {

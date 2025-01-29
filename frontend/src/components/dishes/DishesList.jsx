@@ -1,24 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
-import { setTotalCartItems } from "../../slices/cartSlice";
+import { setCartDishes, setTotalCartItems } from "../../slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+
 const DishesList = ({ dishes, handleDelete, handleEdit }) => {
   const dispatch = useDispatch();
   const makeRequest = useAxios();
-
   const cartItems = useSelector((state) => state.cart.dishes) || [];
-  const cartIds = cartItems.map((item) => item.dish);
+  const [cartIds, setCartIds] = useState(cartItems.map((item) => item.dish));
+  console.log(cartItems, "cartitems");
 
   useEffect(() => {
-    console.log(cartItems, "Cart items");
-    console.log(cartIds, "Dish IDs in cart");
+    setCartIds(cartItems.map((item) => item.dish._id));
   }, [cartItems]);
 
   const addToCart = async (dish) => {
     try {
       const response = await makeRequest(
-        `http://localhost:3000/api/cart`,
+        "http://localhost:3000/api/cart",
         "POST",
         { id: dish._id },
         true
@@ -26,6 +26,7 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
 
       if (response) {
         dispatch(setTotalCartItems(response.length));
+        dispatch(setCartDishes(response));
       }
     } catch (error) {
       console.error("Error adding to cart:", error);

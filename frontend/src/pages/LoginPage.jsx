@@ -4,7 +4,7 @@ import InputField from "../components/inputs/InputField";
 import useAxios from "../hooks/useAxios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setDishes, setTotalCartItems } from "../slices/cartSlice";
+import { setCartDishes, setTotalCartItems } from "../slices/cartSlice";
 import { loginUser } from "../slices/userSlice";
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ export default function LoginPage() {
       const { accessToken, refreshToken } = response;
       dispatch(loginUser(response.user));
       dispatch(setTotalCartItems(response.user.cartLength));
-      dispatch(setDishes(response.user.cart));
+      dispatch(setCartDishes(response.user.cart));
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       navigate("/");

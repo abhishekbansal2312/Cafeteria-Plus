@@ -62,7 +62,6 @@ export default function SingleCounterPage({ theme }) {
       null,
       true
     );
-    console.log(response, "response sacsdc");
 
     if (response) {
       dispatch(setMerchants(response.merchants));

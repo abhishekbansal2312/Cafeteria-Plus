@@ -9,9 +9,7 @@ const cartSlice = createSlice({
     totalCartItems: 0,
   },
   reducers: {
-    setDishes(state, action) {
-      console.log(action.payload, "action payload");
-
+    setCartDishes(state, action) {
       state.dishes = action.payload;
     },
     setTotalCartItems(state, action) {
@@ -23,10 +21,10 @@ const cartSlice = createSlice({
         state.totalCartItems = action.payload;
       }
     },
-    addDish(state, action) {
+    addCartDish(state, action) {
       state.dishes.push(action.payload);
     },
-    removeDish(state, action) {
+    removeCartDish(state, action) {
       state.dishes = state.dishes.filter((dish) => dish._id !== action.payload);
     },
     increaseQuantity(state, action) {
@@ -53,14 +51,14 @@ const cartSlice = createSlice({
 });
 
 export const {
-  setDishes,
-  addDish,
-  removeDish,
+  setCartDishes,
+  setTotalCartItems,
+  addCartDish,
+  removeCartDish,
   increaseQuantity,
   decreaseQuantity,
   setLoading,
   setError,
-  setTotalCartItems,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

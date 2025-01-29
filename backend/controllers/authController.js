@@ -55,7 +55,7 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("cart.dish");
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
@@ -115,7 +115,7 @@ const logoutUser = (req, res) => {
 
 const getme = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).populate("cart.dish");
 
     if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json({

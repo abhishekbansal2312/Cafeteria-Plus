@@ -48,7 +48,6 @@ export default function UsersPage({ theme }) {
         true
       );
 
-      console.log(response.data);
       dispatch(setUsers(response.data.results));
       setTotalPages(response.data.totalPages);
       setPage(pageNum);

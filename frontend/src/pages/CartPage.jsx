@@ -2,11 +2,14 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
 import {
-  setDishes,
-  removeDish,
+  setCartDishes,
+  setTotalCartItems,
+  addCartDish,
+  removeCartDish,
   increaseQuantity,
   decreaseQuantity,
-  setTotalCartItems,
+  setLoading,
+  setError,
 } from "../slices/cartSlice";
 import CartList from "../components/cart/CartList";
 
@@ -16,6 +19,7 @@ export default function CartPage({ theme }) {
   const makeRequest = useAxios();
 
   const fetchCart = async () => {
+    dispatch(setLoading(true));
     try {
       const response = await makeRequest(
         "http://localhost:3000/api/cart",
@@ -23,10 +27,13 @@ export default function CartPage({ theme }) {
         null,
         true
       );
-      dispatch(setDishes(response || []));
+      dispatch(setCartDishes(response || []));
+      dispatch(setTotalCartItems(response.length || 0));
     } catch (error) {
       console.error("Error fetching cart:", error);
-      dispatch(setDishes([]));
+      dispatch(setError("Failed to load cart items."));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -42,9 +49,8 @@ export default function CartPage({ theme }) {
         { id },
         true
       );
-
       if (response) {
-        dispatch(removeDish(id));
+        dispatch(removeCartDish(id));
         dispatch(setTotalCartItems(response.length));
       } else {
         console.error("Failed to remove item:", response);
@@ -55,13 +61,8 @@ export default function CartPage({ theme }) {
   };
 
   const updateQuantity = async (id, currentQuantity, action) => {
-    let newQuantity = currentQuantity;
-
-    if (action === "inc") {
-      newQuantity += 1;
-    } else if (action === "dec" && currentQuantity > 1) {
-      newQuantity -= 1;
-    }
+    let newQuantity =
+      action === "inc" ? currentQuantity + 1 : Math.max(1, currentQuantity - 1);
 
     try {
       const response = await makeRequest(
@@ -70,13 +71,10 @@ export default function CartPage({ theme }) {
         { quantity: newQuantity },
         true
       );
-
       if (response) {
-        if (action === "inc") {
-          dispatch(increaseQuantity(id));
-        } else if (action === "dec") {
-          dispatch(decreaseQuantity(id));
-        }
+        dispatch(
+          action === "inc" ? increaseQuantity(id) : decreaseQuantity(id)
+        );
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
