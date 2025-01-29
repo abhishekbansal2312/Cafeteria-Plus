@@ -49,7 +49,9 @@ const getAllCounters = async (req, res) => {
       _id: { $in: res.paginationResult.results },
     }).populate("merchants", "name email");
 
-    res.status(200).json({ data: counters });
+    res.paginationResult.results = counters;
+
+    res.status(200).json({ pagination: res.paginationResult });
   } catch (error) {
     res
       .status(500)

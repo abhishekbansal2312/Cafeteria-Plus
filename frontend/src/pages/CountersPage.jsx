@@ -17,6 +17,8 @@ import Modal from "../components/Modal";
 import CounterForm from "../components/counter/CounterForm";
 import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
 import CounterSkeleton from "../components/counter/CounterSkeleton";
+import SearchBar from "../components/SearchBar";
+import Pagination from "../components/Pagination";
 
 export default function CounterPage({ theme }) {
   const dispatch = useDispatch();
@@ -28,24 +30,23 @@ export default function CounterPage({ theme }) {
   const isModalOpen = useSelector((state) => state.form.isModalOpen);
   const [selectedButton, setSelectedButton] = useState("all");
   const user = useSelector((state) => state.userDetail.user);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchCounters = async (filter = "all") => {
+  const fetchCounters = async (
+    filter = "all",
+    searchQuery = "",
+    pageNum = 1
+  ) => {
     try {
       dispatch(setLoading(true));
-      // await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const url =
-        filter === "all"
-          ? "http://localhost:3000/api/counters"
-          : "http://localhost:3000/api/counters/merchantcounters";
+      const url = `http://localhost:3000/api/counters?search=${searchQuery}&page=${pageNum}&limit=6`;
 
       const response = await makeRequest(url, "GET", null, true);
-      if (filter === "my") {
-        dispatch(setCounters(response));
-      } else {
-        dispatch(setCounters(response.data));
-      }
-
+      setTotalPages(response.pagination.totalPages);
+      dispatch(setCounters(response.pagination.results));
       dispatch(setLoading(false));
     } catch (error) {
       dispatch(setError("Failed to fetch counters"));
@@ -54,8 +55,8 @@ export default function CounterPage({ theme }) {
   };
 
   useEffect(() => {
-    fetchCounters();
-  }, []);
+    fetchCounters("all", search, page);
+  }, [search, page]);
 
   const handleDelete = async (id) => {
     try {
@@ -70,6 +71,7 @@ export default function CounterPage({ theme }) {
       dispatch(setError("Failed to delete counter"));
     }
   };
+
   const handleOpenModal = (counter = null) => {
     if (counter) {
       dispatch(
@@ -156,36 +158,47 @@ export default function CounterPage({ theme }) {
         </div>
       ) : (
         <div>
-          <div className="flex justify-end gap-2  mx-10 py-1 pt-4 ">
-            {user && user.role === "merchant" && (
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => {
-                    fetchCounters("all");
-                    setSelectedButton("all");
-                  }}
-                  text="All Counters"
-                  disabled={selectedButton === "all"}
-                />
-                <Button
-                  onClick={() => {
-                    fetchCounters("my");
-                    setSelectedButton("my");
-                  }}
-                  text="My Counters"
-                  disabled={selectedButton === "my"}
-                />
-              </div>
-            )}
-            {user && user.role === "admin" && (
-              <Button onClick={() => handleOpenModal()} text="Add Counter" />
-            )}
+          <div className="flex justify-between gap-2 mx-10 py-1 pt-4 ">
+            <div>
+              <SearchBar search={search} setSearch={setSearch} />
+            </div>
+            <div>
+              {user && user.role === "merchant" && (
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      fetchCounters("all", search, page);
+                      setSelectedButton("all");
+                    }}
+                    text="All Counters"
+                    disabled={selectedButton === "all"}
+                  />
+                  <Button
+                    onClick={() => {
+                      fetchCounters("my", search, page);
+                      setSelectedButton("my");
+                    }}
+                    text="My Counters"
+                    disabled={selectedButton === "my"}
+                  />
+                </div>
+              )}
+              {user && user.role === "admin" && (
+                <Button onClick={() => handleOpenModal()} text="Add Counter" />
+              )}
+            </div>
           </div>
 
           <CounterList
             counters={counters}
             handleDelete={handleDelete}
             handleEdit={handleOpenModal}
+          />
+
+          <Pagination
+            totalPages={totalPages}
+            currentPage={page}
+            onPageChange={setPage}
           />
 
           <Modal
