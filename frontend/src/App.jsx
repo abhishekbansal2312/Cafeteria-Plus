@@ -24,8 +24,8 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage theme={theme} />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage theme={theme} />} />
+          <Route path="/register" element={<SignUpPage theme={theme} />} />
           <Route path="/users" element={<UsersPage theme={theme} />} />
           <Route path="/counters" element={<CounterPage theme={theme} />} />
           <Route

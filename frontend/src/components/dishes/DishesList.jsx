@@ -9,7 +9,6 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
   const makeRequest = useAxios();
   const cartItems = useSelector((state) => state.cart.dishes) || [];
   const [cartIds, setCartIds] = useState(cartItems.map((item) => item.dish));
-  console.log(cartItems, "cartitems");
 
   useEffect(() => {
     setCartIds(cartItems.map((item) => item.dish._id));
@@ -17,6 +16,8 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
 
   const addToCart = async (dish) => {
     try {
+      console.log(dish._id, "dish id");
+
       const response = await makeRequest(
         "http://localhost:3000/api/cart",
         "POST",
@@ -25,6 +26,8 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
       );
 
       if (response) {
+        console.log(response, "response");
+
         dispatch(setTotalCartItems(response.length));
         dispatch(setCartDishes(response));
       }

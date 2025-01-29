@@ -6,13 +6,12 @@ import UserForm from "../components/users/UsersForm";
 import Modal from "../components/Modal";
 import Button from "../components/Button";
 import SearchBar from "../components/SearchBar";
-import UserSkeleton from "../components/users/UserSkeleton";
+import toast from "react-hot-toast";
 import SortBy from "../components/users/SortBy";
 import PaginateUsers from "../components/users/PaginateUsers";
 import {
   setUsers,
   setLoading,
-  setError,
   deleteUser,
   addUser,
   updateUser,
@@ -21,7 +20,7 @@ import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
 
 export default function UsersPage({ theme }) {
   const dispatch = useDispatch();
-  const { users, loading, error } = useSelector((state) => state.users);
+  const { users, loading } = useSelector((state) => state.users);
   const { isEditing, isModalOpen } = useSelector((state) => state.form);
 
   const [page, setPage] = useState(1);
@@ -33,16 +32,16 @@ export default function UsersPage({ theme }) {
     role: "customer",
   });
   const [role, setRole] = useState("");
+  const [search, setSearch] = useState("");
 
   const makeRequest = useAxios();
 
   const fetchUsers = async (pageNum = 1, role = "") => {
     try {
       dispatch(setLoading(true));
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const response = await makeRequest(
-        `http://localhost:3000/api/users?page=${pageNum}&limit=5&role=${role}`,
+        `http://localhost:3000/api/users?page=${pageNum}&limit=5&role=${role}&search=${search}`,
         "GET",
         null,
         true
@@ -54,14 +53,15 @@ export default function UsersPage({ theme }) {
 
       dispatch(setLoading(false));
     } catch (error) {
-      dispatch(setError("Failed to fetch users"));
+      toast.error("Failed to fetch users");
       dispatch(setLoading(false));
+      dispatch(setUsers([]));
     }
   };
 
   useEffect(() => {
     fetchUsers(1, role);
-  }, [role]);
+  }, [role, search]);
 
   const handleDelete = async (id) => {
     try {
@@ -72,8 +72,9 @@ export default function UsersPage({ theme }) {
         true
       );
       dispatch(deleteUser(id));
+      toast.success("User deleted successfully");
     } catch (error) {
-      dispatch(setError("Failed to delete user"));
+      toast.error("Failed to delete user");
     }
   };
 
@@ -107,6 +108,7 @@ export default function UsersPage({ theme }) {
           true
         );
         dispatch(updateUser(response.user));
+        toast.success("User updated successfully");
       } else {
         const response = await makeRequest(
           "http://localhost:3000/api/users",
@@ -115,10 +117,11 @@ export default function UsersPage({ theme }) {
           true
         );
         dispatch(addUser(response.data));
+        toast.success("User added successfully");
       }
       handleCloseModal();
     } catch (error) {
-      dispatch(setError("Failed to save user"));
+      toast.error("Failed to save user");
     }
   };
 
@@ -128,46 +131,42 @@ export default function UsersPage({ theme }) {
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       } min-h-screen`}
     >
-      {loading ? (
-        <UserSkeleton />
-      ) : (
-        <div>
-          <div className="flex justify-between items-center mx-10 py-1 pt-4">
-            <div className="flex">
-              <SearchBar />
-              <SortBy setRole={setRole} fetchUsers={fetchUsers} role={role} />
-            </div>
-            <Button onClick={() => handleOpenModal()} text="Add User" />
+      <div>
+        <div className="flex justify-between items-center mx-10 py-1 pt-4">
+          <div className="flex">
+            <SearchBar setSearch={setSearch} search={search} />
+            <SortBy setRole={setRole} fetchUsers={fetchUsers} role={role} />
           </div>
-
-          <UsersList
-            users={users}
-            handleDelete={handleDelete}
-            handleEdit={handleOpenModal}
-          />
-          <PaginateUsers
-            fetchUsers={fetchUsers}
-            page={page}
-            totalPages={totalPages}
-          />
-
-          <Modal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            title={isEditing ? "Edit User" : "Add User"}
-          >
-            <UserForm
-              formData={formData}
-              isEditing={isEditing}
-              handleChange={handleChange}
-              handleSubmit={handleSubmit}
-              darkMode={theme === "dark"}
-              onClose={handleCloseModal}
-            />
-          </Modal>
+          <Button onClick={() => handleOpenModal()} text="Add User" />
         </div>
-      )}
-      {error && <p className="text-red-500">{error}</p>}
+
+        <UsersList
+          users={users}
+          handleDelete={handleDelete}
+          handleEdit={handleOpenModal}
+          loading={loading}
+        />
+        <PaginateUsers
+          fetchUsers={fetchUsers}
+          page={page}
+          totalPages={totalPages}
+        />
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          title={isEditing ? "Edit User" : "Add User"}
+        >
+          <UserForm
+            formData={formData}
+            isEditing={isEditing}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            darkMode={theme === "dark"}
+            onClose={handleCloseModal}
+          />
+        </Modal>
+      </div>
     </div>
   );
 }

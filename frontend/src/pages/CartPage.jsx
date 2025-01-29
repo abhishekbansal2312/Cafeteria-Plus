@@ -86,13 +86,19 @@ export default function CartPage({ theme }) {
   }
 
   return (
-    <div className="pb-20 min-h-screen">
-      {error && <div className="text-red-500">{error}</div>}
-      <CartList
-        cart={dishes}
-        updateQuantity={updateQuantity}
-        removeItem={removeItem}
-      />
+    <div
+      className={`${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      } min-h-screen pb-20`}
+    >
+      <div className="pb-20 min-h-screen pt-10">
+        {error && <div className="text-red-500">{error}</div>}
+        <CartList
+          cart={dishes}
+          updateQuantity={updateQuantity}
+          removeItem={removeItem}
+        />
+      </div>
     </div>
   );
 }

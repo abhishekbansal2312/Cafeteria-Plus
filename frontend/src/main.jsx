@@ -11,7 +11,7 @@ import { Toaster } from "react-hot-toast";
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <ThemeProvider>
-      <Toaster />
+      <Toaster position="top-right" />
       <App />
     </ThemeProvider>
   </Provider>

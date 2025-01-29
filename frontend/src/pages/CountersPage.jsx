@@ -32,7 +32,7 @@ export default function CounterPage({ theme }) {
   const fetchCounters = async (filter = "all") => {
     try {
       dispatch(setLoading(true));
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 10));
 
       const url =
         filter === "all"
