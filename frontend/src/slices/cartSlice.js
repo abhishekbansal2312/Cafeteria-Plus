@@ -10,6 +10,8 @@ const cartSlice = createSlice({
   },
   reducers: {
     setDishes(state, action) {
+      console.log(action.payload, "action payload");
+
       state.dishes = action.payload;
     },
     setTotalCartItems(state, action) {

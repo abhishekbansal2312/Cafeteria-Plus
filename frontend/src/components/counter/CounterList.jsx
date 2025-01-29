@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 const CounterList = ({ counters, handleDelete, handleEdit }) => {
   const user = useSelector((state) => state.userDetail.user);
 
-  const merchantIds = counters
-    .map((counter) => counter.merchants)
-    .map((merchants) => merchants.map((merchant) => merchant._id));
+  // const merchantIds = counters
+  //   .map((counter) => counter.merchants)
+  //   .map((merchants) => merchants.map((merchant) => merchant._id));
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mx-10 mt-2 ">
@@ -70,11 +70,12 @@ const CounterList = ({ counters, handleDelete, handleEdit }) => {
               </p>
 
               <div className="flex justify-between gap-4">
-                {flatMerchantIds.includes(user.id) && (
-                  <button onClick={() => handleEdit(counter)} className="">
-                    <FaEdit className="mr-2" />
-                  </button>
-                )}
+                {flatMerchantIds.includes(user.id) ||
+                  (user.role == "admin" && (
+                    <button onClick={() => handleEdit(counter)} className="">
+                      <FaEdit className="mr-2" />
+                    </button>
+                  ))}
                 {user.role == "admin" && (
                   <button
                     onClick={() => handleDelete(counter._id)}

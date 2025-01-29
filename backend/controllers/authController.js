@@ -73,7 +73,8 @@ const loginUser = async (req, res) => {
         email: user.email,
         id: user._id,
         role: user.role,
-        cart: user.cart.length || 0,
+        cartLength: user.cart.length || 0,
+        cart: user.cart,
       },
       accessToken,
       refreshToken,
@@ -123,7 +124,8 @@ const getme = async (req, res) => {
         email: user.email,
         role: user.role,
         name: user.name,
-        cart: user.cart.length || 0,
+        cartLength: user.cart.length || 0,
+        cart: user.cart,
       },
     });
   } catch (error) {

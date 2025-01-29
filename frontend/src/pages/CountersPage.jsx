@@ -148,7 +148,7 @@ export default function CounterPage({ theme }) {
     <div
       className={`${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
-      } min-h-screen mb-20`}
+      } min-h-screen pb-20`}
     >
       {loading ? (
         <div>

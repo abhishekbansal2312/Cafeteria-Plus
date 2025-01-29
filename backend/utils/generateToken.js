@@ -7,7 +7,6 @@ const generateAccessToken = (user) => {
       email: user.email,
       role: user.role,
       name: user.name,
-      cart: user.cart.length || 0,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -23,7 +22,6 @@ const generateRefreshToken = (user) => {
       email: user.email,
       role: user.role,
       name: user.name,
-      cart: user.cart.length || 0,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {

@@ -23,7 +23,6 @@ export default function CartPage({ theme }) {
         null,
         true
       );
-
       dispatch(setDishes(response || []));
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -89,7 +88,7 @@ export default function CartPage({ theme }) {
   }
 
   return (
-    <div>
+    <div className="pb-20 min-h-screen">
       {error && <div className="text-red-500">{error}</div>}
       <CartList
         cart={dishes}

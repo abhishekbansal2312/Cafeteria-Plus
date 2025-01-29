@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import InputField from "../components/inputs/InputField";
 import useAxios from "../hooks/useAxios";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../slices/userSlice";
 import { useDispatch } from "react-redux";
+import { setDishes, setTotalCartItems } from "../slices/cartSlice";
+import { loginUser } from "../slices/userSlice";
 export default function LoginPage() {
   const dispatch = useDispatch();
   const makeRequest = useAxios();
@@ -27,6 +28,8 @@ export default function LoginPage() {
     if (response) {
       const { accessToken, refreshToken } = response;
       dispatch(loginUser(response.user));
+      dispatch(setTotalCartItems(response.user.cartLength));
+      dispatch(setDishes(response.user.cart));
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       navigate("/");

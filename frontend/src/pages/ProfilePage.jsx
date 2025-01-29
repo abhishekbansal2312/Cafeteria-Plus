@@ -35,7 +35,7 @@ export default function ProfilePage() {
           <div className="flex-shrink-0">
             <img
               className="h-32 w-32 rounded-full object-cover shadow-xl"
-              src="https://via.placeholder.com/150"
+              src="https://images.unsplash.com/photo-1635107510862-53886e926b74?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHByb2ZpbGUlMjBwaWN0dXJlfGVufDB8fDB8fHww"
               alt="Profile"
             />
           </div>
