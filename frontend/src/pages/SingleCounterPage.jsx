@@ -6,13 +6,8 @@ import CounterDetails from "../components/singleCounter/CounterDetails";
 import DishesList from "../components/dishes/DishesList";
 import Button from "../components/Button";
 import DishForm from "../components/dishes/DishForm";
-import { setIsModalOpen, setIsEditing } from "../slices/formSlice";
-import {
-  setDishes,
-  addDish,
-  updateDish,
-  deleteDish,
-} from "../slices/dishesSlice";
+
+import { setDishes, addDish } from "../slices/dishesSlice";
 import Modal from "../components/Modal";
 import AddMerchant from "../components/singleCounter/AddMerchant";
 import {
@@ -26,8 +21,8 @@ export default function SingleCounterPage({ theme }) {
   const dispatch = useDispatch();
   const makeRequest = useAxios();
   const { id } = useParams();
-  const { dishes } = useSelector((state) => state.dishes);
-  const { isModalOpen, isEditing } = useSelector((state) => state.form);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { counter } = useSelector((state) => state.counter);
   const { isMerchantModalOpen, merchants } = useSelector(
     (state) => state.merchants
@@ -84,37 +79,21 @@ export default function SingleCounterPage({ theme }) {
 
   const handleSubmitDish = async (e) => {
     e.preventDefault();
-    const url = isEditing
-      ? `http://localhost:3000/api/dishes/${formData._id}`
-      : `http://localhost:3000/api/dishes/${id}`;
-    const method = isEditing ? "PUT" : "POST";
+    const url = `http://localhost:3000/api/dishes/${id}`;
+    const method = "POST";
 
     const response = await makeRequest(url, method, formData, true);
     if (response) {
-      dispatch(isEditing ? updateDish(response.dish) : addDish(response.dish));
-    }
-
-    dispatch(setIsModalOpen(false));
-    dispatch(setIsEditing(false));
-    resetForm();
-  };
-
-  const handleDeleteDish = async (dishId) => {
-    const response = await makeRequest(
-      `http://localhost:3000/api/dishes/${dishId}`,
-      "DELETE",
-      null,
-      true
-    );
-    if (response) {
-      dispatch(deleteDish(dishId));
+      dispatch(addDish(response.dish));
+      resetForm();
+      dispatch(setIsModalOpen(false));
     }
   };
 
   useEffect(() => {
     getDishByCounter();
     fetchMerchants();
-  }, []);
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -132,14 +111,7 @@ export default function SingleCounterPage({ theme }) {
     });
   };
 
-  const handleOpenModal = (dish = null) => {
-    if (dish) {
-      setFormData(dish);
-      dispatch(setIsEditing(true));
-    } else {
-      resetForm();
-      dispatch(setIsEditing(false));
-    }
+  const handleOpenModal = () => {
     dispatch(setIsModalOpen(true));
   };
 
@@ -175,7 +147,7 @@ export default function SingleCounterPage({ theme }) {
 
       {isModalOpen && (
         <Modal
-          title={isEditing ? "Edit Dish" : "Add Dish"}
+          title="Add Dish"
           isOpen={isModalOpen}
           onClose={() => dispatch(setIsModalOpen(false))}
         >
@@ -189,11 +161,7 @@ export default function SingleCounterPage({ theme }) {
       )}
 
       <CounterDetails counter={counter} />
-      <DishesList
-        dishes={dishes}
-        handleEdit={handleOpenModal}
-        handleDelete={handleDeleteDish}
-      />
+      <DishesList />
     </div>
   );
 }

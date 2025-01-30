@@ -3,31 +3,86 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
 import { setCartDishes, setTotalCartItems } from "../../slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { deleteDish, updateDish } from "../../slices/dishesSlice";
+import { setIsModalOpen, setIsEditing } from "../../slices/formSlice";
+import Modal from "../Modal";
+import DishForm from "../dishes/DishForm";
 
-const DishesList = ({ dishes, handleDelete, handleEdit }) => {
+const DishesList = () => {
+  const { dishes } = useSelector((state) => state.dishes);
   const dispatch = useDispatch();
   const makeRequest = useAxios();
   const cartItems = useSelector((state) => state.cart.dishes) || [];
-  const [cartIds, setCartIds] = useState(cartItems.map((item) => item.dish));
+  const isModalOpen = useSelector((state) => state.form.isModalOpen);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    image: "",
+    category: "breakfast",
+    availability: true,
+  });
 
-  useEffect(() => {
-    setCartIds(cartItems.map((item) => item.dish._id));
-  }, [cartItems]);
+  const cartIds = cartItems.map((item) => item.dish._id);
+
+  const handleDeleteDish = async (dishId) => {
+    try {
+      const response = await makeRequest(
+        `http://localhost:3000/api/dishes/${dishId}`,
+        "DELETE",
+        null,
+        true
+      );
+      if (response) {
+        dispatch(deleteDish(dishId));
+      }
+    } catch (error) {
+      console.error("Error deleting dish:", error);
+    }
+  };
+
+  const handleEditDish = (dish) => {
+    setFormData(dish);
+    dispatch(setIsEditing(true));
+    dispatch(setIsModalOpen(true));
+  };
+
+  const handleSubmitDish = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await makeRequest(
+        `http://localhost:3000/api/dishes/${formData._id}`,
+        "PUT",
+        formData,
+        true
+      );
+      if (response && response.dish) {
+        dispatch(updateDish(response.dish));
+        dispatch(setIsEditing(false));
+        dispatch(setIsModalOpen(false));
+      }
+    } catch (error) {
+      console.error("Error updating dish:", error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const addToCart = async (dish) => {
     try {
-      console.log(dish._id, "dish id");
-
       const response = await makeRequest(
         "http://localhost:3000/api/cart",
         "POST",
         { id: dish._id },
         true
       );
-
       if (response) {
-        console.log(response, "response");
-
         dispatch(setTotalCartItems(response.length));
         dispatch(setCartDishes(response));
       }
@@ -38,6 +93,20 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
+      {isModalOpen && (
+        <Modal
+          title="Edit Dish"
+          isOpen={isModalOpen}
+          onClose={() => dispatch(setIsModalOpen(false))}
+        >
+          <DishForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmitDish}
+            onCancel={() => dispatch(setIsModalOpen(false))}
+          />
+        </Modal>
+      )}
       {dishes.map((dish) => (
         <div
           key={dish._id}
@@ -51,7 +120,6 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
           <div className="p-4">
             <h3 className="text-lg font-semibold">{dish.name}</h3>
             <p className="text-sm">{dish.description}</p>
-
             <div className="flex justify-between items-center mt-2">
               <div className="text-sm">
                 <p className="font-bold">₹{dish.price}</p>
@@ -76,16 +144,15 @@ const DishesList = ({ dishes, handleDelete, handleEdit }) => {
                 {cartIds.includes(dish._id) ? "Already in Cart" : "Order Now"}
               </button>
             </div>
-
             <div className="flex justify-between items-center mt-3">
               <button
-                onClick={() => handleEdit(dish)}
+                onClick={() => handleEditDish(dish)}
                 className="text-blue-600 hover:text-blue-700"
               >
                 <FaEdit />
               </button>
               <button
-                onClick={() => handleDelete(dish._id)}
+                onClick={() => handleDeleteDish(dish._id)}
                 className="text-red-500 hover:text-red-700"
               >
                 <FaTrashAlt />
