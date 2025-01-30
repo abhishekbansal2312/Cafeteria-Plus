@@ -25,6 +25,8 @@ export default function DishesPage() {
 
   useEffect(() => {
     fetchDishes();
+
+    // return () => {};
   }, []);
 
   const fetchDishes = async () => {

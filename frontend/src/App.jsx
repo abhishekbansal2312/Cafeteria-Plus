@@ -34,7 +34,7 @@ export default function App() {
           />
           <Route path="/dishes" element={<DishesPage />} />
           <Route path="/cart" element={<CartPage theme={theme} />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage theme={theme} />} />
         </Routes>
         <Footer />
       </BrowserRouter>

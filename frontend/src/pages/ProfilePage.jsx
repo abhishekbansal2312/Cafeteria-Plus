@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
+import Modal from "../components/Modal";
+import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
+import Profile from "../components/profile/Profile";
+import ProfileForm from "../components/profile/profileForm";
 
-export default function ProfilePage() {
+export default function ProfilePage({ theme }) {
+  const dispatch = useDispatch();
   const makeRequest = useAxios();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { isEditing, isModalOpen } = useSelector((state) => state.form);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    address: "",
+    phone: "",
+  });
 
   const fetchProfile = async () => {
     try {
@@ -15,10 +29,37 @@ export default function ProfilePage() {
         true
       );
       setProfile(response);
+      setFormData(response);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching profile:", error);
       setLoading(false);
+    }
+  };
+
+  const handleEdit = () => {
+    dispatch(setIsEditing(true));
+    dispatch(setIsModalOpen(true));
+    setFormData(profile);
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await makeRequest(
+        "http://localhost:3000/api/users/profile",
+        "PUT",
+        formData,
+        true
+      );
+      dispatch(setIsModalOpen(false));
+      fetchProfile();
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
@@ -29,41 +70,35 @@ export default function ProfilePage() {
   if (loading) return <div className="text-center text-xl">Loading...</div>;
 
   return (
-    <div className="container mx-auto p-6 mt-12 ">
-      <div className=" p-8  border-2 rounded-2xl">
-        <div className="flex items-center space-x-6">
-          <div className="flex-shrink-0">
-            <img
-              className="h-32 w-32 rounded-full object-cover shadow-xl"
-              src="https://images.unsplash.com/photo-1635107510862-53886e926b74?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHByb2ZpbGUlMjBwaWN0dXJlfGVufDB8fDB8fHww"
-              alt="Profile"
+    <div
+      className={`${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      } min-h-screen pb-20`}
+    >
+      <div className="container mx-auto p-6 pt-12">
+        <Profile profile={profile} />
+
+        <div className="text-center mt-6">
+          <button
+            onClick={handleEdit}
+            className="bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600 transition"
+          >
+            Edit Profile
+          </button>
+        </div>
+
+        {isModalOpen && (
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => dispatch(setIsModalOpen(false))}
+          >
+            <ProfileForm
+              formData={formData}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
             />
-          </div>
-
-          <div className="">
-            <h1 className="text-4xl font-semibold mb-2">
-              {profile.name}'s Profile
-            </h1>
-            <p className="text-xl font-medium">{profile.role}</p>
-          </div>
-        </div>
-
-        <div className="mt-8 space-y-4">
-          <div className="bg-white p-6 ">
-            <h2 className="text-2xl font-semibold mb-4">Profile Details</h2>
-            <p className="text-lg">
-              <strong className="font-medium">Email:</strong> {profile.email}
-            </p>
-            <p className="text-lg">
-              <strong className="font-medium">Address:</strong>{" "}
-              {profile.address || "Not provided"}
-            </p>
-            <p className="text-lg">
-              <strong className="font-medium">Phone:</strong>{" "}
-              {profile.phone || "Not provided"}
-            </p>
-          </div>
-        </div>
+          </Modal>
+        )}
       </div>
     </div>
   );
