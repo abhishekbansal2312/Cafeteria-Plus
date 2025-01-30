@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useAxios from "../hooks/useAxios";
+import toast from "react-hot-toast";
 import {
   setCartDishes,
   setTotalCartItems,
-  addCartDish,
   removeCartDish,
   increaseQuantity,
   decreaseQuantity,
@@ -18,7 +18,13 @@ export default function CartPage({ theme }) {
   const { dishes, loading, error } = useSelector((state) => state.cart);
   const makeRequest = useAxios();
 
-  const fetchCart = async () => {
+  const handleError = (message, error) => {
+    console.error(message, error);
+    dispatch(setError(message));
+    toast.error(message);
+  };
+
+  const fetchCart = useCallback(async () => {
     dispatch(setLoading(true));
     try {
       const response = await makeRequest(
@@ -28,14 +34,13 @@ export default function CartPage({ theme }) {
         true
       );
       dispatch(setCartDishes(response || []));
-      dispatch(setTotalCartItems(response.length || 0));
+      dispatch(setTotalCartItems(response?.length || 0));
     } catch (error) {
-      console.error("Error fetching cart:", error);
-      dispatch(setError("Failed to load cart items."));
+      handleError("Failed to load cart items.", error);
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }, [dispatch, makeRequest]);
 
   useEffect(() => {
     fetchCart();
@@ -53,17 +58,16 @@ export default function CartPage({ theme }) {
         dispatch(removeCartDish(id));
         dispatch(setTotalCartItems(response.length));
       } else {
-        console.error("Failed to remove item:", response);
+        handleError("Failed to remove item.", response);
       }
     } catch (error) {
-      console.error("Error removing item:", error);
+      handleError("Error removing item:", error);
     }
   };
 
   const updateQuantity = async (id, currentQuantity, action) => {
-    let newQuantity =
+    const newQuantity =
       action === "inc" ? currentQuantity + 1 : Math.max(1, currentQuantity - 1);
-
     try {
       const response = await makeRequest(
         `http://localhost:3000/api/cart/${id}`,
@@ -77,13 +81,9 @@ export default function CartPage({ theme }) {
         );
       }
     } catch (error) {
-      console.error("Error updating quantity:", error);
+      handleError("Error updating quantity:", error);
     }
   };
-
-  if (loading) {
-    return <div>Loading cart...</div>;
-  }
 
   return (
     <div
@@ -93,11 +93,15 @@ export default function CartPage({ theme }) {
     >
       <div className="pb-20 min-h-screen pt-10">
         {error && <div className="text-red-500">{error}</div>}
-        <CartList
-          cart={dishes}
-          updateQuantity={updateQuantity}
-          removeItem={removeItem}
-        />
+        {loading ? (
+          <div>Loading cart...</div>
+        ) : (
+          <CartList
+            cart={dishes}
+            updateQuantity={updateQuantity}
+            removeItem={removeItem}
+          />
+        )}
       </div>
     </div>
   );
