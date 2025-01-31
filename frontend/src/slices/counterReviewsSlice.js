@@ -30,7 +30,7 @@ const counterReviewsSlice = createSlice({
         (review) => review._id === action.payload._id
       );
       if (index !== -1) {
-        state.reviews[index] = action.payload; // Replace with updated review
+        state.reviews[index] = action.payload;
       }
     },
   },

@@ -49,8 +49,6 @@ const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
           onChange={handleChange}
         />
       </div>
-
-      {/* Two-column grid for Operating Hours */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField
           label="Open Time"
@@ -69,7 +67,6 @@ const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
         />
       </div>
 
-      {/* Active Checkbox */}
       <div className="flex items-center space-x-2">
         <input
           type="checkbox"
@@ -83,8 +80,6 @@ const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
           Is Active
         </label>
       </div>
-
-      {/* Submit Button */}
       <div className="flex justify-end space-x-4">
         <button
           type="submit"

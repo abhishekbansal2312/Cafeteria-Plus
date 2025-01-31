@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
-import ReviewForm from "./ReviewForm";
-import Reviews from "./Reviews";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setReviews,
   setLoading,
   setError,
   addReview,
+  removeReview,
+  updateReview,
 } from "../../slices/counterReviewsSlice";
+import ReviewForm from "./ReviewForm";
+import Reviews from "./Reviews";
 import useAxios from "../../hooks/useAxios";
 
 export default function CounterReviews({ id }) {
   const dispatch = useDispatch();
   const { reviews, loading, error } = useSelector(
     (state) => state.counterReviews
-  ); // Access reviews, loading, and error states from Redux
+  );
   const makeRequest = useAxios();
 
   const [formData, setFormData] = useState({
@@ -32,8 +34,6 @@ export default function CounterReviews({ id }) {
           `http://localhost:3000/api/reviews/${id}`,
           "GET"
         );
-        console.log(reviews);
-
         dispatch(setReviews(response));
       } catch (err) {
         dispatch(setError("Error fetching reviews"));
@@ -41,7 +41,6 @@ export default function CounterReviews({ id }) {
         dispatch(setLoading(false));
       }
     };
-
     fetchReviews();
   }, []);
 
@@ -56,7 +55,7 @@ export default function CounterReviews({ id }) {
   const setRating = (rating) => {
     setFormData((prev) => ({
       ...prev,
-      rating, // Update the rating value
+      rating,
     }));
   };
 
@@ -66,17 +65,15 @@ export default function CounterReviews({ id }) {
 
     try {
       const response = await createReviewForCounter();
-      console.log(response);
-
       if (response) {
-        dispatch(addReview(response)); // Add the new review to Redux store
-        setFormData({ title: "", rating: 0, comment: "" }); // Clear form data after successful submission
+        dispatch(addReview(response));
+        setFormData({ title: "", rating: 0, comment: "" });
       }
     } catch (err) {
       setStatus({ loading: false, error: err.message });
-      console.error(err);
+      dispatch(setError(err.message));
     } finally {
-      setStatus((prev) => ({ ...prev, loading: false }));
+      setStatus({ loading: false });
     }
   };
 
@@ -104,7 +101,6 @@ export default function CounterReviews({ id }) {
         formData={formData}
       />
       {status.loading && <p className="text-blue-500">Submitting review...</p>}
-      {/* Pass reviews from Redux store to Reviews component */}
       <Reviews reviews={reviews} />
     </div>
   );
