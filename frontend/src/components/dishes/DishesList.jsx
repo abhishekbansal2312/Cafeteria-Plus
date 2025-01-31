@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
 import { setCartDishes, setTotalCartItems } from "../../slices/cartSlice";
@@ -10,10 +10,12 @@ import DishForm from "../dishes/DishForm";
 
 const DishesList = () => {
   const { dishes } = useSelector((state) => state.dishes);
+  const { user } = useSelector((state) => state.userDetail);
   const dispatch = useDispatch();
   const makeRequest = useAxios();
   const cartItems = useSelector((state) => state.cart.dishes) || [];
   const isModalOpen = useSelector((state) => state.form.isModalOpen);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -107,60 +109,68 @@ const DishesList = () => {
           />
         </Modal>
       )}
-      {dishes.map((dish) => (
-        <div
-          key={dish._id}
-          className="shadow-lg rounded-lg overflow-hidden border"
-        >
-          <img
-            src={dish.image}
-            alt={dish.name}
-            className="w-full h-40 object-cover"
-          />
-          <div className="p-4">
-            <h3 className="text-lg font-semibold">{dish.name}</h3>
-            <p className="text-sm">{dish.description}</p>
-            <div className="flex justify-between items-center mt-2">
-              <div className="text-sm">
-                <p className="font-bold">₹{dish.price}</p>
-                <p className="text-sm">Category: {dish.category}</p>
-                <p
-                  className={`mt-2 text-sm font-medium ${
-                    dish.availability ? "text-green-600" : "text-red-600"
+      {dishes.map((dish) => {
+        const isMerchant =
+          user?.role === "merchant" && dish.counter.merchants.includes(user.id);
+
+        return (
+          <div
+            key={dish._id}
+            className="shadow-lg rounded-lg overflow-hidden border"
+          >
+            <img
+              src={dish.image}
+              alt={dish.name}
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-4">
+              <h3 className="text-lg font-semibold">{dish.name}</h3>
+              <p className="text-sm">{dish.description}</p>
+              <div className="flex justify-between items-center mt-2">
+                <div className="text-sm">
+                  <p className="font-bold">₹{dish.price}</p>
+                  <p className="text-sm">Category: {dish.category}</p>
+                  <p
+                    className={`mt-2 text-sm font-medium ${
+                      dish.availability ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {dish.availability ? "Available" : "Out of Stock"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => addToCart(dish)}
+                  className={`bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition ${
+                    cartIds.includes(dish._id)
+                      ? "opacity-70 cursor-not-allowed"
+                      : ""
                   }`}
+                  disabled={cartIds.includes(dish._id)}
                 >
-                  {dish.availability ? "Available" : "Out of Stock"}
-                </p>
+                  {cartIds.includes(dish._id) ? "Already in Cart" : "Order Now"}
+                </button>
               </div>
-              <button
-                onClick={() => addToCart(dish)}
-                className={`bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition ${
-                  cartIds.includes(dish._id)
-                    ? "opacity-70 cursor-not-allowed"
-                    : ""
-                }`}
-                disabled={cartIds.includes(dish._id)}
-              >
-                {cartIds.includes(dish._id) ? "Already in Cart" : "Order Now"}
-              </button>
-            </div>
-            <div className="flex justify-between items-center mt-3">
-              <button
-                onClick={() => handleEditDish(dish)}
-                className="text-blue-600 hover:text-blue-700"
-              >
-                <FaEdit />
-              </button>
-              <button
-                onClick={() => handleDeleteDish(dish._id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                <FaTrashAlt />
-              </button>
+
+              {isMerchant && (
+                <div className="flex justify-between items-center mt-3">
+                  <button
+                    onClick={() => handleEditDish(dish)}
+                    className="text-blue-600 hover:text-blue-700"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteDish(dish._id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FaTrashAlt />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

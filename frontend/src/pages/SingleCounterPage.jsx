@@ -123,7 +123,9 @@ export default function SingleCounterPage({ theme }) {
       }`}
     >
       <div className="flex justify-end gap-3 items-center mb-6">
-        <Button onClick={() => handleOpenModal()} text="Add Dish" />
+        {user && user.role === "merchant" && (
+          <Button onClick={() => handleOpenModal()} text="Add Dish" />
+        )}
 
         {user && user.role === "admin" && (
           <Button

@@ -3,7 +3,7 @@ import { FaMapMarkerAlt, FaEdit, FaTrashAlt, FaCircle } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const CounterList = ({ counters, handleDelete, handleEdit }) => {
+const CounterList = ({ counters = [], handleDelete, handleEdit }) => {
   const user = useSelector((state) => state.userDetail.user);
 
   // const merchantIds = counters
@@ -70,13 +70,13 @@ const CounterList = ({ counters, handleDelete, handleEdit }) => {
               </p>
 
               <div className="flex justify-between gap-4">
-                {flatMerchantIds.includes(user.id) ||
-                  (user.role == "admin" && (
+                {(user && flatMerchantIds.includes(user.id)) ||
+                  (user && user.role == "admin" && (
                     <button onClick={() => handleEdit(counter)} className="">
                       <FaEdit className="mr-2" />
                     </button>
                   ))}
-                {user.role == "admin" && (
+                {user && user.role == "admin" && (
                   <button
                     onClick={() => handleDelete(counter._id)}
                     className=""
