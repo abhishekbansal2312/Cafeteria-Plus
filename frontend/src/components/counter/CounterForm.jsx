@@ -31,7 +31,6 @@ const CounterForm = ({ formData, isEditing, handleSubmit, handleChange }) => {
         onChange={handleChange}
       />
 
-      {/* Two-column grid for Image URL and Theme */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField
           label="Image URL"

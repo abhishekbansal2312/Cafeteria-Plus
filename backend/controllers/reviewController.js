@@ -61,7 +61,7 @@ const createReviewForCounter = async (req, res) => {
 
     await Counter.findByIdAndUpdate(counterId, {
       $push: { reviews: savedReview._id },
-    });
+    }).populate("user");
 
     res.status(201).json(savedReview);
   } catch (error) {

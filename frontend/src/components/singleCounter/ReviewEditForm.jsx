@@ -1,10 +1,11 @@
 import React from "react";
-import InputField from "../inputs/InputField";
+import InputField from "../inputs/InputField"; // Import your InputField component
 
 export default function ReviewEditForm({
   handleUpdateSubmit,
   handleUpdateChange,
   updatedReviewData,
+  setRating, // Adding setRating function as a prop
 }) {
   return (
     <div>
@@ -16,15 +17,25 @@ export default function ReviewEditForm({
           value={updatedReviewData.title}
           onChange={handleUpdateChange}
         />
-        <InputField
-          label="Rating"
-          type="number"
-          name="rating"
-          value={updatedReviewData.rating}
-          onChange={handleUpdateChange}
-          min="1"
-          max="5"
-        />
+        <div>
+          <label className="block text-sm font-medium">Rating</label>
+          <div className="flex space-x-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)} // Set rating when a star is clicked
+                className={`text-2xl ${
+                  star <= updatedReviewData.rating
+                    ? "text-yellow-400"
+                    : "text-gray-300"
+                }`}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+        </div>
         <InputField
           label="Comment"
           type="textarea"

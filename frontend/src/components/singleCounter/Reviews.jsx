@@ -32,7 +32,7 @@ export default function Reviews({ reviews }) {
       "DELETE"
     );
     if (response) {
-      dispatch(removeReview(id)); // Use 'id' directly here
+      dispatch(removeReview(id));
     }
     setIsModalOpen(false);
   };
@@ -42,6 +42,14 @@ export default function Reviews({ reviews }) {
     setUpdatedReviewData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  // Update the setRating function to directly update updatedReviewData
+  const setRating = (rating) => {
+    setUpdatedReviewData((prev) => ({
+      ...prev,
+      rating, // Update the rating field in updatedReviewData
     }));
   };
 
@@ -60,7 +68,7 @@ export default function Reviews({ reviews }) {
         updatedReview
       );
       if (response) {
-        dispatch(updateReview(updatedReview)); // Update the review in the store
+        dispatch(updateReview(updatedReview));
       }
       setIsModalOpen(false);
       setEditingReview(null);
@@ -136,6 +144,7 @@ export default function Reviews({ reviews }) {
           title={"Edit Review"}
         >
           <ReviewEditForm
+            setRating={setRating}
             updatedReviewData={updatedReviewData}
             handleUpdateChange={handleUpdateChange}
             handleUpdateSubmit={handleUpdateSubmit}
