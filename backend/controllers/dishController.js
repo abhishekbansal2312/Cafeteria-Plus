@@ -38,10 +38,7 @@ const createDish = async (req, res) => {
 
 const getAllDishes = async (req, res) => {
   try {
-    const dishes = await Dish.find().populate(
-      "counter",
-      "counter_name location"
-    );
+    const dishes = await Dish.find().populate("counter");
     res.status(200).json(dishes);
   } catch (error) {
     res
@@ -94,8 +91,6 @@ const updateDish = async (req, res) => {
 const deleteDish = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Delete the dish from the Dish collection
     const deletedDish = await Dish.findByIdAndDelete(id);
 
     if (!deletedDish) {
