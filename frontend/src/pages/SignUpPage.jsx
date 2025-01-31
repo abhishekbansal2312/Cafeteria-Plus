@@ -111,7 +111,7 @@ export default function SignUpPage({ theme }) {
 
             <button
               type="submit"
-              className="w-full py-3 border-1  text-black font-semibold rounded-md hover:bg-gray-200 focus:outline-none"
+              className="w-full py-3 border-1  text-black font-semibold rounded-md  focus:outline-none"
             >
               Sign Up
             </button>

@@ -7,7 +7,6 @@ const ProfileForm = ({ formData, handleChange, handleSubmit }) => {
       onSubmit={handleSubmit}
       className="max-w-md mx-auto p- shadow-md rounded-md"
     >
-      <h2 className="text-lg font-semibold mb-4">User Registration</h2>
       <InputField
         label="Name"
         type="text"
@@ -31,6 +30,7 @@ const ProfileForm = ({ formData, handleChange, handleSubmit }) => {
         placeholder="Enter your password"
         value={formData.password}
         onChange={handleChange}
+        required={false}
       />
       <InputField
         label="Address"

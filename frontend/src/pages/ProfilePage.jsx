@@ -91,6 +91,7 @@ export default function ProfilePage({ theme }) {
           <Modal
             isOpen={isModalOpen}
             onClose={() => dispatch(setIsModalOpen(false))}
+            title="Update Profile"
           >
             <ProfileForm
               formData={formData}

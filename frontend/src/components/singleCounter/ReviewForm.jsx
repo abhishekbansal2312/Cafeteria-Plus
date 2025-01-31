@@ -56,7 +56,7 @@ export default function ReviewForm({
 
       <button
         type="submit"
-        className="w-1/4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        className="w-1/4 px-4 py-2 bg-blue-500 rounded-md hover:bg-blue-600"
       >
         Submit Review
       </button>

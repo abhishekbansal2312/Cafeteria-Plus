@@ -85,7 +85,7 @@ export default function LoginPage({ theme }) {
 
             <button
               type="submit"
-              className="w-full py-3  font-semibold rounded-md border-1 hover:bg-gray-200 focus:outline-none"
+              className="w-full py-3  font-semibold rounded-md border-1  focus:outline-none"
             >
               Sign In
             </button>

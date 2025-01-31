@@ -5,8 +5,6 @@ import {
   setLoading,
   setError,
   addReview,
-  removeReview,
-  updateReview,
 } from "../../slices/counterReviewsSlice";
 import ReviewForm from "./ReviewForm";
 import Reviews from "./Reviews";
@@ -18,6 +16,8 @@ export default function CounterReviews({ id }) {
     (state) => state.counterReviews
   );
   const makeRequest = useAxios();
+  const user = useSelector((state) => state.userDetail);
+  console.log(user);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -94,12 +94,14 @@ export default function CounterReviews({ id }) {
   return (
     <div className="border-t-1 mt-6">
       {status.error && <p className="text-red-500">{status.error}</p>}
-      <ReviewForm
-        handleSubmit={handleSubmit}
-        handleChange={handleChange}
-        setRating={setRating}
-        formData={formData}
-      />
+      {user && user.isLoggedIn && (
+        <ReviewForm
+          handleSubmit={handleSubmit}
+          handleChange={handleChange}
+          setRating={setRating}
+          formData={formData}
+        />
+      )}
       {status.loading && <p className="text-blue-500">Submitting review...</p>}
       <Reviews reviews={reviews} />
     </div>
