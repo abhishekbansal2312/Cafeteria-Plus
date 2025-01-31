@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import useAxios from "../../hooks/useAxios";
 import { removeReview, updateReview } from "../../slices/counterReviewsSlice";
 import ReviewEditForm from "./ReviewEditForm";
+import { FaMapMarkerAlt, FaEdit, FaTrashAlt, FaCircle } from "react-icons/fa";
 
 export default function Reviews({ reviews }) {
   const dispatch = useDispatch();
@@ -45,11 +46,10 @@ export default function Reviews({ reviews }) {
     }));
   };
 
-  // Update the setRating function to directly update updatedReviewData
   const setRating = (rating) => {
     setUpdatedReviewData((prev) => ({
       ...prev,
-      rating, // Update the rating field in updatedReviewData
+      rating,
     }));
   };
 
@@ -106,35 +106,39 @@ export default function Reviews({ reviews }) {
       {reviews.length === 0 ? (
         <p className="text-gray-500">No reviews yet!</p>
       ) : (
-        reviews.map((review) => (
-          <div
-            key={review._id}
-            className="border p-4 rounded-lg shadow-md space-y-3 bg-white"
-          >
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-2">
-                <span className="font-semibold text-lg">{review.title}</span>
-                <div className="flex">{renderStars(review.rating)}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {reviews.map((review) => (
+            <div
+              key={review._id}
+              className="border p-4 rounded-lg shadow-md space-y-3 bg-white"
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-2">
+                  <span className="font-semibold text-lg">{review.title}</span>
+                  <div className="flex">{renderStars(review.rating)}</div>
+                </div>
+                <p className="text-gray-500 text-sm">{review.user.name}</p>
               </div>
-              <p className="text-gray-500 text-sm">{review.user.name}</p>
+              <p className="text-gray-600">{review.comment}</p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => handleDeleteClick(review._id)}
+                  className="bg-red-500 text-white py-1 px-3 rounded-md text-sm hover:bg-red-600 transition"
+                >
+                  <FaTrashAlt className="inline-block mr-2" />
+                  Remove
+                </button>
+                <button
+                  onClick={() => handleEditClick(review)}
+                  className="bg-blue-500 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-600 transition"
+                >
+                  <FaEdit className="inline-block mr-2" />
+                  Edit
+                </button>
+              </div>
             </div>
-            <p className="text-gray-600">{review.comment}</p>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => handleDeleteClick(review._id)}
-                className="bg-red-500 text-white py-1 px-3 rounded-md text-sm hover:bg-red-600 transition"
-              >
-                Remove
-              </button>
-              <button
-                onClick={() => handleEditClick(review)}
-                className="bg-blue-500 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-600 transition"
-              >
-                Edit
-              </button>
-            </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
 
       {isModalOpen && (

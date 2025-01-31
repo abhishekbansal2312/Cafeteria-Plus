@@ -56,14 +56,20 @@ const createReviewForCounter = async (req, res) => {
 
     const userId = req.user.id;
 
-    const newReview = new Review({ title, rating, comment, user: userId });
+    const newReview = new Review({
+      title,
+      rating,
+      comment,
+      user: userId,
+    });
+
     const savedReview = await newReview.save();
+    const populatedReview = await savedReview.populate("user", "name email");
 
     await Counter.findByIdAndUpdate(counterId, {
       $push: { reviews: savedReview._id },
-    }).populate("user");
-
-    res.status(201).json(savedReview);
+    });
+    res.status(201).json(populatedReview);
   } catch (error) {
     res.status(500).json({ message: error.stack, stack: error.stack });
   }
