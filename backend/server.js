@@ -21,12 +21,14 @@ const authRoutes = require("./routes/authRoutes");
 const dishRoutes = require("./routes/dishRoutes");
 const counterRoutes = require("./routes/counterRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/dishes", dishRoutes);
 app.use("/api/counters", counterRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 const PORT = process.env.PORT;
 

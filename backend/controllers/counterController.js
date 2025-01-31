@@ -47,7 +47,9 @@ const getAllCounters = async (req, res) => {
 
     const counters = await Counter.find({
       _id: { $in: res.paginationResult.results },
-    }).populate("merchants", "name email");
+    })
+      .populate("merchants", "name email")
+      .populate("reviews", "title rating comment");
 
     res.paginationResult.results = counters;
 
