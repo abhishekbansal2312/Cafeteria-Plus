@@ -4,7 +4,7 @@ import DishesList from "../components/dishes/DishesList";
 import { useDispatch } from "react-redux";
 import { setDishes } from "../slices/dishesSlice";
 
-export default function DishesPage() {
+export default function DishesPage({ theme }) {
   const makeRequest = useAxios();
   const dispatch = useDispatch();
 
@@ -22,7 +22,13 @@ export default function DishesPage() {
   }, []);
   return (
     <div>
-      <DishesList />
+      <div
+        className={`p-6 min-h-screen ${
+          theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+        }`}
+      >
+        <DishesList />
+      </div>
     </div>
   );
 }

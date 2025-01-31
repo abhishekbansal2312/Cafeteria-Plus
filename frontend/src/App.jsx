@@ -32,7 +32,7 @@ export default function App() {
             path="/counters/:id"
             element={<SingleCounterPage theme={theme} />}
           />
-          <Route path="/dishes" element={<DishesPage />} />
+          <Route path="/dishes" element={<DishesPage theme={theme} />} />
           <Route path="/cart" element={<CartPage theme={theme} />} />
           <Route path="/profile" element={<ProfilePage theme={theme} />} />
         </Routes>
