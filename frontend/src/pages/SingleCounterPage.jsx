@@ -6,6 +6,7 @@ import CounterDetails from "../components/singleCounter/CounterDetails";
 import DishesList from "../components/dishes/DishesList";
 import Button from "../components/Button";
 import DishForm from "../components/dishes/DishForm";
+import CounterReviews from "../components/singleCounter/CounterReviews";
 
 import { setDishes, addDish } from "../slices/dishesSlice";
 import Modal from "../components/Modal";
@@ -162,6 +163,7 @@ export default function SingleCounterPage({ theme }) {
 
       <CounterDetails counter={counter} />
       <DishesList />
+      <CounterReviews id={id} />
     </div>
   );
 }

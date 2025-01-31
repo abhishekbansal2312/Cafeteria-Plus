@@ -25,7 +25,7 @@ export default function CartSummary({ cart, totalPrice, totalCartItems }) {
         <span className="text-blue-600 font-bold">₹{totalPrice}</span>
       </div>
 
-      <button className="w-full mt-5 py-3 bg-blue-600  font-semibold rounded-md hover:bg-blue-700 transition-all text-lg">
+      <button className="w-full mt-5 py-3 bg-blue-600  text-stone-200 font-semibold rounded-md hover:bg-blue-700 transition-all text-lg">
         {totalCartItems === 0 ? (
           <Link to="/dishes" className="">
             <>Select Items Please</>

@@ -3,6 +3,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import CartSummary from "./CartSummary";
 import CartItem from "./CartItem";
+import CartSkeleton from "./CartSkeleton";
 
 export default function CartList({
   cart,
@@ -26,7 +27,11 @@ export default function CartList({
         <FiShoppingCart className="text-blue-600 text-3xl" /> Your Cart
       </h2>
 
-      {loading && <div className="text-center">Loading...</div>}
+      {loading && (
+        <div className="text-center">
+          <CartSkeleton />
+        </div>
+      )}
       {error && <div className="text-center">{error}</div>}
 
       <div className="flex flex-col lg:flex-row gap-10">

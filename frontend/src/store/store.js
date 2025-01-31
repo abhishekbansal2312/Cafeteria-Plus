@@ -6,6 +6,7 @@ import counterReducer from "../slices/counterSlice";
 import dishesReducer from "../slices/dishesSlice";
 import merchantReducer from "../slices/merchantsSlice";
 import cartReducer from "../slices/cartSlice";
+import counterReviewsReducer from "../slices/counterReviewsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     dishes: dishesReducer,
     merchants: merchantReducer,
     cart: cartReducer,
+    counterReviews: counterReviewsReducer,
   },
 });
