@@ -17,6 +17,8 @@ export default function CartPage({ theme }) {
   const dispatch = useDispatch();
   const { dishes, loading, error } = useSelector((state) => state.cart);
   const makeRequest = useAxios();
+  const { isLoggedIn } = useSelector((state) => state.userDetail);
+  console.log(isLoggedIn, "isLoggedIn");
 
   const handleError = (message, error) => {
     console.error(message, error);
@@ -25,7 +27,10 @@ export default function CartPage({ theme }) {
   };
 
   const fetchCart = useCallback(async () => {
+    console.log("bjhbhh");
+
     dispatch(setLoading(true));
+    dispatch(setError(null));
     try {
       const response = await makeRequest(
         "http://localhost:3000/api/cart",
@@ -43,8 +48,13 @@ export default function CartPage({ theme }) {
   }, [dispatch, makeRequest]);
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (isLoggedIn) {
+      fetchCart();
+    }
+    return () => {
+      dispatch(setCartDishes([]));
+    };
+  }, [isLoggedIn]);
 
   const removeItem = async (id) => {
     try {
@@ -93,7 +103,26 @@ export default function CartPage({ theme }) {
     >
       <div className="pb-20 min-h-screen pt-10">
         {error && <div className="text-red-500">{error}</div>}
-        {loading ? (
+        {!isLoggedIn ? (
+          <a
+            href="/login" // Replace with the appropriate login URL
+            className="bg-red-500 text-white p-4 rounded-lg text-lg font-semibold flex items-center justify-center hover:bg-red-600 transition duration-200 ease-in-out"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6 mr-2 animate-bounce"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 12l-6 6-6-6" />
+            </svg>
+            Please log in to view your cart.
+          </a>
+        ) : loading ? (
           <div>Loading cart...</div>
         ) : (
           <CartList
