@@ -16,6 +16,8 @@ import {
   setSelectedMerchants,
 } from "../slices/merchantsSlice";
 import { setCounter } from "../slices/counterSlice";
+import CounterDetailSkeleton from "../components/singleCounter/CounterDetailSkeleton";
+import DishSkeleton from "../components/dishes/DishSkeleton";
 
 export default function SingleCounterPage({ theme }) {
   const dispatch = useDispatch();
@@ -23,7 +25,7 @@ export default function SingleCounterPage({ theme }) {
   const { id } = useParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true); // ⬅️ Added loading state
+  const [loading, setLoading] = useState(true);
   const { counter } = useSelector((state) => state.counter);
   const { isMerchantModalOpen, merchants } = useSelector(
     (state) => state.merchants
@@ -160,7 +162,10 @@ export default function SingleCounterPage({ theme }) {
       }`}
     >
       {loading ? (
-        <p className="text-center text-lg font-semibold">Loading...</p>
+        <div>
+          <CounterDetailSkeleton />
+          <DishSkeleton />
+        </div>
       ) : (
         <>
           <div className="flex justify-end gap-3 items-center mb-6">
