@@ -4,7 +4,7 @@ import useAxios from "../hooks/useAxios";
 import Modal from "../components/Modal";
 import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
 import Profile from "../components/profile/Profile";
-import ProfileForm from "../components/profile/profileForm";
+import ProfileForm from "../components/profile/ProfileForm";
 
 export default function ProfilePage({ theme }) {
   const dispatch = useDispatch();
