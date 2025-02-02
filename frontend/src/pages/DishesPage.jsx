@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setDishes } from "../slices/dishesSlice";
 import FilterInput from "../components/inputs/InputField";
 import FilterSelect from "../components/inputs/SelectField";
+import Pagination from "../components/Pagination"; // Importing Pagination component
 
 export default function DishesPage({ theme }) {
   const makeRequest = useAxios();
@@ -17,8 +18,11 @@ export default function DishesPage({ theme }) {
     minPrice: "",
     maxPrice: "",
     page: 1,
-    limit: 20,
+    limit: 5,
   });
+
+  const [totalPages, setTotalPages] = useState(1); // Track total pages
+  const [totalResults, setTotalResults] = useState(0); // Track total results
 
   const categories = [
     "breakfast",
@@ -37,17 +41,30 @@ export default function DishesPage({ theme }) {
     );
     console.log(response, "dishes data");
     dispatch(setDishes(response.dishes));
+
+    // Set total results and total pages based on response
+    setTotalResults(response.totalResults);
+    setTotalPages(Math.ceil(response.totalResults / filters.limit));
   };
 
   useEffect(() => {
     fetchDishes();
-  }, []);
+  }, [
+    filters.page,
+    filters.limit,
+    filters.category,
+    filters.search,
+    filters.availability,
+    filters.minPrice,
+    filters.maxPrice,
+  ]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
       [name]: value,
+      page: 1, // Reset to page 1 when filters change
     }));
   };
 
@@ -61,6 +78,13 @@ export default function DishesPage({ theme }) {
     { value: "false", label: "Not Available" },
   ];
 
+  const handlePageChange = (newPage) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      page: newPage,
+    }));
+  };
+
   return (
     <div>
       <div
@@ -68,7 +92,7 @@ export default function DishesPage({ theme }) {
           theme === "dark" ? "bg-black text-white" : "bg-white text-black"
         }`}
       >
-        <div className=" flex gap-2">
+        <div className="flex gap-2">
           <FilterInput
             name="search"
             value={filters.search}
@@ -114,6 +138,13 @@ export default function DishesPage({ theme }) {
         </div>
 
         <DishesList />
+
+        <Pagination
+          totalPages={totalPages}
+          currentPage={filters.page}
+          onPageChange={handlePageChange}
+          totalResults={totalResults} // Pass the total results to Pagination
+        />
       </div>
     </div>
   );
