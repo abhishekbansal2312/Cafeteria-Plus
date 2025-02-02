@@ -30,6 +30,8 @@ export default function SingleCounterPage({ theme }) {
   const { isMerchantModalOpen, merchants } = useSelector(
     (state) => state.merchants
   );
+  const user = useSelector((state) => state.userDetail.user);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -38,7 +40,6 @@ export default function SingleCounterPage({ theme }) {
     category: "breakfast",
     availability: true,
   });
-  const user = useSelector((state) => state.userDetail.user);
 
   const getDishByCounter = async () => {
     try {
@@ -49,7 +50,7 @@ export default function SingleCounterPage({ theme }) {
         null,
         true
       );
-      if (response) {
+      if (response && response.counter) {
         dispatch(setSelectedMerchants(response.counter.merchants));
         dispatch(setCounter(response.counter));
         dispatch(setDishes(response.dishes));
@@ -61,95 +62,16 @@ export default function SingleCounterPage({ theme }) {
     }
   };
 
-  const fetchMerchants = async () => {
-    try {
-      setLoading(true);
-      const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/counters/merchants`,
-        "GET",
-        null,
-        true
-      );
-
-      if (response) {
-        dispatch(setMerchants(response.merchants));
-      }
-    } catch (error) {
-      console.error("Error fetching merchants:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const addMerchantInCounter = async (selectedMerchants) => {
-    try {
-      setLoading(true);
-      const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/counters/merchants/${id}`,
-        "PUT",
-        { merchantIds: selectedMerchants },
-        true
-      );
-      if (response) {
-        dispatch(setSelectedMerchants(response.merchants));
-        dispatch(setCounter(response.counter));
-        dispatch(setIsMerchantModalOpen(false));
-      }
-    } catch (error) {
-      console.error("Error adding merchant:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmitDish = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      const url = `https://dinesync-seamlessdining.onrender.com/api/dishes/${id}`;
-      const method = "POST";
-
-      const response = await makeRequest(url, method, formData, true);
-      if (response) {
-        dispatch(addDish(response.dish));
-        resetForm();
-        setIsModalOpen(false);
-      }
-    } catch (error) {
-      console.error("Error adding dish:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     getDishByCounter();
-    fetchMerchants();
 
     return () => {
-      setFormData({});
+      dispatch(setCounter(null)); // Reset counter state on unmount
       dispatch(setDishes([]));
       dispatch(setMerchants([]));
       dispatch(setSelectedMerchants([]));
-      dispatch(setCounter([]));
     };
   }, [id]);
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      description: "",
-      price: "",
-      image: "",
-      category: "breakfast",
-      availability: true,
-    });
-  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -166,22 +88,16 @@ export default function SingleCounterPage({ theme }) {
           <CounterDetailSkeleton />
           <DishSkeleton />
         </div>
-      ) : (
+      ) : counter ? (
         <>
           <div className="flex justify-end gap-3 items-center mb-6">
-            {user && user.role === "merchant" && (
-              <Button
-                onClick={handleOpenModal}
-                text="Add Dish"
-                disabled={loading}
-              />
+            {user?.role === "merchant" && (
+              <Button onClick={handleOpenModal} text="Add Dish" />
             )}
-
-            {user && user.role === "admin" && (
+            {user?.role === "admin" && (
               <Button
                 onClick={() => dispatch(setIsMerchantModalOpen(true))}
                 text="Manage Merchants"
-                disabled={loading}
               />
             )}
           </div>
@@ -194,7 +110,7 @@ export default function SingleCounterPage({ theme }) {
             >
               <AddMerchant
                 merchants={merchants}
-                addMerchantInCounter={addMerchantInCounter}
+                addMerchantInCounter={() => {}}
               />
             </Modal>
           )}
@@ -207,8 +123,10 @@ export default function SingleCounterPage({ theme }) {
             >
               <DishForm
                 formData={formData}
-                handleChange={handleChange}
-                handleSubmit={handleSubmitDish}
+                handleChange={(e) =>
+                  setFormData({ ...formData, [e.target.name]: e.target.value })
+                }
+                handleSubmit={(e) => e.preventDefault()}
                 onCancel={() => setIsModalOpen(false)}
               />
             </Modal>
@@ -218,6 +136,8 @@ export default function SingleCounterPage({ theme }) {
           <DishesList />
           <CounterReviews id={id} />
         </>
+      ) : (
+        <p className="text-center text-lg">Counter not found.</p>
       )}
     </div>
   );
