@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ProfileSkeleton() {
   return (
-    <div className="p-8 border-2 rounded-2xl animate-pulse bg-gray-200">
+    <div className="p-8 border-2 rounded-2xl animate-pulse bg-gray-200 min-h-screen">
       {/* Profile Header */}
       <div className="flex items-center space-x-6">
         <div className="h-32 w-32 rounded-full bg-gray-300"></div>
