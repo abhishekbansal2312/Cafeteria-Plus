@@ -51,9 +51,6 @@ export default function CartPage({ theme }) {
     if (isLoggedIn) {
       fetchCart();
     }
-    return () => {
-      dispatch(setCartDishes([]));
-    };
   }, [isLoggedIn]);
 
   const removeItem = async (id) => {

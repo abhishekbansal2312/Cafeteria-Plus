@@ -1,4 +1,5 @@
 import React from "react";
+import useAxios from "../../hooks/useAxios";
 
 const CATEGORIES = [
   {
@@ -39,6 +40,16 @@ const CATEGORIES = [
 ];
 
 export default function Categories({ theme }) {
+  const makeRequest = useAxios();
+  const [categories, setCategories] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+
+  const getCategoriesDishes = async () => {
+    const response = await makeRequest(
+      `http://localhost:3000/api/dishes?category=${category}`,
+      "GET"
+    );
+  };
   return (
     <div className={`${theme === "dark" ? "bg-black" : "bg-whte"} w-full py-8`}>
       <div className="container mx-auto px-4">

@@ -121,7 +121,7 @@ const DishesList = () => {
             <img
               src={dish.image}
               alt={dish.name}
-              className="w-full h-40 object-cover"
+              className="w-full h-48 object-cover"
             />
             <div className="p-4">
               <h3 className="text-lg font-semibold">{dish.name}</h3>
