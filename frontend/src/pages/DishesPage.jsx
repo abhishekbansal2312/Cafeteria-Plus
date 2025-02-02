@@ -6,6 +6,7 @@ import { setDishes } from "../slices/dishesSlice";
 import FilterInput from "../components/inputs/InputField";
 import FilterSelect from "../components/inputs/SelectField";
 import Pagination from "../components/Pagination";
+import DishSkeleton from "../components/dishes/DishSkeleton";
 
 export default function DishesPage({ theme }) {
   const makeRequest = useAxios();
@@ -29,6 +30,7 @@ export default function DishesPage({ theme }) {
     limit: 5,
   });
 
+  const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
@@ -43,14 +45,21 @@ export default function DishesPage({ theme }) {
   ];
 
   const fetchDishes = async () => {
-    const response = await makeRequest(
-      `https://dinesync-seamlessdining.onrender.com/api/dishes?page=${appliedFilters.page}&limit=${appliedFilters.limit}&category=${appliedFilters.category}&search=${appliedFilters.search}&availability=${appliedFilters.availability}&minPrice=${appliedFilters.minPrice}&maxPrice=${appliedFilters.maxPrice}`,
-      "GET"
-    );
-    console.log(response, "dishes data");
-    dispatch(setDishes(response.dishes));
-    setTotalResults(response.totalResults);
-    setTotalPages(Math.ceil(response.totalResults / appliedFilters.limit));
+    setLoading(true);
+    try {
+      const response = await makeRequest(
+        `https://dinesync-seamlessdining.onrender.com/api/dishes?page=${appliedFilters.page}&limit=${appliedFilters.limit}&category=${appliedFilters.category}&search=${appliedFilters.search}&availability=${appliedFilters.availability}&minPrice=${appliedFilters.minPrice}&maxPrice=${appliedFilters.maxPrice}`,
+        "GET"
+      );
+      console.log(response, "dishes data");
+      dispatch(setDishes(response.dishes));
+      setTotalResults(response.totalResults);
+      setTotalPages(Math.ceil(response.totalResults / appliedFilters.limit));
+    } catch (error) {
+      console.error("Error fetching dishes:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -59,7 +68,7 @@ export default function DishesPage({ theme }) {
     return () => {
       dispatch(setDishes([]));
     };
-  }, [appliedFilters]); // Fetch dishes only when applied filters change
+  }, [appliedFilters]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -138,14 +147,19 @@ export default function DishesPage({ theme }) {
           </button>
         </div>
 
-        <DishesList />
-
-        <Pagination
-          totalPages={totalPages}
-          currentPage={appliedFilters.page}
-          onPageChange={handlePageChange}
-          totalResults={totalResults}
-        />
+        {loading ? (
+          <DishSkeleton />
+        ) : (
+          <>
+            <DishesList />
+            <Pagination
+              totalPages={totalPages}
+              currentPage={appliedFilters.page}
+              onPageChange={handlePageChange}
+              totalResults={totalResults}
+            />
+          </>
+        )}
       </div>
     </div>
   );
