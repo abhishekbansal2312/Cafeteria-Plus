@@ -3,7 +3,7 @@ import { VscSignOut } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../slices/userSlice";
 import { useDispatch } from "react-redux";
-import { setTotalCartItems } from "../../slices/cartSlice";
+import { setCartDishes, setTotalCartItems } from "../../slices/cartSlice";
 
 export default function Logout() {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ export default function Logout() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     dispatch(logoutUser());
-
+    dispatch(setCartDishes([]));
     dispatch(setTotalCartItems(0));
     navigate("/");
   };
