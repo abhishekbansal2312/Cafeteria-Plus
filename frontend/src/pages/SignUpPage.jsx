@@ -20,7 +20,7 @@ export default function SignUpPage({ theme }) {
     }
 
     const response = await makeRequest(
-      "http://localhost:3000/api/auth/register",
+      "https://dinesync-seamlessdining.onrender.com/api/auth/register",
       "POST",
       {
         name,

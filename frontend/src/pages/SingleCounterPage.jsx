@@ -39,7 +39,7 @@ export default function SingleCounterPage({ theme }) {
   const user = useSelector((state) => state.userDetail.user);
   const getDishByCounter = async () => {
     const response = await makeRequest(
-      `http://localhost:3000/api/counters/${id}`,
+      `https://dinesync-seamlessdining.onrender.com/api/counters/${id}`,
       "GET",
       null,
       true
@@ -53,7 +53,7 @@ export default function SingleCounterPage({ theme }) {
 
   const fetchMerchants = async () => {
     const response = await makeRequest(
-      `http://localhost:3000/api/counters/merchants`,
+      `https://dinesync-seamlessdining.onrender.com/api/counters/merchants`,
       "GET",
       null,
       true
@@ -66,7 +66,7 @@ export default function SingleCounterPage({ theme }) {
 
   const addMerchantInCounter = async (selectedMerchants) => {
     const response = await makeRequest(
-      `http://localhost:3000/api/counters/merchants/${id}`,
+      `https://dinesync-seamlessdining.onrender.com/api/counters/merchants/${id}`,
       "PUT",
       { merchantIds: selectedMerchants },
       true
@@ -80,7 +80,7 @@ export default function SingleCounterPage({ theme }) {
 
   const handleSubmitDish = async (e) => {
     e.preventDefault();
-    const url = `http://localhost:3000/api/dishes/${id}`;
+    const url = `https://dinesync-seamlessdining.onrender.com/api/dishes/${id}`;
     const method = "POST";
 
     const response = await makeRequest(url, method, formData, true);
