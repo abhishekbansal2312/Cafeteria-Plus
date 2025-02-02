@@ -103,8 +103,8 @@ export default function CartPage({ theme }) {
       <div className="pb-20 min-h-screen pt-10">
         {error && <div className="text-red-500">{error}</div>}
         {!isLoggedIn ? (
-          <a
-            href="/login" // Replace with the appropriate login URL
+          <Link
+            to="/login"
             className="bg-red-500 text-white p-4 rounded-lg text-lg font-semibold flex items-center justify-center hover:bg-red-600 transition duration-200 ease-in-out"
           >
             <svg
@@ -120,7 +120,7 @@ export default function CartPage({ theme }) {
               <path d="M18 12l-6 6-6-6" />
             </svg>
             Please log in to view your cart.
-          </a>
+          </Link>
         ) : loading ? (
           <div>
             <CartSkeleton />
