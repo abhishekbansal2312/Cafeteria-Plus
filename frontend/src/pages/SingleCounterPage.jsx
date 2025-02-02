@@ -7,7 +7,6 @@ import DishesList from "../components/dishes/DishesList";
 import Button from "../components/Button";
 import DishForm from "../components/dishes/DishForm";
 import CounterReviews from "../components/singleCounter/CounterReviews";
-
 import { setDishes, addDish } from "../slices/dishesSlice";
 import Modal from "../components/Modal";
 import AddMerchant from "../components/singleCounter/AddMerchant";
@@ -24,6 +23,7 @@ export default function SingleCounterPage({ theme }) {
   const { id } = useParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true); // ⬅️ Added loading state
   const { counter } = useSelector((state) => state.counter);
   const { isMerchantModalOpen, merchants } = useSelector(
     (state) => state.merchants
@@ -37,57 +37,86 @@ export default function SingleCounterPage({ theme }) {
     availability: true,
   });
   const user = useSelector((state) => state.userDetail.user);
+
   const getDishByCounter = async () => {
-    const response = await makeRequest(
-      `https://dinesync-seamlessdining.onrender.com/api/counters/${id}`,
-      "GET",
-      null,
-      true
-    );
-    if (response) {
-      dispatch(setSelectedMerchants(response.counter.merchants));
-      dispatch(setCounter(response.counter));
-      dispatch(setDishes(response.dishes));
+    try {
+      setLoading(true);
+      const response = await makeRequest(
+        `https://dinesync-seamlessdining.onrender.com/api/counters/${id}`,
+        "GET",
+        null,
+        true
+      );
+      if (response) {
+        dispatch(setSelectedMerchants(response.counter.merchants));
+        dispatch(setCounter(response.counter));
+        dispatch(setDishes(response.dishes));
+      }
+    } catch (error) {
+      console.error("Error fetching counter data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchMerchants = async () => {
-    const response = await makeRequest(
-      `https://dinesync-seamlessdining.onrender.com/api/counters/merchants`,
-      "GET",
-      null,
-      true
-    );
+    try {
+      setLoading(true);
+      const response = await makeRequest(
+        `https://dinesync-seamlessdining.onrender.com/api/counters/merchants`,
+        "GET",
+        null,
+        true
+      );
 
-    if (response) {
-      dispatch(setMerchants(response.merchants));
+      if (response) {
+        dispatch(setMerchants(response.merchants));
+      }
+    } catch (error) {
+      console.error("Error fetching merchants:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const addMerchantInCounter = async (selectedMerchants) => {
-    const response = await makeRequest(
-      `https://dinesync-seamlessdining.onrender.com/api/counters/merchants/${id}`,
-      "PUT",
-      { merchantIds: selectedMerchants },
-      true
-    );
-    if (response) {
-      dispatch(setSelectedMerchants(response.merchants));
-      dispatch(setCounter(response.counter));
-      dispatch(setIsMerchantModalOpen(false));
+    try {
+      setLoading(true);
+      const response = await makeRequest(
+        `https://dinesync-seamlessdining.onrender.com/api/counters/merchants/${id}`,
+        "PUT",
+        { merchantIds: selectedMerchants },
+        true
+      );
+      if (response) {
+        dispatch(setSelectedMerchants(response.merchants));
+        dispatch(setCounter(response.counter));
+        dispatch(setIsMerchantModalOpen(false));
+      }
+    } catch (error) {
+      console.error("Error adding merchant:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmitDish = async (e) => {
     e.preventDefault();
-    const url = `https://dinesync-seamlessdining.onrender.com/api/dishes/${id}`;
-    const method = "POST";
+    try {
+      setLoading(true);
+      const url = `https://dinesync-seamlessdining.onrender.com/api/dishes/${id}`;
+      const method = "POST";
 
-    const response = await makeRequest(url, method, formData, true);
-    if (response) {
-      dispatch(addDish(response.dish));
-      resetForm();
-      dispatch(setIsModalOpen(false));
+      const response = await makeRequest(url, method, formData, true);
+      if (response) {
+        dispatch(addDish(response.dish));
+        resetForm();
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error adding dish:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,7 +150,7 @@ export default function SingleCounterPage({ theme }) {
   };
 
   const handleOpenModal = () => {
-    dispatch(setIsModalOpen(true));
+    setIsModalOpen(true);
   };
 
   return (
@@ -130,50 +159,61 @@ export default function SingleCounterPage({ theme }) {
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
-      <div className="flex justify-end gap-3 items-center mb-6">
-        {user && user.role === "merchant" && (
-          <Button onClick={() => handleOpenModal()} text="Add Dish" />
-        )}
+      {loading ? (
+        <p className="text-center text-lg font-semibold">Loading...</p>
+      ) : (
+        <>
+          <div className="flex justify-end gap-3 items-center mb-6">
+            {user && user.role === "merchant" && (
+              <Button
+                onClick={handleOpenModal}
+                text="Add Dish"
+                disabled={loading}
+              />
+            )}
 
-        {user && user.role === "admin" && (
-          <Button
-            onClick={() => dispatch(setIsMerchantModalOpen(true))}
-            text="Manage Merchants"
-          />
-        )}
-      </div>
+            {user && user.role === "admin" && (
+              <Button
+                onClick={() => dispatch(setIsMerchantModalOpen(true))}
+                text="Manage Merchants"
+                disabled={loading}
+              />
+            )}
+          </div>
 
-      {isMerchantModalOpen && (
-        <Modal
-          title="Select Merchants"
-          isOpen={isMerchantModalOpen}
-          onClose={() => dispatch(setIsMerchantModalOpen(false))} //
-        >
-          <AddMerchant
-            merchants={merchants}
-            addMerchantInCounter={addMerchantInCounter}
-          />
-        </Modal>
+          {isMerchantModalOpen && (
+            <Modal
+              title="Select Merchants"
+              isOpen={isMerchantModalOpen}
+              onClose={() => dispatch(setIsMerchantModalOpen(false))}
+            >
+              <AddMerchant
+                merchants={merchants}
+                addMerchantInCounter={addMerchantInCounter}
+              />
+            </Modal>
+          )}
+
+          {isModalOpen && (
+            <Modal
+              title="Add Dish"
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+            >
+              <DishForm
+                formData={formData}
+                handleChange={handleChange}
+                handleSubmit={handleSubmitDish}
+                onCancel={() => setIsModalOpen(false)}
+              />
+            </Modal>
+          )}
+
+          <CounterDetails counter={counter} />
+          <DishesList />
+          <CounterReviews id={id} />
+        </>
       )}
-
-      {isModalOpen && (
-        <Modal
-          title="Add Dish"
-          isOpen={isModalOpen}
-          onClose={() => dispatch(setIsModalOpen(false))}
-        >
-          <DishForm
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmitDish}
-            onCancel={() => dispatch(setIsModalOpen(false))}
-          />
-        </Modal>
-      )}
-
-      <CounterDetails counter={counter} />
-      <DishesList />
-      <CounterReviews id={id} />
     </div>
   );
 }
