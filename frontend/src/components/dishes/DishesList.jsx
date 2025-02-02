@@ -7,6 +7,7 @@ import { deleteDish, updateDish } from "../../slices/dishesSlice";
 import { setIsModalOpen, setIsEditing } from "../../slices/formSlice";
 import Modal from "../Modal";
 import DishForm from "../dishes/DishForm";
+import toast from "react-hot-toast";
 
 const DishesList = () => {
   const { dishes } = useSelector((state) => state.dishes);
@@ -37,9 +38,11 @@ const DishesList = () => {
       );
       if (response) {
         dispatch(deleteDish(dishId));
+        toast.success("Dish deleted successfully");
       }
     } catch (error) {
       console.error("Error deleting dish:", error);
+      toast.error("Failed to delete dish");
     }
   };
 
@@ -62,9 +65,11 @@ const DishesList = () => {
         dispatch(updateDish(response.dish));
         dispatch(setIsEditing(false));
         dispatch(setIsModalOpen(false));
+        toast.success("Dish updated successfully");
       }
     } catch (error) {
       console.error("Error updating dish:", error);
+      toast.error("Failed to update dish");
     }
   };
 
@@ -77,6 +82,10 @@ const DishesList = () => {
   };
 
   const addToCart = async (dish) => {
+    if (!user) {
+      toast.error("Please login to add dish to cart");
+      return;
+    }
     try {
       const response = await makeRequest(
         "https://dinesync-seamlessdining.onrender.com/api/cart",
@@ -87,9 +96,11 @@ const DishesList = () => {
       if (response) {
         dispatch(setTotalCartItems(response.length));
         dispatch(setCartDishes(response));
+        toast.success("Dish added to cart successfully");
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
+      toast.error("Failed to add dish to cart");
     }
   };
 
