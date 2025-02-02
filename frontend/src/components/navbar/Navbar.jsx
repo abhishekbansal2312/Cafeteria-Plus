@@ -21,84 +21,84 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`p-4 border-b-1 ${
+      className={`p-4 border-b ${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
-          {theme === "dark" ? (
-            <img src={Dark} alt="Logo" className="w-full h-10" />
-          ) : (
-            <img src={Light} alt="Logo" className="w-full h-10" />
-          )}
+          <img
+            src={theme === "dark" ? Dark : Light}
+            alt="Logo"
+            className="h-10"
+          />
         </Link>
+
         <div className="md:hidden">
           <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="focus:outline-none"
+            onClick={() => {
+              console.log("Button clicked");
+              setIsOpen(!isOpen);
+            }}
+            className="focus:outline-none text-2xl"
           >
             {isOpen ? "✖" : "☰"}
           </button>
         </div>
+
         <ul
-          className={`md:flex md:space-x-6 absolute md:static ${
+          className={`
+          md:flex md:space-x-6 fixed md:static inset-0 md:inset-auto bg-opacity-95 md:bg-opacity-100 
+          ${
             theme === "dark" ? "bg-black" : "bg-white"
-          } w-full md:w-auto left-0 md:flex-row flex-col items-center md:items-center space-y-4 md:space-y-0 p-4 md:p-0 ease-in ${
-            isOpen ? "top-16" : "top-[-500px]"
+          } w-full md:w-auto flex-col md:flex-row items-center 
+          space-y-6 md:space-y-0 p-6 md:p-0 transition-all duration-300 
+          ${
+            isOpen ? "top-16 opacity-100" : "-top-full opacity-0 md:opacity-100"
           }`}
         >
           <li>
             {user ? (
-              <>Welcome, {user.name}</>
+              <span>Welcome, {user.name}</span>
             ) : (
-              <button>
-                <Link
-                  to="/login"
-                  className={`${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
-                >
-                  Login
-                </Link>
-              </button>
+              <Link to="/login" className="hover:text-orange-500">
+                Login
+              </Link>
             )}
           </li>
           <li>
             <Link
               to="/"
-              className={` ${
+              className={`${
                 isActive("/")
                   ? "text-orange-500 border-b-2 border-orange-500"
-                  : ""
+                  : "hover:text-orange-500"
               }`}
             >
               Home
             </Link>
           </li>
-          {user && user.role == "admin" ? (
+          {user && user.role === "admin" && (
             <li>
               <Link
                 to="/users"
-                className={` ${
+                className={`${
                   isActive("/users")
                     ? "text-orange-500 border-b-2 border-orange-500"
-                    : ""
+                    : "hover:text-orange-500"
                 }`}
               >
                 Users
               </Link>
             </li>
-          ) : (
-            <></>
           )}
           <li>
             <Link
               to="/counters"
-              className={` ${
-                isActive("/services")
+              className={`${
+                isActive("/counters")
                   ? "text-orange-500 border-b-2 border-orange-500"
-                  : ""
+                  : "hover:text-orange-500"
               }`}
             >
               Counters
@@ -110,31 +110,30 @@ const Navbar = () => {
           <li>
             <Link
               to="/cart"
-              className={` ${
-                isActive("/contact")
+              className={`${
+                isActive("/cart")
                   ? "text-orange-500 border-b-2 border-orange-500"
-                  : ""
+                  : "hover:text-orange-500"
               }`}
             >
               <Cart theme={theme} />
             </Link>
           </li>
-
-          <li>
-            {isLoggedIn && (
-              <Link to="/profile">
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNKfj6RsyRZqO4nnWkPFrYMmgrzDmyG31pFQ&s"
-                  alt=""
-                  className="w-8 h-8 rounded-full"
-                />
-              </Link>
-            )}
-          </li>
           {isLoggedIn && (
-            <li>
-              <Logout />
-            </li>
+            <>
+              <li>
+                <Link to="/profile">
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNKfj6RsyRZqO4nnWkPFrYMmgrzDmyG31pFQ&s"
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                </Link>
+              </li>
+              <li>
+                <Logout />
+              </li>
+            </>
           )}
         </ul>
       </div>
