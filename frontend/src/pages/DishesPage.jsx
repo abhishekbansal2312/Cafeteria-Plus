@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { setDishes } from "../slices/dishesSlice";
 import FilterInput from "../components/inputs/InputField";
 import FilterSelect from "../components/inputs/SelectField";
-import Pagination from "../components/Pagination"; // Importing Pagination component
+import Pagination from "../components/Pagination";
 
 export default function DishesPage({ theme }) {
   const makeRequest = useAxios();
@@ -17,12 +17,20 @@ export default function DishesPage({ theme }) {
     availability: "",
     minPrice: "",
     maxPrice: "",
+  });
+
+  const [appliedFilters, setAppliedFilters] = useState({
+    category: "",
+    search: "",
+    availability: "",
+    minPrice: "",
+    maxPrice: "",
     page: 1,
     limit: 5,
   });
 
-  const [totalPages, setTotalPages] = useState(1); // Track total pages
-  const [totalResults, setTotalResults] = useState(0); // Track total results
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
 
   const categories = [
     "breakfast",
@@ -36,40 +44,36 @@ export default function DishesPage({ theme }) {
 
   const fetchDishes = async () => {
     const response = await makeRequest(
-      `https://dinesync-seamlessdining.onrender.com/api/dishes?page=${filters.page}&limit=${filters.limit}&category=${filters.category}&search=${filters.search}&availability=${filters.availability}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}`,
+      `https://dinesync-seamlessdining.onrender.com/api/dishes?page=${appliedFilters.page}&limit=${appliedFilters.limit}&category=${appliedFilters.category}&search=${appliedFilters.search}&availability=${appliedFilters.availability}&minPrice=${appliedFilters.minPrice}&maxPrice=${appliedFilters.maxPrice}`,
       "GET"
     );
     console.log(response, "dishes data");
     dispatch(setDishes(response.dishes));
-
-    // Set total results and total pages based on response
     setTotalResults(response.totalResults);
-    setTotalPages(Math.ceil(response.totalResults / filters.limit));
+    setTotalPages(Math.ceil(response.totalResults / appliedFilters.limit));
   };
 
   useEffect(() => {
     fetchDishes();
-  }, [
-    filters.page,
-    filters.limit,
-    filters.category,
-    filters.search,
-    filters.availability,
-    filters.minPrice,
-    filters.maxPrice,
-  ]);
+  }, [appliedFilters]); // Fetch dishes only when applied filters change
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
       [name]: value,
-      page: 1, // Reset to page 1 when filters change
     }));
   };
 
   const applyFilters = () => {
-    fetchDishes();
+    setAppliedFilters({ ...filters, page: 1, limit: 5 });
+  };
+
+  const handlePageChange = (newPage) => {
+    setAppliedFilters((prevFilters) => ({
+      ...prevFilters,
+      page: newPage,
+    }));
   };
 
   const AVAILABILITY_OPTIONS = [
@@ -77,13 +81,6 @@ export default function DishesPage({ theme }) {
     { value: "true", label: "Available" },
     { value: "false", label: "Not Available" },
   ];
-
-  const handlePageChange = (newPage) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      page: newPage,
-    }));
-  };
 
   return (
     <div>
@@ -141,7 +138,7 @@ export default function DishesPage({ theme }) {
 
         <Pagination
           totalPages={totalPages}
-          currentPage={filters.page}
+          currentPage={appliedFilters.page}
           onPageChange={handlePageChange}
           totalResults={totalResults}
         />
