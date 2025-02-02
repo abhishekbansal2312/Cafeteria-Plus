@@ -12,6 +12,8 @@ import {
   setError,
 } from "../slices/cartSlice";
 import CartList from "../components/cart/CartList";
+import CounterSkeleton from "../components/counter/CounterSkeleton";
+import CartSkeleton from "../components/cart/CartSkeleton";
 
 export default function CartPage({ theme }) {
   const dispatch = useDispatch();
@@ -120,7 +122,9 @@ export default function CartPage({ theme }) {
             Please log in to view your cart.
           </a>
         ) : loading ? (
-          <div>Loading cart...</div>
+          <div>
+            <CartSkeleton />
+          </div>
         ) : (
           <CartList
             cart={dishes}
