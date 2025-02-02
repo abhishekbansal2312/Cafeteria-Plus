@@ -143,7 +143,7 @@ export default function DishesPage({ theme }) {
           totalPages={totalPages}
           currentPage={filters.page}
           onPageChange={handlePageChange}
-          totalResults={totalResults} // Pass the total results to Pagination
+          totalResults={totalResults}
         />
       </div>
     </div>
