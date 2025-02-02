@@ -55,6 +55,10 @@ export default function DishesPage({ theme }) {
 
   useEffect(() => {
     fetchDishes();
+
+    return () => {
+      dispatch(setDishes([]));
+    };
   }, [appliedFilters]); // Fetch dishes only when applied filters change
 
   const handleFilterChange = (e) => {
