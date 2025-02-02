@@ -1,5 +1,8 @@
 import React from "react";
 import useAxios from "../../hooks/useAxios";
+import DishesList from "../dishes/DishesList";
+import { setDishes } from "../../slices/dishesSlice";
+import { useDispatch } from "react-redux";
 
 const CATEGORIES = [
   {
@@ -35,23 +38,37 @@ const CATEGORIES = [
   {
     title: "others",
     image:
-      "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D",
+      "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?w=800&auto=format&fit=crop&q=60&ixib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D",
   },
 ];
 
 export default function Categories({ theme }) {
   const makeRequest = useAxios();
-  const [categories, setCategories] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
 
-  const getCategoriesDishes = async () => {
-    const response = await makeRequest(
-      `http://localhost:3000/api/dishes?category=${category}`,
-      "GET"
-    );
+  const [loading, setLoading] = React.useState(false);
+  const dispatch = useDispatch();
+  const getCategoriesDishes = async (category) => {
+    setLoading(true);
+    try {
+      const response = await makeRequest(
+        `http://localhost:3000/api/dishes?category=${category}`,
+        "GET"
+      );
+
+      console.log(response);
+
+      dispatch(setDishes(response.dishes));
+    } catch (error) {
+      console.error("Error fetching dishes:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
-    <div className={`${theme === "dark" ? "bg-black" : "bg-whte"} w-full py-8`}>
+    <div
+      className={`${theme === "dark" ? "bg-black" : "bg-white"} w-full py-8`}
+    >
       <div className="container mx-auto px-4">
         <h2
           className={`${
@@ -64,10 +81,11 @@ export default function Categories({ theme }) {
           {CATEGORIES.map((category, index) => (
             <div key={index} className="flex flex-col items-center">
               <div
-                className="w-24 h-24 bg-cover bg-center rounded-full shadow-lg"
+                className="w-24 h-24 bg-cover bg-center rounded-full shadow-lg cursor-pointer"
                 style={{
                   backgroundImage: `url(${category.image})`,
                 }}
+                onClick={() => getCategoriesDishes(category.title)}
               ></div>
               <p
                 className={`${
@@ -78,6 +96,10 @@ export default function Categories({ theme }) {
               </p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8">
+          {loading ? <p>Loading...</p> : <DishesList />}
         </div>
       </div>
     </div>

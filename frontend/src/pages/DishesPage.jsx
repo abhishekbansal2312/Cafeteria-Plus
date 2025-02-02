@@ -3,23 +3,64 @@ import useAxios from "../hooks/useAxios";
 import DishesList from "../components/dishes/DishesList";
 import { useDispatch } from "react-redux";
 import { setDishes } from "../slices/dishesSlice";
+import FilterInput from "../components/inputs/InputField";
+import FilterSelect from "../components/inputs/SelectField";
 
 export default function DishesPage({ theme }) {
   const makeRequest = useAxios();
   const dispatch = useDispatch();
 
+  const [filters, setFilters] = useState({
+    category: "",
+    search: "",
+    availability: "",
+    minPrice: "",
+    maxPrice: "",
+    page: 1,
+    limit: 20,
+  });
+
+  const categories = [
+    "breakfast",
+    "lunch",
+    "dinner",
+    "snacks",
+    "dessert",
+    "drinks",
+    "others",
+  ];
+
   const fetchDishes = async () => {
     const response = await makeRequest(
-      "http://localhost:3000/api/dishes",
+      `http://localhost:3000/api/dishes?page=${filters.page}&limit=${filters.limit}&category=${filters.category}&search=${filters.search}&availability=${filters.availability}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}`,
       "GET"
     );
-    console.log(response, "dcsdds");
-
-    dispatch(setDishes(response));
+    console.log(response, "dishes data");
+    dispatch(setDishes(response.dishes));
   };
+
   useEffect(() => {
     fetchDishes();
   }, []);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+
+  const applyFilters = () => {
+    fetchDishes();
+  };
+
+  const AVAILABILITY_OPTIONS = [
+    { value: "", label: "All Availability" },
+    { value: "true", label: "Available" },
+    { value: "false", label: "Not Available" },
+  ];
+
   return (
     <div>
       <div
@@ -27,6 +68,51 @@ export default function DishesPage({ theme }) {
           theme === "dark" ? "bg-black text-white" : "bg-white text-black"
         }`}
       >
+        <div className=" flex gap-2">
+          <FilterInput
+            name="search"
+            value={filters.search}
+            onChange={handleFilterChange}
+            placeholder="Search dishes"
+          />
+          <FilterSelect
+            name="category"
+            value={filters.category}
+            onChange={handleFilterChange}
+            options={[
+              { value: "", label: "All Categories" },
+              ...categories.map((category) => ({
+                value: category,
+                label: category,
+              })),
+            ]}
+          />
+          <FilterSelect
+            name="availability"
+            value={filters.availability}
+            onChange={handleFilterChange}
+            options={AVAILABILITY_OPTIONS}
+          />
+          <FilterInput
+            name="minPrice"
+            value={filters.minPrice}
+            onChange={handleFilterChange}
+            placeholder="Min Price"
+          />
+          <FilterInput
+            name="maxPrice"
+            value={filters.maxPrice}
+            onChange={handleFilterChange}
+            placeholder="Max Price"
+          />
+          <button
+            onClick={applyFilters}
+            className="p-2 h-10 bg-blue-500 text-white rounded ml-2"
+          >
+            Apply Filters
+          </button>
+        </div>
+
         <DishesList />
       </div>
     </div>

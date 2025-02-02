@@ -111,7 +111,8 @@ const DishesList = () => {
       )}
       {dishes.map((dish) => {
         const isMerchant =
-          user?.role === "merchant" && dish.counter.merchants.includes(user.id);
+          user?.role === "merchant" &&
+          dish?.counter?.merchants?.includes(user.id);
 
         return (
           <div
@@ -147,7 +148,11 @@ const DishesList = () => {
                   }`}
                   disabled={cartIds.includes(dish._id)}
                 >
-                  {cartIds.includes(dish._id) ? "Already in Cart" : "Order Now"}
+                  {dish.availability
+                    ? cartIds.includes(dish._id)
+                      ? "Already in Cart"
+                      : "Order Now"
+                    : "Out of Stock"}
                 </button>
               </div>
 

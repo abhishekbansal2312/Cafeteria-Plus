@@ -38,9 +38,25 @@ const createDish = async (req, res) => {
 
 const getAllDishes = async (req, res) => {
   try {
-    const dishes = await Dish.find().populate("counter");
-    res.status(200).json(dishes);
+    const {
+      results,
+      totalPages,
+      totalResults,
+      currentPage,
+      nextPage,
+      prevPage,
+    } = res.paginationResult;
+
+    res.status(200).json({
+      dishes: results,
+      totalPages,
+      totalResults,
+      currentPage,
+      nextPage,
+      prevPage,
+    });
   } catch (error) {
+    console.error("Error fetching dishes:", error);
     res
       .status(500)
       .json({ message: "Error retrieving dishes", error: error.message });
