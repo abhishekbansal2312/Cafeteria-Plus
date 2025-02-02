@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: "*",
+    origin: ["https://dine-sync-seamless-dining.vercel.app"],
     credentials: true,
   })
 );
