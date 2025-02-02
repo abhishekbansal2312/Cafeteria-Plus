@@ -12,6 +12,7 @@ import {
   setError,
 } from "../slices/cartSlice";
 import CartList from "../components/cart/CartList";
+import { Link } from "react-router-dom";
 
 import CartSkeleton from "../components/cart/CartSkeleton";
 

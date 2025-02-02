@@ -1,6 +1,6 @@
 import React from "react";
 import image from "../../assets/pexels-janetrangdoan-1099680.jpg";
-
+import { Link } from "react-router-dom";
 const Header = ({ theme }) => {
   return (
     <div className={`${theme === "light" ? "bg-white" : "bg-black"} py-6`}>
