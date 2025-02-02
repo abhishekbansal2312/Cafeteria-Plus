@@ -5,6 +5,7 @@ import Modal from "../components/Modal";
 import { setIsEditing, setIsModalOpen } from "../slices/formSlice";
 import Profile from "../components/profile/Profile";
 import ProfileForm from "../components/profile/ProfileForm";
+import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 
 export default function ProfilePage({ theme }) {
   const dispatch = useDispatch();
@@ -67,7 +68,12 @@ export default function ProfilePage({ theme }) {
     fetchProfile();
   }, []);
 
-  if (loading) return <div className="text-center text-xl">Loading...</div>;
+  if (loading)
+    return (
+      <div className="text-center text-xl">
+        <ProfileSkeleton />
+      </div>
+    );
 
   return (
     <div

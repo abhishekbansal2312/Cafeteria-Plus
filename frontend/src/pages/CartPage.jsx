@@ -12,7 +12,7 @@ import {
   setError,
 } from "../slices/cartSlice";
 import CartList from "../components/cart/CartList";
-import CounterSkeleton from "../components/counter/CounterSkeleton";
+
 import CartSkeleton from "../components/cart/CartSkeleton";
 
 export default function CartPage({ theme }) {
