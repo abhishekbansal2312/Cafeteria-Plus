@@ -33,7 +33,7 @@ const Header = ({ theme }) => {
               crafted with the finest ingredients. Satisfy your cravings and
               elevate your dining experience, one delicious meal at a time.
             </p>
-            <a href="/dishes">
+            <Link to="/dishes">
               <button
                 className={`${
                   theme === "dark"
@@ -43,7 +43,7 @@ const Header = ({ theme }) => {
               >
                 View Menu
               </button>
-            </a>
+            </Link>
           </div>
 
           <img
