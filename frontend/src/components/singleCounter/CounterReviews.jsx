@@ -31,7 +31,7 @@ export default function CounterReviews({ id }) {
       dispatch(setLoading(true));
       try {
         const response = await makeRequest(
-          `https://dinesync-seamlessdining.onrender.com/api/reviews/${id}`,
+          `http://localhost:3000/api/reviews/${id}`,
           "GET"
         );
         dispatch(setReviews(response));
@@ -79,7 +79,7 @@ export default function CounterReviews({ id }) {
 
   const createReviewForCounter = async () => {
     return makeRequest(
-      "https://dinesync-seamlessdining.onrender.com/api/reviews",
+      "http://localhost:3000/api/reviews",
       "POST",
       {
         title: formData.title,

@@ -24,7 +24,7 @@ export default function ProfilePage({ theme }) {
   const fetchProfile = async () => {
     try {
       const response = await makeRequest(
-        "https://dinesync-seamlessdining.onrender.com/api/users/profile",
+        "http://localhost:3000/api/users/profile",
         "GET",
         null,
         true
@@ -52,7 +52,7 @@ export default function ProfilePage({ theme }) {
     e.preventDefault();
     try {
       await makeRequest(
-        "https://dinesync-seamlessdining.onrender.com/api/users/profile",
+        "http://localhost:3000/api/users/profile",
         "PUT",
         formData,
         true

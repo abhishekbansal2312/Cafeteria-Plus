@@ -30,7 +30,7 @@ export default function Reviews({ reviews }) {
 
   const handleDeleteClick = async (id) => {
     const response = await makeRequest(
-      `https://dinesync-seamlessdining.onrender.com/api/reviews/${id}`,
+      `http://localhost:3000/api/reviews/${id}`,
       "DELETE"
     );
     if (response) {
@@ -64,7 +64,7 @@ export default function Reviews({ reviews }) {
         comment: updatedReviewData.comment,
       };
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/reviews/${editingReview._id}`,
+        `http://localhost:3000/api/reviews/${editingReview._id}`,
         "PUT",
         updatedReview
       );

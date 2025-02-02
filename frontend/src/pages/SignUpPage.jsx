@@ -25,7 +25,7 @@ export default function SignUpPage({ theme }) {
     setLoading(true);
     try {
       const response = await makeRequest(
-        "https://dinesync-seamlessdining.onrender.com/api/auth/register",
+        "http://localhost:3000/api/auth/register",
         "POST",
         { name, email, password }
       );

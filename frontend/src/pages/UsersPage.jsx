@@ -41,7 +41,7 @@ export default function UsersPage({ theme }) {
       dispatch(setLoading(true));
 
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/users?page=${pageNum}&limit=5&role=${role}&search=${search}`,
+        `http://localhost:3000/api/users?page=${pageNum}&limit=5&role=${role}&search=${search}`,
         "GET",
         null,
         true
@@ -66,7 +66,7 @@ export default function UsersPage({ theme }) {
   const handleDelete = async (id) => {
     try {
       await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/users/${id}`,
+        `http://localhost:3000/api/users/${id}`,
         "DELETE",
         null,
         true
@@ -102,7 +102,7 @@ export default function UsersPage({ theme }) {
     try {
       if (isEditing) {
         const response = await makeRequest(
-          `https://dinesync-seamlessdining.onrender.com/api/users/${formData._id}`,
+          `http://localhost:3000/api/users/${formData._id}`,
           "PUT",
           formData,
           true
@@ -111,7 +111,7 @@ export default function UsersPage({ theme }) {
         toast.success("User updated successfully");
       } else {
         const response = await makeRequest(
-          "https://dinesync-seamlessdining.onrender.com/api/users",
+          "http://localhost:3000/api/users",
           "POST",
           formData,
           true

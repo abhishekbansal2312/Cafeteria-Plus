@@ -36,7 +36,7 @@ export default function useAxios() {
           }
 
           const refreshResponse = await axios.post(
-            "https://dinesync-seamlessdining.onrender.com/api/auth/refresh",
+            "http://localhost:3000/api/auth/refresh",
             { token: refreshToken }
           );
 

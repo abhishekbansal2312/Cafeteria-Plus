@@ -13,7 +13,7 @@ const useAuth = () => {
     const checkAuth = async () => {
       try {
         const data = await makeRequest(
-          `https://dinesync-seamlessdining.onrender.com/api/auth/me`,
+          `http://localhost:3000/api/auth/me`,
           "GET",
           null,
           true

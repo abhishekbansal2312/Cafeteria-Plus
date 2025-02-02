@@ -42,7 +42,7 @@ export default function CounterPage({ theme }) {
     try {
       dispatch(setLoading(true));
 
-      const url = `https://dinesync-seamlessdining.onrender.com/api/counters?search=${searchQuery}&page=${pageNum}&limit=6`;
+      const url = `http://localhost:3000/api/counters?search=${searchQuery}&page=${pageNum}&limit=6`;
 
       const response = await makeRequest(url, "GET", null, true);
       setTotalPages(response.pagination.totalPages);
@@ -67,7 +67,7 @@ export default function CounterPage({ theme }) {
   const handleDelete = async (id) => {
     try {
       await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/counters/${id}`,
+        `http://localhost:3000/api/counters/${id}`,
         "DELETE",
         null,
         true
@@ -110,7 +110,7 @@ export default function CounterPage({ theme }) {
     try {
       if (isEditing) {
         await makeRequest(
-          `https://dinesync-seamlessdining.onrender.com/api/counters/${formData._id}`,
+          `http://localhost:3000/api/counters/${formData._id}`,
           "PUT",
           formData,
           true
@@ -118,7 +118,7 @@ export default function CounterPage({ theme }) {
         dispatch(updateCounter(formData));
       } else {
         const response = await makeRequest(
-          "https://dinesync-seamlessdining.onrender.com/api/counters",
+          "http://localhost:3000/api/counters",
           "POST",
           formData,
           true

@@ -36,7 +36,7 @@ export default function CartPage({ theme }) {
     dispatch(setError(null));
     try {
       const response = await makeRequest(
-        "https://dinesync-seamlessdining.onrender.com/api/cart",
+        "http://localhost:3000/api/cart",
         "GET",
         null,
         true
@@ -59,7 +59,7 @@ export default function CartPage({ theme }) {
   const removeItem = async (id) => {
     try {
       const response = await makeRequest(
-        "https://dinesync-seamlessdining.onrender.com/api/cart",
+        "http://localhost:3000/api/cart",
         "DELETE",
         { id },
         true
@@ -80,7 +80,7 @@ export default function CartPage({ theme }) {
       action === "inc" ? currentQuantity + 1 : Math.max(1, currentQuantity - 1);
     try {
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/cart/${id}`,
+        `http://localhost:3000/api/cart/${id}`,
         "PUT",
         { quantity: newQuantity },
         true

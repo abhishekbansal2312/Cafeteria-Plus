@@ -51,7 +51,7 @@ export default function Categories({ theme }) {
     setLoading(true);
     try {
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/dishes?category=${category}`,
+        `http://localhost:3000/api/dishes?category=${category}`,
         "GET"
       );
 

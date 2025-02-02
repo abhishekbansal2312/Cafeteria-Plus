@@ -45,7 +45,7 @@ export default function SingleCounterPage({ theme }) {
     try {
       setLoading(true);
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/counters/${id}`,
+        `http://localhost:3000/api/counters/${id}`,
         "GET",
         null,
         true

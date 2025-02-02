@@ -70,12 +70,14 @@ const CounterList = ({ counters = [], handleDelete, handleEdit }) => {
               </p>
 
               <div className="flex justify-between gap-4">
-                {(user && flatMerchantIds.includes(user.id)) ||
-                  (user && user.role == "admin" && (
+                {user &&
+                  (flatMerchantIds.includes(user.id) ||
+                    user.role === "admin") && (
                     <button onClick={() => handleEdit(counter)} className="">
                       <FaEdit className="mr-2" />
                     </button>
-                  ))}
+                  )}
+
                 {user && user.role == "admin" && (
                   <button
                     onClick={() => handleDelete(counter._id)}

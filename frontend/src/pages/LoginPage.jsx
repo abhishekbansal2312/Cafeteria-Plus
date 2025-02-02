@@ -19,11 +19,11 @@ export default function LoginPage({ theme }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    setError(null); // Reset error state
+    setError(null);
 
     try {
       const response = await makeRequest(
-        "https://dinesync-seamlessdining.onrender.com/api/auth/login",
+        "http://localhost:3000/api/auth/login",
         "POST",
         { email, password }
       );
