@@ -56,6 +56,12 @@ export default function CounterPage({ theme }) {
 
   useEffect(() => {
     fetchCounters("all", search, page);
+
+    return () => {
+      dispatch(setCounters([]));
+      dispatch(setLoading(false));
+      dispatch(setError(null));
+    };
   }, [search, page]);
 
   const handleDelete = async (id) => {

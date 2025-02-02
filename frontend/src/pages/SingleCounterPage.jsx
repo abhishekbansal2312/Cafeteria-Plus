@@ -94,6 +94,14 @@ export default function SingleCounterPage({ theme }) {
   useEffect(() => {
     getDishByCounter();
     fetchMerchants();
+
+    return () => {
+      setFormData({});
+      dispatch(setDishes([]));
+      dispatch(setMerchants([]));
+      dispatch(setSelectedMerchants([]));
+      dispatch(setCounter([]));
+    };
   }, [id]);
 
   const handleChange = (e) => {

@@ -1,5 +1,12 @@
 import React, { useContext } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { useSelector } from "react-redux";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/navbar/Navbar";
 import LoginPage from "./pages/LoginPage";
@@ -17,6 +24,20 @@ import Footer from "./components/footer/Footer";
 export default function App() {
   useAuth();
   const { theme } = useContext(ThemeContext);
+  const isLoggedIn = useSelector((state) => state.userDetail.isLoggedIn);
+
+  function AuthGuard({ children }) {
+    const location = useLocation();
+    return isLoggedIn ? (
+      children
+    ) : (
+      <Navigate to="/login" state={{ from: location.pathname }} replace />
+    );
+  }
+
+  function GuestGuard({ children }) {
+    return isLoggedIn ? <Navigate to="/" replace /> : children;
+  }
 
   return (
     <div className={`${theme} min-h-screen transition-colors duration-300`}>
@@ -24,8 +45,22 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage theme={theme} />} />
-          <Route path="/login" element={<LoginPage theme={theme} />} />
-          <Route path="/register" element={<SignUpPage theme={theme} />} />
+          <Route
+            path="/login"
+            element={
+              <GuestGuard>
+                <LoginPage theme={theme} />
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <GuestGuard>
+                <SignUpPage theme={theme} />
+              </GuestGuard>
+            }
+          />
           <Route path="/users" element={<UsersPage theme={theme} />} />
           <Route path="/counters" element={<CounterPage theme={theme} />} />
           <Route
@@ -34,7 +69,14 @@ export default function App() {
           />
           <Route path="/dishes" element={<DishesPage theme={theme} />} />
           <Route path="/cart" element={<CartPage theme={theme} />} />
-          <Route path="/profile" element={<ProfilePage theme={theme} />} />
+          <Route
+            path="/profile"
+            element={
+              <AuthGuard>
+                <ProfilePage theme={theme} />
+              </AuthGuard>
+            }
+          />
         </Routes>
         <Footer />
       </BrowserRouter>
