@@ -23,7 +23,7 @@ export default function LoginPage({ theme }) {
 
     try {
       const response = await makeRequest(
-        "http://localhost:3000/api/auth/login",
+        "https://dinesync-seamlessdining.onrender.com/api/auth/login",
         "POST",
         { email, password }
       );

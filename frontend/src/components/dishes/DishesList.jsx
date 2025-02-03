@@ -31,7 +31,7 @@ const DishesList = () => {
   const handleDeleteDish = async (dishId) => {
     try {
       const response = await makeRequest(
-        `http://localhost:3000/api/dishes/${dishId}`,
+        `https://dinesync-seamlessdining.onrender.com/api/dishes/${dishId}`,
         "DELETE",
         null,
         true
@@ -56,7 +56,7 @@ const DishesList = () => {
     e.preventDefault();
     try {
       const response = await makeRequest(
-        `http://localhost:3000/api/dishes/${formData._id}`,
+        `https://dinesync-seamlessdining.onrender.com/api/dishes/${formData._id}`,
         "PUT",
         formData,
         true
@@ -88,7 +88,7 @@ const DishesList = () => {
     }
     try {
       const response = await makeRequest(
-        "http://localhost:3000/api/cart",
+        "https://dinesync-seamlessdining.onrender.com/api/cart",
         "POST",
         { id: dish._id },
         true

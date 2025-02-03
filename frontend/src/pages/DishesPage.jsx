@@ -48,7 +48,7 @@ export default function DishesPage({ theme }) {
     setLoading(true);
     try {
       const response = await makeRequest(
-        `http://localhost:3000/api/dishes?page=${appliedFilters.page}&limit=${appliedFilters.limit}&category=${appliedFilters.category}&search=${appliedFilters.search}&availability=${appliedFilters.availability}&minPrice=${appliedFilters.minPrice}&maxPrice=${appliedFilters.maxPrice}`,
+        `https://dinesync-seamlessdining.onrender.com/api/dishes?page=${appliedFilters.page}&limit=${appliedFilters.limit}&category=${appliedFilters.category}&search=${appliedFilters.search}&availability=${appliedFilters.availability}&minPrice=${appliedFilters.minPrice}&maxPrice=${appliedFilters.maxPrice}`,
         "GET"
       );
       console.log(response, "dishes data");
