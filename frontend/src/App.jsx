@@ -20,6 +20,7 @@ import { ThemeContext } from "./context/ThemeContext";
 import SingleCounterPage from "./pages/SingleCounterPage";
 import ProfilePage from "./pages/ProfilePage";
 import Footer from "./components/footer/Footer";
+import ScrollToTop from "./utils/ScrollToTop";
 
 export default function App() {
   useAuth();
@@ -43,6 +44,7 @@ export default function App() {
     <div className={`${theme} min-h-screen transition-colors duration-300`}>
       <BrowserRouter>
         <Navbar />
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage theme={theme} />} />
           <Route
@@ -78,7 +80,7 @@ export default function App() {
             }
           />
         </Routes>
-        <Footer />
+        <Footer theme={theme} />
       </BrowserRouter>
     </div>
   );
