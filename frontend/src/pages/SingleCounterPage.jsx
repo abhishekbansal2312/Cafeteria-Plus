@@ -42,6 +42,9 @@ export default function SingleCounterPage({ theme }) {
   });
 
   const user = useSelector((state) => state.userDetail.user);
+  const { selectedMerchants } = useSelector((state) => state.merchants);
+  const merchantIds = selectedMerchants.map((merchant) => merchant._id);
+  console.log(merchantIds);
 
   const getDishByCounter = async () => {
     try {
@@ -137,7 +140,11 @@ export default function SingleCounterPage({ theme }) {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const resetForm = () => {
@@ -158,9 +165,10 @@ export default function SingleCounterPage({ theme }) {
       }`}
     >
       <div className="flex justify-end gap-3 items-center mb-6">
-        {user?.role === "merchant" && (
+        {user?.role === "merchant" && merchantIds?.includes(user?.id) && (
           <Button onClick={() => setIsModalOpen(true)} text="Add Dish" />
         )}
+
         {user?.role === "admin" && (
           <Button
             onClick={() => dispatch(setIsMerchantModalOpen(true))}
