@@ -3,8 +3,8 @@ import image from "../../assets/pexels-janetrangdoan-1099680.jpg";
 import { Link } from "react-router-dom";
 const Header = ({ theme }) => {
   return (
-    <div className={`${theme === "light" ? "bg-white" : "bg-black"} py-6`}>
-      <div className="max-w-screen-xl mx-20">
+    <div className={`${theme === "light" ? "bg-white" : "bg-black"} py-12`}>
+      <div className="max-w-screen-xl mx-5 md:mx-10 lg:mx-20">
         <div
           className={`${
             theme === "dark" ? "bg-gray-800" : "bg-black"
