@@ -68,30 +68,28 @@ export default function ProfilePage({ theme }) {
     fetchProfile();
   }, []);
 
-  if (loading)
-    return (
-      <div className="text-center text-xl">
-        <ProfileSkeleton />
-      </div>
-    );
-
   return (
     <div
       className={`${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       } min-h-screen pb-20`}
     >
-      <div className="container mx-auto p-6 pt-12">
-        <Profile profile={profile} />
-
-        <div className="text-center mt-6">
-          <button
-            onClick={handleEdit}
-            className="bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600 transition"
-          >
-            Edit Profile
-          </button>
-        </div>
+      <div className="text-end mr-6 mt-6 text-white">
+        <button
+          onClick={handleEdit}
+          className="bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600 transition"
+        >
+          Edit Profile
+        </button>
+      </div>
+      <div className="container mx-auto p-6 pt-4">
+        {loading ? (
+          <div className="text-center text-xl">
+            <ProfileSkeleton />
+          </div>
+        ) : (
+          <Profile profile={profile} />
+        )}
 
         {isModalOpen && (
           <Modal

@@ -21,7 +21,7 @@ export default function Profile({ profile }) {
           </div>
         </div>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-2 space-y-4">
           <div className=" p-6 ">
             <h2 className="text-2xl font-semibold mb-4">Profile Details</h2>
             <p className="text-lg">
