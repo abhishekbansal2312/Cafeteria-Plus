@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
 import { setCartDishes, setTotalCartItems } from "../../slices/cartSlice";
@@ -8,6 +8,7 @@ import { setIsModalOpen, setIsEditing } from "../../slices/formSlice";
 import Modal from "../Modal";
 import DishForm from "../dishes/DishForm";
 import toast from "react-hot-toast";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const DishesList = () => {
   const { dishes } = useSelector((state) => state.dishes);
@@ -16,6 +17,7 @@ const DishesList = () => {
   const makeRequest = useAxios();
   const cartItems = useSelector((state) => state.cart.dishes) || [];
   const isModalOpen = useSelector((state) => state.form.isModalOpen);
+  const { theme } = useContext(ThemeContext);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -105,7 +107,11 @@ const DishesList = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
+    <div
+      className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4 ${
+        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+      }`}
+    >
       {isModalOpen && (
         <Modal
           title="Edit Dish"
@@ -128,14 +134,20 @@ const DishesList = () => {
         return (
           <div
             key={dish._id}
-            className="shadow-lg rounded-lg overflow-hidden border"
+            className={`shadow-lg rounded-lg overflow-hidden border ${
+              theme === "dark" ? "bg-gray-700" : "bg-white"
+            }`}
           >
             <img
               src={dish.image}
               alt={dish.name}
               className="w-full h-48 object-cover"
             />
-            <div className="p-4">
+            <div
+              className={`p-4 ${
+                theme === "dark" ? "text-white" : "text-gray-900"
+              }`}
+            >
               <h3 className="text-lg font-semibold">{dish.name}</h3>
               <p className="text-sm">{dish.description}</p>
               <div className="flex justify-between items-center mt-2">
