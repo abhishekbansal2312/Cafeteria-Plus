@@ -16,8 +16,8 @@ import {
   setSelectedMerchants,
 } from "../slices/merchantsSlice";
 import { setCounter } from "../slices/counterSlice";
-import CounterDetailSkeleton from "../components/singleCounter/CounterDetailSkeleton";
 import DishSkeleton from "../components/dishes/DishSkeleton";
+import CounterDetailSkeleton from "../components/singleCounter/CounterDetailSkeleton";
 
 export default function SingleCounterPage({ theme }) {
   const dispatch = useDispatch();
@@ -25,12 +25,12 @@ export default function SingleCounterPage({ theme }) {
   const { id } = useParams();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const { counter } = useSelector((state) => state.counter);
   const { isMerchantModalOpen, merchants } = useSelector(
     (state) => state.merchants
   );
-  const user = useSelector((state) => state.userDetail.user);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -41,6 +41,8 @@ export default function SingleCounterPage({ theme }) {
     availability: true,
   });
 
+  const user = useSelector((state) => state.userDetail.user);
+
   const getDishByCounter = async () => {
     try {
       setLoading(true);
@@ -50,13 +52,72 @@ export default function SingleCounterPage({ theme }) {
         null,
         true
       );
-      if (response && response.counter) {
+      if (response) {
         dispatch(setSelectedMerchants(response.counter.merchants));
         dispatch(setCounter(response.counter));
         dispatch(setDishes(response.dishes));
       }
-    } catch (error) {
-      console.error("Error fetching counter data:", error);
+    } catch (err) {
+      setError("Failed to fetch data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMerchants = async () => {
+    try {
+      const response = await makeRequest(
+        `http://localhost:3000/api/counters/merchants`,
+        "GET",
+        null,
+        true
+      );
+      if (response) {
+        dispatch(setMerchants(response.merchants));
+      }
+    } catch (err) {
+      setError("Failed to fetch merchants");
+    }
+  };
+
+  const addMerchantInCounter = async (selectedMerchants) => {
+    try {
+      setLoading(true);
+      const response = await makeRequest(
+        `http://localhost:3000/api/counters/merchants/${id}`,
+        "PUT",
+        { merchantIds: selectedMerchants },
+        true
+      );
+      if (response) {
+        dispatch(setSelectedMerchants(response.merchants));
+        dispatch(setCounter(response.counter));
+        dispatch(setIsMerchantModalOpen(false));
+      }
+    } catch (err) {
+      setError("Failed to update merchants");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitDish = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const response = await makeRequest(
+        `http://localhost:3000/api/dishes/${id}`,
+        "POST",
+        formData,
+        true
+      );
+      if (response) {
+        dispatch(addDish(response.dish));
+        resetForm();
+        setIsModalOpen(false);
+      }
+    } catch (err) {
+      setError("Failed to add dish");
     } finally {
       setLoading(false);
     }
@@ -64,17 +125,30 @@ export default function SingleCounterPage({ theme }) {
 
   useEffect(() => {
     getDishByCounter();
-
+    fetchMerchants();
     return () => {
-      dispatch(setCounter(null)); // Reset counter state on unmount
+      resetForm();
       dispatch(setDishes([]));
       dispatch(setMerchants([]));
       dispatch(setSelectedMerchants([]));
+      dispatch(setCounter(null));
     };
   }, [id]);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      description: "",
+      price: "",
+      image: "",
+      category: "breakfast",
+      availability: true,
+    });
   };
 
   return (
@@ -83,62 +157,52 @@ export default function SingleCounterPage({ theme }) {
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
-      {loading ? (
-        <div>
-          <CounterDetailSkeleton />
-          <DishSkeleton />
-        </div>
-      ) : counter ? (
-        <>
-          <div className="flex justify-end gap-3 items-center mb-6">
-            {user?.role === "merchant" && (
-              <Button onClick={handleOpenModal} text="Add Dish" />
-            )}
-            {user?.role === "admin" && (
-              <Button
-                onClick={() => dispatch(setIsMerchantModalOpen(true))}
-                text="Manage Merchants"
-              />
-            )}
-          </div>
-
-          {isMerchantModalOpen && (
-            <Modal
-              title="Select Merchants"
-              isOpen={isMerchantModalOpen}
-              onClose={() => dispatch(setIsMerchantModalOpen(false))}
-            >
-              <AddMerchant
-                merchants={merchants}
-                addMerchantInCounter={() => {}}
-              />
-            </Modal>
-          )}
-
-          {isModalOpen && (
-            <Modal
-              title="Add Dish"
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-            >
-              <DishForm
-                formData={formData}
-                handleChange={(e) =>
-                  setFormData({ ...formData, [e.target.name]: e.target.value })
-                }
-                handleSubmit={(e) => e.preventDefault()}
-                onCancel={() => setIsModalOpen(false)}
-              />
-            </Modal>
-          )}
-
-          <CounterDetails counter={counter} />
-          <DishesList />
-          <CounterReviews id={id} />
-        </>
-      ) : (
-        <p className="text-center text-lg">Counter not found.</p>
+      <div className="flex justify-end gap-3 items-center mb-6">
+        {user?.role === "merchant" && (
+          <Button onClick={() => setIsModalOpen(true)} text="Add Dish" />
+        )}
+        {user?.role === "admin" && (
+          <Button
+            onClick={() => dispatch(setIsMerchantModalOpen(true))}
+            text="Manage Merchants"
+          />
+        )}
+      </div>
+      {isMerchantModalOpen && (
+        <Modal
+          title="Select Merchants"
+          isOpen={isMerchantModalOpen}
+          onClose={() => dispatch(setIsMerchantModalOpen(false))}
+        >
+          <AddMerchant
+            merchants={merchants}
+            addMerchantInCounter={addMerchantInCounter}
+          />
+        </Modal>
       )}
+      {isModalOpen && (
+        <Modal
+          title="Add Dish"
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <DishForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmitDish}
+            onCancel={() => setIsModalOpen(false)}
+          />
+        </Modal>
+      )}
+      {loading ? (
+        <CounterDetailSkeleton />
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <CounterDetails counter={counter} />
+      )}
+      {loading ? <DishSkeleton /> : <DishesList />}
+      <CounterReviews id={id} />
     </div>
   );
 }

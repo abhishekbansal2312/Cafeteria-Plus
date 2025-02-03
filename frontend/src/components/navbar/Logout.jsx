@@ -17,7 +17,7 @@ export default function Logout() {
     navigate("/");
   };
   return (
-    <div onClick={logout}>
+    <div onClick={logout} className=" w-10">
       <VscSignOut className="h-8 w-6" />
     </div>
   );

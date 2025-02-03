@@ -7,6 +7,7 @@ export default function AddMerchant({ merchants, addMerchantInCounter }) {
   const alreadySelectedMerchants = useSelector(
     (state) => state.merchants.selectedMerchants
   );
+  console.log(merchants, "fsf");
 
   const alreadySelectedIds = alreadySelectedMerchants.map(
     (merchant) => merchant._id
