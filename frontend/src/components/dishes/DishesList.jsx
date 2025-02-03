@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useAxios from "../../hooks/useAxios";
 import { setCartDishes, setTotalCartItems } from "../../slices/cartSlice";
@@ -8,6 +8,7 @@ import { setIsModalOpen, setIsEditing } from "../../slices/formSlice";
 import Modal from "../Modal";
 import DishForm from "../dishes/DishForm";
 import toast from "react-hot-toast";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const DishesList = () => {
   const { dishes } = useSelector((state) => state.dishes);
@@ -16,6 +17,7 @@ const DishesList = () => {
   const makeRequest = useAxios();
   const cartItems = useSelector((state) => state.cart.dishes) || [];
   const isModalOpen = useSelector((state) => state.form.isModalOpen);
+  const { theme } = useContext(ThemeContext);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -31,7 +33,7 @@ const DishesList = () => {
   const handleDeleteDish = async (dishId) => {
     try {
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/dishes/${dishId}`,
+        `http://localhost:3000/api/dishes/${dishId}`,
         "DELETE",
         null,
         true
@@ -56,7 +58,7 @@ const DishesList = () => {
     e.preventDefault();
     try {
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/dishes/${formData._id}`,
+        `http://localhost:3000/api/dishes/${formData._id}`,
         "PUT",
         formData,
         true
@@ -88,7 +90,7 @@ const DishesList = () => {
     }
     try {
       const response = await makeRequest(
-        "https://dinesync-seamlessdining.onrender.com/api/cart",
+        "http://localhost:3000/api/cart",
         "POST",
         { id: dish._id },
         true
@@ -105,88 +107,94 @@ const DishesList = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
-      {isModalOpen && (
-        <Modal
-          title="Edit Dish"
-          isOpen={isModalOpen}
-          onClose={() => dispatch(setIsModalOpen(false))}
-        >
-          <DishForm
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmitDish}
-            onCancel={() => dispatch(setIsModalOpen(false))}
-          />
-        </Modal>
-      )}
-      {dishes.map((dish) => {
-        const isMerchant =
-          user?.role === "merchant" &&
-          dish?.counter?.merchants?.includes(user.id);
-
-        return (
-          <div
-            key={dish._id}
-            className="shadow-lg rounded-lg overflow-hidden border"
+    <div
+      className={`${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
+        {isModalOpen && (
+          <Modal
+            title="Edit Dish"
+            isOpen={isModalOpen}
+            onClose={() => dispatch(setIsModalOpen(false))}
           >
-            <img
-              src={dish.image}
-              alt={dish.name}
-              className="w-full h-48 object-cover"
+            <DishForm
+              formData={formData}
+              handleChange={handleChange}
+              handleSubmit={handleSubmitDish}
+              onCancel={() => dispatch(setIsModalOpen(false))}
             />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold">{dish.name}</h3>
-              <p className="text-sm">{dish.description}</p>
-              <div className="flex justify-between items-center mt-2">
-                <div className="text-sm">
-                  <p className="font-bold">₹{dish.price}</p>
-                  <p className="text-sm">Category: {dish.category}</p>
-                  <p
-                    className={`mt-2 text-sm font-medium ${
-                      dish.availability ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {dish.availability ? "Available" : "Out of Stock"}
-                  </p>
-                </div>
-                <button
-                  onClick={() => addToCart(dish)}
-                  className={`bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition ${
-                    cartIds.includes(dish._id) || !dish.availability
-                      ? "opacity-70 cursor-not-allowed"
-                      : ""
-                  }`}
-                  disabled={cartIds.includes(dish._id) || !dish.availability}
-                >
-                  {dish.availability
-                    ? cartIds.includes(dish._id)
-                      ? "Already in Cart"
-                      : "Order Now"
-                    : "Out of Stock"}
-                </button>
-              </div>
+          </Modal>
+        )}
+        {dishes.map((dish) => {
+          const isMerchant =
+            user?.role === "merchant" &&
+            dish?.counter?.merchants?.includes(user.id);
 
-              {isMerchant && (
-                <div className="flex justify-between items-center mt-3">
+          return (
+            <div
+              key={dish._id}
+              className="shadow-lg rounded-lg overflow-hidden border"
+            >
+              <img
+                src={dish.image}
+                alt={dish.name}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold">{dish.name}</h3>
+                <p className="text-sm">{dish.description}</p>
+                <div className="flex justify-between items-center mt-2">
+                  <div className="text-sm">
+                    <p className="font-bold">₹{dish.price}</p>
+                    <p className="text-sm">Category: {dish.category}</p>
+                    <p
+                      className={`mt-2 text-sm font-medium ${
+                        dish.availability ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {dish.availability ? "Available" : "Out of Stock"}
+                    </p>
+                  </div>
                   <button
-                    onClick={() => handleEditDish(dish)}
-                    className="text-blue-600 hover:text-blue-700"
+                    onClick={() => addToCart(dish)}
+                    className={`bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition ${
+                      cartIds.includes(dish._id) || !dish.availability
+                        ? "opacity-70 cursor-not-allowed"
+                        : ""
+                    }`}
+                    disabled={cartIds.includes(dish._id) || !dish.availability}
                   >
-                    <FaEdit />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteDish(dish._id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FaTrashAlt />
+                    {dish.availability
+                      ? cartIds.includes(dish._id)
+                        ? "Already in Cart"
+                        : "Order Now"
+                      : "Out of Stock"}
                   </button>
                 </div>
-              )}
+
+                {isMerchant && (
+                  <div className="flex justify-between items-center mt-3">
+                    <button
+                      onClick={() => handleEditDish(dish)}
+                      className="text-blue-600 hover:text-blue-700"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteDish(dish._id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
