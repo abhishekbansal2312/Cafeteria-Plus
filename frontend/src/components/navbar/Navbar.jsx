@@ -1,11 +1,9 @@
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import React from "react";
-import Cart from "./Cart";
 import { useSelector } from "react-redux";
+import Cart from "./Cart";
 import Logout from "./Logout";
 import Theme from "./Theme";
-import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import Light from "../../assets/logo-light.png";
 import Dark from "../../assets/logo-dark.png";
@@ -13,20 +11,21 @@ import Dark from "../../assets/logo-dark.png";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const user = useSelector((state) => state.userDetail.user);
+  const { user } = useSelector((state) => state.userDetail);
   const isLoggedIn = useSelector((state) => state.userDetail.isLoggedIn);
   const { theme } = useContext(ThemeContext);
+  console.log(user, "ewde");
 
   const isActive = (path) => location.pathname === path;
 
   return (
     <nav
-      className={`p-4 border-b ${
+      className={`p-4 border-b shadow-md sticky top-0 z-50  ${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">
+        <Link to="/" className="text-xl font-bold flex-shrink-0">
           <img
             src={theme === "dark" ? Dark : Light}
             alt="Logo"
@@ -34,58 +33,60 @@ const Navbar = () => {
           />
         </Link>
 
-        <div className="md:hidden">
-          <button
-            onClick={() => {
-              console.log("Button clicked");
-              setIsOpen(!isOpen);
-            }}
-            className="focus:outline-none text-2xl"
-          >
-            {isOpen ? "✖" : "☰"}
-          </button>
-        </div>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden focus:outline-none text-2xl"
+        >
+          {isOpen ? "✖" : "☰"}
+        </button>
 
         <ul
-          className={`
-          md:flex md:space-x-6 fixed md:static inset-0 md:inset-auto bg-opacity-95 md:bg-opacity-100 
-          ${
-            theme === "dark" ? "bg-black" : "bg-white"
-          } w-full md:w-auto flex-col md:flex-row items-center 
-          space-y-6 md:space-y-0 p-6 md:p-0 transition-all duration-300 
-          ${
-            isOpen ? "top-16 opacity-100" : "-top-full opacity-0 md:opacity-100"
+          className={`md:flex md:space-x-6 absolute md:static top-16 left-0 w-full md:w-auto bg-opacity-95 md:bg-opacity-100 ${
+            theme === "dark"
+              ? "bg-black md:bg-transparent"
+              : "bg-white md:bg-transparent"
+          } flex-col md:flex-row items-center md:p-0 ${
+            isOpen ? "block" : "hidden md:flex"
           }`}
         >
+          <li className=" font-semibold">
+            {user ? `Welcome, ${user.name}` : ""}
+          </li>
           <li>
-            {user ? (
-              <span>Welcome, {user.name}</span>
-            ) : (
-              <Link to="/login" className="hover:text-orange-500">
+            {!isLoggedIn ? (
+              <Link to="/login" className="hover:text-orange-500 transition">
                 Login
+              </Link>
+            ) : (
+              <Link to="/profile">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNKfj6RsyRZqO4nnWkPFrYMmgrzDmyG31pFQ&s"
+                  alt="User Profile"
+                  className="w-8 h-8 rounded-full border"
+                />
               </Link>
             )}
           </li>
           <li>
             <Link
               to="/"
-              className={`${
+              className={`hover:text-orange-500 transition ${
                 isActive("/")
                   ? "text-orange-500 border-b-2 border-orange-500"
-                  : "hover:text-orange-500"
+                  : ""
               }`}
             >
               Home
             </Link>
           </li>
-          {user && user.role === "admin" && (
+          {user?.role === "admin" && (
             <li>
               <Link
                 to="/users"
-                className={`${
+                className={`hover:text-orange-500 transition ${
                   isActive("/users")
                     ? "text-orange-500 border-b-2 border-orange-500"
-                    : "hover:text-orange-500"
+                    : ""
                 }`}
               >
                 Users
@@ -95,10 +96,10 @@ const Navbar = () => {
           <li>
             <Link
               to="/counters"
-              className={`${
+              className={`hover:text-orange-500 transition ${
                 isActive("/counters")
                   ? "text-orange-500 border-b-2 border-orange-500"
-                  : "hover:text-orange-500"
+                  : ""
               }`}
             >
               Counters
@@ -110,30 +111,19 @@ const Navbar = () => {
           <li>
             <Link
               to="/cart"
-              className={`${
+              className={`hover:text-orange-500 transition ${
                 isActive("/cart")
                   ? "text-orange-500 border-b-2 border-orange-500"
-                  : "hover:text-orange-500"
+                  : ""
               }`}
             >
               <Cart theme={theme} />
             </Link>
           </li>
           {isLoggedIn && (
-            <>
-              <li>
-                <Link to="/profile">
-                  <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNKfj6RsyRZqO4nnWkPFrYMmgrzDmyG31pFQ&s"
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full"
-                  />
-                </Link>
-              </li>
-              <li>
-                <Logout />
-              </li>
-            </>
+            <li>
+              <Logout />
+            </li>
           )}
         </ul>
       </div>
