@@ -74,7 +74,7 @@ export default function ProfilePage({ theme }) {
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       } min-h-screen pb-20`}
     >
-      <div className="text-end mr-6 mt-6 text-white">
+      <div className="text-end mr-6 pt-6 text-white">
         <button
           onClick={handleEdit}
           className="bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600 transition"
