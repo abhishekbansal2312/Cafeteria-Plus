@@ -132,12 +132,16 @@ export default function UsersPage({ theme }) {
       } min-h-screen`}
     >
       <div>
-        <div className="flex justify-between items-center mx-10 py-1 pt-4">
-          <div className="flex">
+        <div className="flex flex-col md:flex-row justify-between items-center mx-4 sm:mx-10 py-2 sm:py-4">
+          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
             <SearchBar setSearch={setSearch} search={search} />
             <SortBy setRole={setRole} fetchUsers={fetchUsers} role={role} />
           </div>
-          <Button onClick={() => handleOpenModal()} text="Add User" />
+          <Button
+            onClick={() => handleOpenModal()}
+            text="Add User"
+            className="w-full sm:w-auto mt-4 sm:mt-0"
+          />
         </div>
 
         <UsersList
@@ -146,6 +150,7 @@ export default function UsersPage({ theme }) {
           handleEdit={handleOpenModal}
           loading={loading}
         />
+
         <PaginateUsers
           fetchUsers={fetchUsers}
           page={page}
