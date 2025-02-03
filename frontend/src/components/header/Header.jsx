@@ -16,7 +16,7 @@ const Header = ({ theme }) => {
             } absolute inset-0 bg-opacity-50 rounded-2xl`}
           ></div>
 
-          <div className="relative max-w-[50%] flex flex-col gap-6 animate-fadeIn z-10">
+          <div className="relative w-full md:max-w-[50%] flex flex-col gap-6 animate-fadeIn z-10">
             <h2
               className={`${
                 theme === "dark" ? "text-white" : "text-black"
@@ -27,7 +27,7 @@ const Header = ({ theme }) => {
             <p
               className={`${
                 theme === "dark" ? "text-gray-300" : "text-black"
-              } text-[1vw] hidden sm:block`}
+              } text-[2vw] sm:text-[2vw] md:text-[1vw] lg:text-[1vw]`}
             >
               Choose from a diverse menu featuring a delectable array of dishes
               crafted with the finest ingredients. Satisfy your cravings and
@@ -49,7 +49,7 @@ const Header = ({ theme }) => {
           <img
             src={image}
             alt="Delicious Food"
-            className="absolute right-6 bottom-6 sm:right-12 sm:bottom-12 w-[250px] sm:w-[280px] md:w-[310px] lg:w-[450px] rounded-lg shadow-lg rotate-6 transition-transform duration-300 ease-in-out hover:rotate-12 z-10"
+            className="absolute right-6 bottom-6 sm:right-12 sm:bottom-12 w-[250px] sm:w-[240px] md:w-[280px] lg:w-[400px] rounded-lg shadow-lg rotate-6 transition-transform duration-300 ease-in-out hover:rotate-12 z-10 hidden md:block"
           />
         </div>
       </div>

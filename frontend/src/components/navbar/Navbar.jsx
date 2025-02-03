@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Cart from "./Cart";
@@ -14,7 +14,19 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.userDetail);
   const isLoggedIn = useSelector((state) => state.userDetail.isLoggedIn);
   const { theme } = useContext(ThemeContext);
-  console.log(user, "ewde");
+  const navbarRef = useRef(null);
+
+  // Close the navbar if click is outside of the navbar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const isActive = (path) => location.pathname === path;
 
@@ -23,6 +35,7 @@ const Navbar = () => {
       className={`p-4 border-b shadow-md sticky top-0 z-50  ${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
+      ref={navbarRef}
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold flex-shrink-0">
