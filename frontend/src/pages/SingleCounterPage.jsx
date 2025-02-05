@@ -75,7 +75,6 @@ export default function SingleCounterPage({ theme }) {
       console.warn("User is not logged in. Cannot fetch merchants.");
       return;
     }
-
     try {
       const response = await makeRequest(
         "https://dinesync-seamlessdining.onrender.com/api/counters/merchants",
