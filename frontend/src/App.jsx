@@ -21,6 +21,7 @@ import SingleCounterPage from "./pages/SingleCounterPage";
 import ProfilePage from "./pages/ProfilePage";
 import Footer from "./components/footer/Footer";
 import ScrollToTop from "./utils/ScrollToTop";
+import PageNotFound from "./pages/PageNotFound";
 
 export default function App() {
   useAuth();
@@ -79,6 +80,7 @@ export default function App() {
               </AuthGuard>
             }
           />
+          <Route path="*" element={<PageNotFound theme={theme} />} />
         </Routes>
         <Footer theme={theme} />
       </BrowserRouter>
