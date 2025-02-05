@@ -12,6 +12,7 @@ app.use(morgan("dev"));
 app.use(
   cors({
     origin: ["https://dine-sync-seamless-dining.vercel.app"],
+    // origin: "http://localhost:5173",
     credentials: true,
   })
 );

@@ -43,8 +43,11 @@ export default function SingleCounterPage({ theme }) {
 
   const user = useSelector((state) => state.userDetail.user);
   const { selectedMerchants } = useSelector((state) => state.merchants);
+
   const merchantIds = selectedMerchants.map((merchant) => merchant._id);
-  console.log(merchantIds);
+  console.log(merchantIds, user?.id, "scsac", selectedMerchants);
+
+  // console.log(merchantIds, user.id);
 
   const getDishByCounter = async () => {
     try {

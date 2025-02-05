@@ -1,5 +1,6 @@
 const Dish = require("../models/dishModel");
 const Counter = require("../models/counterModel");
+const User = require("../models/userModel");
 
 const createDish = async (req, res) => {
   try {
@@ -107,15 +108,23 @@ const updateDish = async (req, res) => {
 const deleteDish = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedDish = await Dish.findByIdAndDelete(id);
 
-    if (!deletedDish) {
+    const dish = await Dish.findById(id);
+    if (!dish) {
       return res.status(404).json({ message: "Dish not found" });
     }
+    console.log(dish);
 
-    res
-      .status(200)
-      .json({ message: "Dish deleted and cart updated successfully" });
+    await User.updateMany(
+      { "cart.dish": id },
+      { $pull: { cart: { dish: id } } }
+    );
+
+    await Dish.findByIdAndDelete(id);
+
+    res.status(200).json({
+      message: "Dish deleted and removed from user carts successfully",
+    });
   } catch (error) {
     res.status(500).json({
       message: "Error deleting dish and updating cart",

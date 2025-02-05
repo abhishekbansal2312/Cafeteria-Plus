@@ -127,13 +127,28 @@ const updateCounter = async (req, res) => {
 const deleteCounter = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedCounter = await Counter.findByIdAndDelete(id);
 
-    if (!deletedCounter) {
+    const counter = await Counter.findById(id);
+    if (!counter) {
       return res.status(404).json({ message: "Counter not found" });
     }
 
-    res.status(200).json({ message: "Counter deleted successfully" });
+    const dishes = await Dish.find({ counter: id });
+    const dishIds = dishes.map((dish) => dish._id);
+
+    if (dishIds.length > 0) {
+      await User.updateMany(
+        { "cart.dish": { $in: dishIds } },
+        { $pull: { cart: { dish: { $in: dishIds } } } }
+      );
+
+      await Dish.deleteMany({ counter: id });
+    }
+    await Counter.findByIdAndDelete(id);
+
+    res.status(200).json({
+      message: "Counter and its dishes deleted successfully",
+    });
   } catch (error) {
     res
       .status(500)
