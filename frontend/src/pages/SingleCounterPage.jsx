@@ -71,18 +71,28 @@ export default function SingleCounterPage({ theme }) {
   };
 
   const fetchMerchants = async () => {
+    if (!user) {
+      console.warn("User is not logged in. Cannot fetch merchants.");
+      return;
+    }
+
     try {
       const response = await makeRequest(
-        `https://dinesync-seamlessdining.onrender.com/api/counters/merchants`,
+        "https://dinesync-seamlessdining.onrender.com/api/counters/merchants",
         "GET",
         null,
         true
       );
-      if (response) {
+
+      if (response?.merchants) {
         dispatch(setMerchants(response.merchants));
+      } else {
+        console.warn("No merchants found in response:", response);
+        setError("No merchants available.");
       }
     } catch (err) {
-      setError("Failed to fetch merchants");
+      console.error("Error fetching merchants:", err.message);
+      setError("Failed to fetch merchants. Please try again.");
     }
   };
 
